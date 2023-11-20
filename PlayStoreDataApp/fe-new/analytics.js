@@ -148,7 +148,7 @@ function createBoxPlot(i) {
       .enter()
       .append("circle")
       .attr("cx", function (d) {
-        return x(d.Species) - jitterWidth / 2 + Math.random() * jitterWidth;
+        return x(d.Species)
       })
       .attr("cy", function (d) {
         return y(d.Sepal_Length);
@@ -182,9 +182,10 @@ function createBoxPlot(i) {
       return;
     }
     // Imposta la classe "selected" per i cerchi all'interno della selezione del brushing
-    svg.selectAll("indPoints").classed("selectedBoxPlot", function (d) {
-      var cx = x(d.GrLivArea);
-      var cy = y(d.SalePrice);
+    svg.selectAll("circle").classed("selectedBoxPlot", function (d) {
+    
+      var cx = x(d.Species) 
+      var cy = y(d.Sepal_Length);
       if (cx >= extent[0][0] && cx <= extent[1][0] && cy >= extent[0][1] && cy <= extent[1][1])
         //d is in the bruch
         return true

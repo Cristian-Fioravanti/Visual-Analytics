@@ -47,6 +47,7 @@ function createScatterPlot() {
       })
       .attr("r", 1.5)
       .style("fill", "rgb(255, 164, 0, 0.5)");
+    updateChart(true)
   });
 
   svg.call(
@@ -58,10 +59,10 @@ function createScatterPlot() {
       ]) // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
       .on("start brush", updateChart) // Each time the brush selection changes, trigger the 'updateChart' function
   );
-  updateChart();
+  updateChart(false);
 
   // Function that is triggered when brushing is performed
-  function updateChart() {
+  function updateChart(force) {
     if (d3.event != null && d3.event.selection != null) {
       var extent = d3.event.selection;
       // Se il brushing è vuoto, reimposta la classe e interrompi la funzione
@@ -78,7 +79,11 @@ function createScatterPlot() {
         return true;
       else return false;
     });
-    } 
+    
+    }
+    if (force) svg.selectAll("circle").classed("selectedScatterPlot", true)
+     
+    
 
     
   }
