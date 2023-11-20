@@ -67,11 +67,11 @@ function createScatterPlot() {
 
     // Se il brushing è vuoto, reimposta la classe e interrompi la funzione
     if (!extent) {
-      svg.selectAll(".selected").classed("selected", true);
+      svg.selectAll(".selectedScatterPlot").classed("selectedScatterPlot", true);
       return;
     }
     // Imposta la classe "selected" per i cerchi all'interno della selezione del brushing
-    svg.selectAll("circle").classed("selected", function (d) {
+    svg.selectAll("circle").classed("selectedScatterPlot", function (d) {
       var cx = x(d.GrLivArea);
       var cy = y(d.SalePrice);
       if (cx >= extent[0][0] && cx <= extent[1][0] && cy >= extent[0][1] && cy <= extent[1][1])

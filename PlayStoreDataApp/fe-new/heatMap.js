@@ -9,9 +9,9 @@ function main() {
 
 function createHeatMap() {
   // set the dimensions and margins of the graph
-  var margin = { top: 20, right: 5, bottom: 20, left: 20 },
-    width = 768 - margin.left - margin.right,
-    height = 385 - margin.top - margin.bottom;
+  var margin = { top: 20, right: 5, bottom: 20, left: 40 },
+    width = 783 - margin.left - margin.right,
+    height = 310 - margin.top - margin.bottom;
 
   // append the svg object to the body of the page
   var svg = d3
@@ -66,8 +66,8 @@ function createHeatMap() {
       })
       .keys();
 
-    // Build color scale
-    var myColor = d3.scaleSequential().interpolator(d3.interpolateInferno).domain([1, 100]);
+    // // Build color scale
+    // var myColor = d3.scaleSequential().interpolator(d3.interpolateInferno).domain([1, 100]);
 
     // create a tooltip
     var tooltip = d3
@@ -77,29 +77,40 @@ function createHeatMap() {
       .attr("class", "tooltip")
       .style("background-color", "white")
       .style("color", "black")
-      .style("border", "solid")
+      .style("border", "solid white")
       .style("border-width", "2px")
       .style("border-radius", "5px")
       .style("padding", "5px")
-      .style("position", "absolute")
+      .style("position", "absolute");
 
     // Three function that change the tooltip when user hover / move / leave a cell
     var mouseover = function (d) {
       tooltip.style("opacity", 1);
-      d3.select(this).style("stroke", "black").style("opacity", 1);
+      d3.select(this).style("stroke", "white").style("opacity", 1);
     };
     var mousemove = function (d) {
       tooltip
         .html("The exact value of<br>this cell is: " + d.value)
-        
+
         .style("left", d3.mouse(this)[0] + 70 + "px")
-        .style("top", d3.mouse(this)[1] + "px");
+        .style("top", d3.mouse(this)[1] + 300 + "px");
     };
     var mouseleave = function (d) {
       tooltip.style("opacity", 0);
       d3.select(this).style("stroke", "none").style("opacity", 0.8);
     };
+    //Permette di aggingere alla selezione i valori nell'heatmap
+    var click = function (d) {
+      var isSelected = d3.select(this).classed("selectedHeatMap");
+  
+      // Verifica se la classe "selectedHeatMap" è già presente e agisci di conseguenza
+      if (isSelected) {
+        d3.select(this).classed("selectedHeatMap", false);
+      } else {
+        d3.select(this).classed("selectedHeatMap", true);
+      }
 
+    };
     // add the squares
     svg
       .selectAll()
@@ -126,7 +137,8 @@ function createHeatMap() {
       .style("opacity", 0.8)
       .on("mouseover", mouseover)
       .on("mousemove", mousemove)
-      .on("mouseleave", mouseleave);
+      .on("mouseleave", mouseleave)
+      .on("click", click);
   });
 
   // Add title to graph
