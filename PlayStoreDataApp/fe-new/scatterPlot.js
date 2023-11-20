@@ -58,14 +58,13 @@ function createScatterPlot() {
       ]) // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
       .on("start brush", updateChart) // Each time the brush selection changes, trigger the 'updateChart' function
   );
-  updateChart()
+  updateChart();
 
   // Function that is triggered when brushing is performed
   function updateChart() {
-      
-    var extent = d3.event.selection
-
-    // Se il brushing è vuoto, reimposta la classe e interrompi la funzione
+    if (d3.event != null && d3.event.selection != null) {
+      var extent = d3.event.selection;
+      // Se il brushing è vuoto, reimposta la classe e interrompi la funzione
     if (!extent) {
       svg.selectAll(".selectedScatterPlot").classed("selectedScatterPlot", true);
       return;
@@ -76,9 +75,11 @@ function createScatterPlot() {
       var cy = y(d.SalePrice);
       if (cx >= extent[0][0] && cx <= extent[1][0] && cy >= extent[0][1] && cy <= extent[1][1])
         //d is in the bruch
-        return true
-      else
-        return false;
+        return true;
+      else return false;
     });
+    } 
+
+    
   }
 }

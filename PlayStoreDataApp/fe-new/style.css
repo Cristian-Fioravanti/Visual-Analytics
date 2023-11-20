@@ -71,7 +71,10 @@ text {
   stroke: black !important;
   stroke-width: 1px;
 }
-
+.selectedBoxPlot{
+  fill: rgb(255, 164, 0) !important;
+  stroke: black !important;
+}
 .selectedHeatMap {
   opacity: 1 !important;
   stroke: white !important;
