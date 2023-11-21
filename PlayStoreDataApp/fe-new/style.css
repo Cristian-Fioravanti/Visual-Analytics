@@ -89,9 +89,18 @@ text {
   stroke: white !important;
 }
 
+.selectedBoxPlotRect{
+  fill: rgb(255, 164, 0) !important
+}
+
 .toto {
-  display: block;
-  width: 100px;
-  height: 40px;
+  &:hover{
+    stroke-width : 8px;
+    transition: stroke-width 2s
+  }
   cursor: pointer;
+}
+
+.removePointer{
+  cursor: unset !important;
 }
