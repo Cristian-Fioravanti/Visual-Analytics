@@ -38,20 +38,28 @@
 .div3 {
   grid-area: 1 / 3 / 2 / 4;
   .BoxPlotparent {
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: repeat(2, 350px);
-    grid-column-gap: 0px;
-    grid-row-gap: 0px;
-  }
-
-  .BoxPlotdiv1 {
-    grid-area: 1 / 1 / 2 / 2;
-  }
-
-  .BoxPlotdiv2 {
-    grid-area: 2 / 1 / 2 / 2;
-  }
+      display: grid;
+      grid-template-columns: repeat(2, 0.5fr);
+      grid-template-rows: repeat(2, 2fr);
+      grid-column-gap: 0px;
+      grid-row-gap: 0px;
+    }
+  
+    .BoxPlotdiv1 {
+      grid-area: 1 / 1 / 2 / 2;
+    }
+  
+    .BoxPlotdiv2 {
+      grid-area: 1 / 2 / 2 / 3;
+    }
+  
+    .BoxPlotdiv3 {
+      grid-area: 2 / 1 / 3 / 2;
+    }
+  
+    .BoxPlotdiv4 {
+      grid-area: 2 / 2 / 3 / 3;
+    }
 
 }
 line {
@@ -71,8 +79,28 @@ text {
   stroke: black !important;
   stroke-width: 1px;
 }
-
+.selectedBoxPlotLine{
+  stroke: rgb(255, 164, 0) !important;
+  border: 1px black solid;
+  stroke-width: 2px
+}
 .selectedHeatMap {
   opacity: 1 !important;
   stroke: white !important;
+}
+
+.selectedBoxPlotRect{
+  fill: rgb(255, 164, 0) !important
+}
+
+.toto {
+  &:hover{
+    stroke-width : 8px;
+    transition: stroke-width 2s
+  }
+  cursor: pointer;
+}
+
+.removePointer{
+  cursor: unset !important;
 }

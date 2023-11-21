@@ -44,7 +44,7 @@ function createScatterPlot() {
           // Add Y axis
           y = d3.scaleLinear().domain([0, max_Installs]).range([height, 0]);
           svg.append("g").call(d3.axisLeft(y));
-          populateChart(json_dati)
+          populateChart(json_dati, true)
         })
       })
     });  
@@ -58,30 +58,32 @@ function createScatterPlot() {
       ]) // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
       .on("start brush", updateChart) // Each time the brush selection changes, trigger the 'updateChart' function
   );
+  updateChart(false);
 
   // Function that is triggered when brushing is performed
-  function updateChart() {
-      
-    var extent = d3.event.selection
-    var data = []
-    // Se il brushing è vuoto, reimposta la classe e interrompi la funzione
-    if (!extent) {
-      svg.selectAll(".selectedScatterPlot").classed("selectedScatterPlot", true);
-      return;
+  function updateChart(force) {
+    if (d3.event != null && d3.event.selection != null) {
+      var extent = d3.event.selection;
+      // Se il brushing è vuoto, reimposta la classe e interrompi la funzione
+      if (!extent) {
+        svg.selectAll(".selectedScatterPlot").classed("selectedScatterPlot", true);
+        return;
+      }
+      // Imposta la classe "selected" per i cerchi all'interno della selezione del brushing
+      svg.selectAll("circle").classed("selectedScatterPlot", function (d) {
+        var cx = x(d.Reviews);
+        var cy = y(d.Installs);
+        if (cx >= extent[0][0] && cx <= extent[1][0] && cy >= extent[0][1] && cy <= extent[1][1])
+          //d is in the bruch
+          return true;
+        else 
+          return false;
+      });
     }
-    // Imposta la classe "selected" per i cerchi all'interno della selezione del brushing
-    svg.selectAll("circle").classed("selectedScatterPlot", function (d) {
-      var cx = x(d.Reviews);
-      var cy = y(d.Installs);
-      if (cx >= extent[0][0] && cx <= extent[1][0] && cy >= extent[0][1] && cy <= extent[1][1]) {
-        //d is in the bruch
-        return true
-      } else
-        return false;
-    });
-  }
+	  if (force) svg.selectAll("circle").classed("selectedScatterPlot", true)
+	}
 
-  function populateChart(data) {
+  function populateChart(data, force) {
     svg
       .append("g")
       .selectAll("circle")
@@ -95,5 +97,5 @@ function createScatterPlot() {
       })
       .attr("r", 1.5)
       .style("fill", "rgb(255, 164, 0, 0.5)");
-  }
-}
+	  updateChart(force)
+  }}
