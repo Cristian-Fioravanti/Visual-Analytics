@@ -1,6 +1,6 @@
 import "./interface.js";
 
-let ListPlayStoreData = [];
+let countClick = 0
 main();
 
 function main() {
@@ -101,6 +101,7 @@ function createHeatMap() {
     };
     //Permette di aggingere alla selezione i valori nell'heatmap
     var click = function (d) {
+
       var isSelected = d3.select(this).classed("selectedHeatMap");
       console.log(d)
       // Verifica se la classe "selectedHeatMap" è già presente e agisci di conseguenza
