@@ -17,9 +17,9 @@ def generateFile(label,Y,dataFile):
     
 
 ###read data from a CSV file, you can choose different delimiters
-att=['Rating','Reviews','Size','Installs','Type','Price']
+att=['ID','App','Category','Rating','Reviews','Size','Installs','Type','Price']
 
-d=np.genfromtxt('googleplaystore_Pre_PCA.csv',usecols=[i for i in range(0,5)],delimiter=';') 
+d=np.genfromtxt('googleplaystore.csv',usecols=[i for i in range(0,9)],delimiter=',',names=True,comments=None, encoding='utf-8') 
 
 #normalize the data with StandardScaler
 d_std = preprocessing.StandardScaler().fit_transform(d)

@@ -26,16 +26,16 @@ function createBoxPlot(i) {
   var margin = { top: 10, right: 30, bottom: 10, left: 40 },
     width = 460 - margin.left - margin.right,
     height = 320 - margin.top - margin.bottom;
-// Show the X scale
-    var x = d3.scaleBand().range([0, width]).domain(["setosa", "versicolor", "virginica"]).paddingInner(1).paddingOuter(0.5);
-    svg
-      .append("g")
-      .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x));
+  // Show the X scale
+  var x = d3.scaleBand().range([0, width]).domain(["setosa", "versicolor", "virginica"]).paddingInner(1).paddingOuter(0.5);
+  svg
+    .append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x));
 
-    // Show the Y scale
-    var y = d3.scaleLinear().domain([4, 9]).range([height, 0]);
-    svg.append("g").call(d3.axisLeft(y));
+  // Show the Y scale
+  var y = d3.scaleLinear().domain([4, 9]).range([height, 0]);
+  svg.append("g").call(d3.axisLeft(y));
   // Read the data and compute summary statistics for each specie
   d3.csv("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/iris.csv").then((data) => {
     // Compute quartiles, median, inter quantile range min and max --> these info are then used to draw the box.
@@ -76,7 +76,7 @@ function createBoxPlot(i) {
       })
       .entries(data);
 
-    
+
 
     // Show the main vertical line
     svg

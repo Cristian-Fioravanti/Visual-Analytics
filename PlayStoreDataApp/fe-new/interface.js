@@ -19,4 +19,28 @@ class PlayStoreData{
     }    
   }
 }
-   
+
+function getAllData(){
+  return $.ajax({
+    url: 'http://localhost:8099/star',
+    method: 'GET',
+    dataType: 'json'
+  });
+}
+
+function getMaxReview(){
+  return $.ajax({
+    url: 'http://localhost:8099/maxReview',
+    method: 'GET'
+  });
+}
+
+function getMaxInstalls(){
+  return $.ajax({
+    url: 'http://localhost:8099/maxInstalls',
+    method: 'GET'
+  });
+}
+
+
+export {getAllData, getMaxInstalls, getMaxReview}
