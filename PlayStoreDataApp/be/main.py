@@ -3,7 +3,10 @@ from flask import Flask, jsonify, request
 from flaskext.mysql import MySQL
 from flask_cors import CORS
 import csv
-
+import allDataPCA as pcaService
+import mysql.connector
+import pandas as pd
+from flask import make_response
 class PlayStoreData:
     def __init__(self, rating: float, review: int, size: float, install: int, price: float):
         self.rating = rating
@@ -20,7 +23,12 @@ def play_store_data_to_json(play_store_data):
         'install': play_store_data.install,
         'price': play_store_data.price
     }   
- 
+db_config = {
+        'host': 'localhost',
+        'user': 'root',
+        'password': '',
+        'database': 'va'
+    }
 flask = Flask(__name__)
 CORS(flask)
 mysql_connection = MySQL(flask, prefix="my_database", host="localhost", user="root", password="", db="va", autocommit=True)
@@ -36,6 +44,7 @@ def star():
     json_data=[]
     for result in rv:
         json_data.append(dict(zip(row_headers,result)))
+        print(dict(zip(row_headers,result)))
     response = jsonify(json_data)
 
     response.headers.add('Access-Control-Allow-Origin', '*')  # Imposta gli header CORS
@@ -43,6 +52,33 @@ def star():
 
     return response
 
+@flask.route('/all-data-pca')
+def allDataPca():
+    query = 'SELECT * FROM googleplaystore'
+
+    # Esecuzione della query e ottenimento dei dati in un DataFrame
+    cur = mysql_connection.get_db().cursor()
+    cur.execute(query)
+    row_headers = [x[0] for x in cur.description]  # estrae le intestazioni di riga
+    rv = cur.fetchall()
+
+    # Creazione del JSON dai risultati del database
+    json_data = []
+
+    # Chiamata a pcaService.evaluatePCA e ottenimento del risultato
+    df = pd.DataFrame(rv, columns=row_headers)
+    selected_columns = df.iloc[:, 3:8]
+    pca_result = pcaService.evaluatePCA(df, selected_columns)
+    
+    # Creazione di un oggetto di risposta Flask JSON
+    response = json.loads(pca_result)
+
+    # Creazione di una risposta Flask con gli headers appropriati
+    resp = make_response(response)
+    resp.headers['Content-Type'] = 'application/json'
+
+    return response
+   
 @flask.route('/category')
 def category():
     cur = mysql_connection.get_db().cursor()
@@ -87,39 +123,6 @@ def maxInstalls():
     response.headers.add('Content-Type', 'application/json')  # Imposta gli header CORS
 
     return response
-
-# Endpoint to get all tasks
-@flask.route('/play-store-data', methods=['GET'])
-def getPlayStoreData():
-    listPlayStoreData = []
-    with open(file_input, 'r', newline='',encoding="iso-8859-1") as csv_file_in:
-        lettore = csv.reader(csv_file_in, delimiter=';')
-        for riga in lettore:
-             play_store_data = PlayStoreData(*riga)
-             listPlayStoreData.flaskend(play_store_data_to_json(play_store_data))
-        return jsonify(listPlayStoreData)
-# # Endpoint to get a specific task by ID
-# @flask.route('/tasks/<int:task_id>', methods=['GET'])
-# def get_task(task_id):
-#     task = next((task for task in tasks if task['id'] == task_id), None)
-#     if task is None:
-#         return jsonify({'error': 'Task not found'}), 404
-#     return jsonify({'task': task})
-
-# # Endpoint to create a new task
-# @flask.route('/tasks', methods=['POST'])
-# def create_task():
-#     if not request.json or 'title' not in request.json:
-#         return jsonify({'error': 'Title is required'}), 400
-
-#     new_task = {
-#         'id': tasks[-1]['id'] + 1,
-#         'title': request.json['title'],
-#         'done': False
-#     }
-#     tasks.flaskend(new_task)
-
-#     return jsonify({'task': new_task}), 201
 
 
 if __name__ == '__main__':

@@ -26,5 +26,11 @@ function getAllCategory(){
     dataType: 'json'
   });
 }
-
-export {getAllData, getMaxInstalls, getMaxReview,getAllCategory}
+function getAllDataPCA(){
+  return $.ajax({
+    url: 'http://localhost:8099/all-data-pca',
+    method: 'GET',
+    dataType: 'json'
+  });
+}
+export {getAllData, getMaxInstalls, getMaxReview, getAllCategory, getAllDataPCA}

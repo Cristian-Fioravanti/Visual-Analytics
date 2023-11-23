@@ -1,4 +1,4 @@
-import {getAllData, getMaxInstalls, getMaxReview} from "./ajaxService.js";
+import { getAllDataPCA, getMaxInstalls, getMaxReview } from "./ajaxService.js";
 
 let ListPlayStoreData = [];
 main();
@@ -9,8 +9,7 @@ function main() {
 
 function createScatterPlot() {
   // set the dimensions and margins of the graph
-  var margin = { top: 10, right: 20, bottom: 20, left: 80
-   },
+  var margin = { top: 10, right: 20, bottom: 20, left: 80 },
     width = 768 - margin.left - margin.right,
     height = 330 - margin.top - margin.bottom;
 
@@ -23,32 +22,27 @@ function createScatterPlot() {
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-  var x
-  var y 
-  var json_dati
-  var max_Installs
-  var max_Reviews
+  var x;
+  var y;
+  var json_dati;
+  var max_Installs;
+  var max_Reviews;
 
-  getAllData()
-    .done(function(jsonData) {
-      console.log('Dati ottenuti:', jsonData);
-      json_dati = jsonData
-      getMaxReview().done(function(jsonData) {
-        console.log('Dati ottenuti:', jsonData[0]['MAX(Reviews)']);
-        max_Reviews = jsonData[0]['MAX(Reviews)']
-        // Add X axis
-        x = d3.scaleLinear().domain([0, max_Reviews]).range([0, width]);
-        svg.append("g").attr("transform", `translate(0, ${height})`).call(d3.axisBottom(x));
-        getMaxInstalls().done(function(jsonData) {
-          console.log('Dati ottenuti:', jsonData[0]['MAX(Installs)']);
-          max_Installs = jsonData[0]['MAX(Installs)']
-          // Add Y axis
-          y = d3.scaleLinear().domain([0, max_Installs]).range([height, 0]);
-          svg.append("g").call(d3.axisLeft(y));
-          populateChart(json_dati, true)
-        })
-      })
-    });  
+  getAllDataPCA().done(function (jsonData) {
+    console.log("Dati ottenuti:", jsonData);
+    json_dati = jsonData;
+    // Add X axis
+    x = d3.scaleLog().domain([0.01,1,10,100]).range([0, width]);
+    svg
+      .append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x));
+    // Add Y axis
+    y = d3.scaleLog().domain([0.01,1,10,100]).range([height, 0]);
+    svg.append("g").call(d3.axisLeft(y));
+
+    populateChart(json_dati, true);
+  });
 
   svg.call(
     d3
@@ -77,12 +71,11 @@ function createScatterPlot() {
         if (cx >= extent[0][0] && cx <= extent[1][0] && cy >= extent[0][1] && cy <= extent[1][1])
           //d is in the bruch
           return true;
-        else 
-          return false;
+        else return false;
       });
     }
-	  if (force) svg.selectAll("circle").classed("selectedScatterPlot", true)
-	}
+    if (force) svg.selectAll("circle").classed("selectedScatterPlot", true);
+  }
 
   function populateChart(data, force) {
     svg
@@ -91,12 +84,13 @@ function createScatterPlot() {
       .data(data)
       .join("circle")
       .attr("cx", function (d) {
-        return x(d.Reviews);
+        return x(d.Y1);
       })
       .attr("cy", function (d) {
-        return y(d.Installs);
+        return y(d.Y2);
       })
       .attr("r", 1.5)
       .style("fill", "rgb(255, 164, 0, 0.5)");
-	  updateChart(force)
-  }}
+    updateChart(force);
+  }
+}
