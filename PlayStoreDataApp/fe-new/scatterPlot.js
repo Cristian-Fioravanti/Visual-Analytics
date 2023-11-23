@@ -1,4 +1,4 @@
-import {getAllData, getMaxInstalls, getMaxReview} from "./interface.js";
+import {getAllData, getMaxInstalls, getMaxReview} from "./ajaxService.js";
 
 let ListPlayStoreData = [];
 main();
@@ -9,7 +9,8 @@ function main() {
 
 function createScatterPlot() {
   // set the dimensions and margins of the graph
-  var margin = { top: 10, right: 20, bottom: 20, left: 55 },
+  var margin = { top: 10, right: 20, bottom: 20, left: 80
+   },
     width = 768 - margin.left - margin.right,
     height = 330 - margin.top - margin.bottom;
 

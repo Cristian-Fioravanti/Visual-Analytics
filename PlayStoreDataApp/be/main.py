@@ -43,6 +43,21 @@ def star():
 
     return response
 
+@flask.route('/category')
+def category():
+    cur = mysql_connection.get_db().cursor()
+    cur.execute('SELECT Category FROM `googleplaystore` GROUP by Category')
+    row_headers=[x[0] for x in cur.description] #this will extract row headers
+    rv = cur.fetchall()
+    json_data=[]
+    for result in rv:
+        json_data.append(dict(zip(row_headers,result)))
+    response = jsonify(json_data)
+
+    response.headers.add('Access-Control-Allow-Origin', '*')  # Imposta gli header CORS
+    response.headers.add('Content-Type', 'application/json')  # Imposta gli header CORS
+
+    return response
 @flask.route('/maxReview')
 def maxReview():
     cur = mysql_connection.get_db().cursor()

@@ -1,65 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <link rel="stylesheet" href="./style.css" />
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
-  </head>
-  <body style="overflow-y: hidden; background-color: #202124; color: white;">
-    <div class="body">
-      <div class="header" align="center"> Play Store Data</div>
-      <div class="analytics">
-        <div>
-          <div class="parent">
-            <div class="div1">
-              <br />
-              ciao
-              <br />
-              ciao
-              <br />
-              ciao
-              <br />
-              ciao
-              <br />
-              ciao
-              <br />
-              ciao
-              <br />
-              ciao
-              <br />
-              ciao
-            </div>
-            <div class="div2">
-              <div id="scatterPlot"></div>
-              <div id="heatMap"></div>
-            </div>
-            <div class="div3">
-              <div class="BoxPlotparent">
-                <div class="BoxPlotdiv1"><span id="boxPlot1"></span></div>
-                <div class="BoxPlotdiv2"><span id="boxPlot2"></span></div>
-                <div class="BoxPlotdiv3"><span id="boxPlot3"></span></div>
-                <div class="BoxPlotdiv4"><span id="boxPlot4"></span></div>
-              </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+  <link rel="stylesheet" href="./style.css" />
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+</head>
+
+<body style="overflow-y: hidden; background-color: #202124; color: white;">
+  <div class="body">
+    <div class="header" align="center"> Play Store Data</div>
+    <div class="analytics">
+      <div>
+        <div class="parent">
+          <div id="category" class="category">
+          </div>
+          <div class="div2">
+            <div id="scatterPlot"></div>
+            <div id="heatMap"></div>
+          </div>
+          <div class="div3">
+            <div class="BoxPlotparent">
+              <div class="BoxPlotdiv1"><span id="boxPlot1"></span></div>
+              <div class="BoxPlotdiv2"><span id="boxPlot2"></span></div>
+              <div class="BoxPlotdiv3"><span id="boxPlot3"></span></div>
+              <div class="BoxPlotdiv4"><span id="boxPlot4"></span></div>
             </div>
           </div>
         </div>
       </div>
-      <div class="footer">Cristian Fioravanti 1861593<br> Paolo Caruso </div>
     </div>
+    <div class="footer">Cristian Fioravanti 1861593<br> Paolo Caruso </div>
+  </div>
 
-    <!-- <div id="heatMap"></div> -->
-    <!-- <div id="scatterPlot"></div> -->
-    <!-- <div id="boxPlot1"></div> -->
- <!-- <script src="https://d3js.org/d3.v4.js"></script> -->
-    <script src="boxPlot.js" type="module"></script>
-    <script src="interface.js" type="module"></script>
-    
-    <script src="scatterPlot.js" type="module"></script>
-    <script src="heatMap.js" type="module"></script>
-  </body>
+  <!-- <div id="heatMap"></div> -->
+  <!-- <div id="scatterPlot"></div> -->
+  <!-- <div id="boxPlot1"></div> -->
+  <!-- <script src="https://d3js.org/d3.v4.js"></script> -->
+  <script src="boxPlot.js" type="module"></script>
+  <script src="interface.js" type="module"></script>
+
+  <script src="scatterPlot.js" type="module"></script>
+  <script src="heatMap.js" type="module"></script>
+  <script src="category.js" type="module"></script>
+</body>
+
 </html>
 
 <!-- <!DOCTYPE html>
