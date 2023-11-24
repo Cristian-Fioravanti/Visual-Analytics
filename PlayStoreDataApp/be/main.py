@@ -3,7 +3,7 @@ from flask import Flask, jsonify, request
 from flaskext.mysql import MySQL
 from flask_cors import CORS
 import csv
-import allDataPCA as pcaService
+import PCA as pcaService
 import mysql.connector
 import pandas as pd
 from flask import make_response
@@ -67,9 +67,9 @@ def allDataPca():
 
     # Chiamata a pcaService.evaluatePCA e ottenimento del risultato
     df = pd.DataFrame(rv, columns=row_headers)
-    selected_columns = df.iloc[:, 3:8]
-    pca_result = pcaService.evaluatePCA(df, selected_columns)
-    
+    d = df.iloc[:, 3:8].values
+    pca_result = pcaService.evaluatePCA(df, d)
+
     # Creazione di un oggetto di risposta Flask JSON
     response = json.loads(pca_result)
 

@@ -31,14 +31,20 @@ function createScatterPlot() {
   getAllDataPCA().done(function (jsonData) {
     console.log("Dati ottenuti:", jsonData);
     json_dati = jsonData;
-    // Add X axis
-    x = d3.scaleLog().domain([0.01,1,10,100]).range([0, width]);
+
+    // Create scales with log transformation for x and y axes    
+    x = d3.scaleLog()
+        .domain([1,d3.max(jsonData, function(d) { return d.Y1; })+10])
+        .range([0, width]);
     svg
       .append("g")
       .attr("transform", "translate(0," + height + ")")
       .call(d3.axisBottom(x));
     // Add Y axis
-    y = d3.scaleLog().domain([0.01,1,10,100]).range([height, 0]);
+    y = d3.scaleLog()
+        .domain([1, d3.max(jsonData, function(d) { return d.Y2; })+10])
+        .range([height, 0]);
+
     svg.append("g").call(d3.axisLeft(y));
 
     populateChart(json_dati, true);
@@ -66,8 +72,8 @@ function createScatterPlot() {
       }
       // Imposta la classe "selected" per i cerchi all'interno della selezione del brushing
       svg.selectAll("circle").classed("selectedScatterPlot", function (d) {
-        var cx = x(d.Reviews);
-        var cy = y(d.Installs);
+        var cx = x(d.Y1);
+        var cy = y(d.Y2);
         if (cx >= extent[0][0] && cx <= extent[1][0] && cy >= extent[0][1] && cy <= extent[1][1])
           //d is in the bruch
           return true;

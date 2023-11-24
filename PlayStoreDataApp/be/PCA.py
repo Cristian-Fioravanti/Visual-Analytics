@@ -6,6 +6,28 @@ import mysql.connector
 from sklearn.decomposition import PCA
 from sklearn import preprocessing
 
+
+
+def generateWithFile(label, Y, data):
+    # Inizializza una lista per contenere i dati nel formato desiderato
+    output_data = []
+    # Itera attraverso le righe del DataFrame
+    for index, row in data.iterrows():
+        # Crea un dizionario per ogni riga
+        row_dict = {}
+
+        # Aggiungi i valori degli attributi dalla lista label
+        row_dict['Y1'] = Y[index][0]
+        row_dict['Y2'] = Y[index][1]
+        for attr in label:
+            row_dict[attr] = row[attr]
+        
+        # Aggiungi il dizionario alla lista di output
+        output_data.append(row_dict)
+    # Scrivi la lista di dizionari in un file JSON
+    with open('output.json', 'w') as json_file:
+        json.dump(output_data, json_file, indent=2)
+
 def generateWithData(label, Y, data):
     # Inizializza una lista per contenere i dati nel formato desiderato
     output_data = []
@@ -15,16 +37,29 @@ def generateWithData(label, Y, data):
         row_dict = {}
 
         # Aggiungi i valori degli attributi dalla lista label
-        for y in Y:
-            row_dict['Y1'] = y[0]
-            row_dict['Y2'] = y[1]
+        row_dict['Y1'] = Y[index][0]
+        row_dict['Y2'] = Y[index][1]
         for attr in label:
             row_dict[attr] = row[attr]
         
         # Aggiungi il dizionario alla lista di output
         output_data.append(row_dict)
 
+    output_data = positivize(output_data)
+
     return(json.dumps(output_data, indent=2))
+
+def positivize(data):
+    min_Y1 = min(float(d['Y1']) for d in data) 
+    min_Y2 = min(float(d['Y2']) for d in data)
+    print('MINIMO DI y1', min_Y1)
+    print('MINIMO DI y2', min_Y2)
+    # Aggiungi il minimo di Y1 a tutti gli elementi di Y1 in ogni dizionario
+    for d in data:
+        d['Y1'] += min_Y1*-1 + 1
+        d['Y2'] += min_Y2*-1 + 1
+
+    return data
 
 def evaluatePCA(df, d):
     # df = pd.read_sql(query, connection)
@@ -33,12 +68,13 @@ def evaluatePCA(df, d):
     d_std = preprocessing.StandardScaler().fit_transform(d)
     pca=PCA(n_components=5)
     d_pca=pca.fit_transform(d_std)
-    generateWithData(att,d_pca,df)
+    to_ret = generateWithData(att,d_pca,df)
+    return to_ret
 
 
 def test():
     ###read data from a CSV file, you can choose different delimiters
-    # att=["ID","App","Category","Rating","Reviews","Size","Installs","Price","Content_Rating","Type","Genres","Last_Updated","Current_Ver","Android_Ver"]
+    att=["ID","App","Category","Rating","Reviews","Size","Installs","Price","Content_Rating","Type","Genres","Last_Updated","Current_Ver","Android_Ver"]
     # Parametri di connessione al database
     db_config = {
         'host': 'localhost',
@@ -56,10 +92,11 @@ def test():
 
         # Esecuzione della query e ottenimento dei dati in un DataFrame
         df = pd.read_sql(query, connection)
-        d = df.iloc[:, 3:8]
+        d = df.iloc[:, 3:8].values
         att = df.columns.values
-
+        print(d)
         #normalize the data with StandardScaler
+        # d_std = preprocessing.StandardScaler().fit_transform(d)
         d_std = preprocessing.StandardScaler().fit_transform(d)
         #compute PCA
         pca=PCA(n_components=5)
@@ -68,14 +105,25 @@ def test():
         # PCA variable  with useful attributes (e.g., explained_variance_)
 
         # generateFile(att,d_pca,'googleplaystore§.csv')
-        print(generateWithData(att,d_pca,df))
+        # print(generateWithData(att,d_pca,df))
+        generateWithData(att,d_pca,df)
+        plt.plot(d_pca[:,0],d_pca[:,1], 'o', markersize=3, color='blue', alpha=0.5, label='PCA transformed data in the new 2D space')    
+        plt.xlabel('Y1')
+        plt.ylabel('Y2')
+        plt.xlim([-4,4])
+        plt.ylim([-4,4])
+        plt.legend()
+        plt.title('Transformed data from sklearn.decomposition import PCA')
+
+        plt.show()
 
     finally:
         # Chiudi la connessione al database
         if 'connection' in locals() and connection.is_connected():
             connection.close()
+        
 
-test()
+# test()
 # plt.plot(d_pca[:,0],d_pca[:,1], 'o', markersize=3, color='blue', alpha=0.5, label='PCA transformed data in the new 2D space')    
 # plt.xlabel('Y1')
 # plt.ylabel('Y2')
