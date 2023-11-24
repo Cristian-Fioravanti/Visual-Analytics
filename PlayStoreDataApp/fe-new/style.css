@@ -86,7 +86,7 @@ text {
   border: 1px black solid;
   stroke-width: 2px;
 }
-.selectedHeatMap {
+.selectedParallelCoordinates {
   opacity: 1 !important;
   stroke: white !important;
 }

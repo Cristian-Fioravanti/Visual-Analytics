@@ -1,13 +1,17 @@
 import { getAllDataPCA, getMaxInstalls, getMaxReview } from "./ajaxService.js";
 
 let ListPlayStoreData = [];
-main();
+// main();
 
-function main() {
-  createScatterPlot();
-}
+// function main() {
+//   createScatterPlot();
+// }
 
-function createScatterPlot() {
+function createScatterPlot(jsonPCAData) {
+  var x;
+  var y;
+ 
+
   // set the dimensions and margins of the graph
   var margin = { top: 10, right: 20, bottom: 20, left: 80 },
     width = 768 - margin.left - margin.right,
@@ -22,34 +26,6 @@ function createScatterPlot() {
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-  var x;
-  var y;
-  var json_dati;
-  var max_Installs;
-  var max_Reviews;
-
-  getAllDataPCA().done(function (jsonData) {
-    console.log("Dati ottenuti:", jsonData);
-    json_dati = jsonData;
-
-    // Create scales with log transformation for x and y axes    
-    x = d3.scaleLog()
-        .domain([1,d3.max(jsonData, function(d) { return d.Y1; })+10])
-        .range([0, width]);
-    svg
-      .append("g")
-      .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x));
-    // Add Y axis
-    y = d3.scaleLog()
-        .domain([1, d3.max(jsonData, function(d) { return d.Y2; })+10])
-        .range([height, 0]);
-
-    svg.append("g").call(d3.axisLeft(y));
-
-    populateChart(json_dati, true);
-  });
-
   svg.call(
     d3
       .brush() // Add the brush feature using the d3.brush function
@@ -59,6 +35,23 @@ function createScatterPlot() {
       ]) // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
       .on("start brush", updateChart) // Each time the brush selection changes, trigger the 'updateChart' function
   );
+  // Create scales with log transformation for x and y axes    
+    x = d3.scaleLog()
+        .domain([1,d3.max(jsonPCAData, function(d) { return d.Y1; })+10])
+        .range([0, width]);
+    svg
+      .append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x));
+    // Add Y axis
+    y = d3.scaleLog()
+        .domain([1, d3.max(jsonPCAData, function(d) { return d.Y2; })+10])
+        .range([height, 0]);
+
+    svg.append("g").call(d3.axisLeft(y));
+
+  populateChart(jsonPCAData, true);
+  
   updateChart(false);
 
   // Function that is triggered when brushing is performed
@@ -100,3 +93,5 @@ function createScatterPlot() {
     updateChart(force);
   }
 }
+
+export{createScatterPlot}
