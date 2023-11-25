@@ -77,7 +77,6 @@ text {
 }
 
 .selectedScatterPlot {
-  fill: rgb(255, 164, 0) !important;
   stroke: black !important;
   stroke-width: 1px;
 }
