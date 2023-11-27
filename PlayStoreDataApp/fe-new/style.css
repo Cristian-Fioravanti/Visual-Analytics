@@ -43,26 +43,21 @@
   .BoxPlotparent {
     display: grid;
     grid-template-columns: repeat(2, 0.5fr);
-    grid-template-rows: repeat(2, 2fr);
+    grid-template-rows: repeat(3, 167px);
     grid-column-gap: 0px;
     grid-row-gap: 0px;
+    grid-template-areas:
+    "BoxPlotdiv1 BoxPlotdiv2"
+    "BoxPlotdiv3 BoxPlotdiv4"
+    "Histogram1 Histogram2"
   }
-
-  .BoxPlotdiv1 {
-    grid-area: 1 / 1 / 2 / 2;
+  .HistogramSvg1{
+    font-size: 6px !important;
   }
-
-  .BoxPlotdiv2 {
-    grid-area: 1 / 2 / 2 / 3;
-  }
-
-  .BoxPlotdiv3 {
-    grid-area: 2 / 1 / 3 / 2;
-  }
-
-  .BoxPlotdiv4 {
-    grid-area: 2 / 2 / 3 / 3;
-  }
+  .HistogramSvg2{
+      font-size: 6px !important;
+    }
+  
 }
 line {
   stroke: #ffffff;

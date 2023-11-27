@@ -7,7 +7,9 @@ let scaleColor;
 function createParallelCoordinates(jsonPCAData) {
   scaleColor = commonService.getScaleColor()
   // jsonPCAData = jsonPCAData.slice(0, 5);
-  console.log(commonService.distinctValuesPerKey(jsonPCAData))
+  
+  // console.log(commonService.distinctValuesPerKey(jsonPCAData))
+  
   // set the dimensions and margins of the graph
   var margin = { top: 30, right: 10, bottom: 10, left: 30 },
     width = 768 - margin.left - margin.right,
@@ -61,6 +63,7 @@ function createParallelCoordinates(jsonPCAData) {
       })
     );
   }
+
   function getColorPath(d) {
     return scaleColor(d.Category)
   }
