@@ -48,7 +48,7 @@ function createScatterPlot(jsonPCAData) {
   svg
     .append("g")
     .attr("transform", "translate(0," + height + ")")
-    .call(d3.axisBottom(x));
+    .call(d3.axisBottom(x).ticks(0).tickFormat(function(d) { return ""; }));
   // Add Y axis
   y = d3
     .scaleLog()
@@ -60,7 +60,7 @@ function createScatterPlot(jsonPCAData) {
     ])
     .range([height, 0]);
 
-  svg.append("g").call(d3.axisLeft(y));
+  svg.append("g").call(d3.axisLeft(y).ticks(0).tickFormat(function(d) { return ""; }));
 
   populateChart(jsonPCAData, false);
 
@@ -147,7 +147,7 @@ function createScatterPlot(jsonPCAData) {
       .attr("cy", function (d) {
         return y(d.Y2);
       })
-      .attr("r", 1.5)
+      .attr("r", 2)
       .style("fill", getColor);
   }
 

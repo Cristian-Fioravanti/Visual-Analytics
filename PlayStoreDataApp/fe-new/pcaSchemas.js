@@ -6,8 +6,6 @@ import * as boxplotsService from "./boxPlot.js"
 import * as histogramService from "./histogram.js";
 import * as commonService from "./commonService.js"
 
-import * as commonService from "./commonService.js";
-
 main();
 
 function main() {
@@ -23,7 +21,7 @@ function getPCAForSchemas() {
     scatterPlotService.createScatterPlot(jsonData);
     boxplotsService.populateBoxplots(jsonData)
     parallelCoordinatesService.createParallelCoordinates(jsonData);
-    createHistogramInstalls(jsonData);
+    // createHistogramInstalls(jsonData);
     // histogramService.createHistogramLong(3,dataInstall,dataAppName);
   });
 }
