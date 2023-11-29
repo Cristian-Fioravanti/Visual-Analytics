@@ -1,7 +1,8 @@
 import * as scatterPlotService  from "./scatterPlot.js";
 import * as ajaxService from "./ajaxService.js";
-import *  as parallelCoordinatesService from "./parallelCoordinates.js";
+import * as parallelCoordinatesService from "./parallelCoordinates.js";
 import * as categoryService from "./category.js"
+import * as boxplotsService from "./boxPlot.js"
 import * as commonService from "./commonService.js"
 
 main();
@@ -19,5 +20,6 @@ function getPCAForSchemas() {
     categoryService.insertCategory(jsonData)
     scatterPlotService.createScatterPlot(jsonData)
     parallelCoordinatesService.createParallelCoordinates(jsonData)
+    boxplotsService.populateBoxplots(jsonData)
   })
 }

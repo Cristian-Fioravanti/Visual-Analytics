@@ -5,6 +5,7 @@ let scaleColor;
 let numberOfBrush = 0;
 let secondSet = []
 let firstSet = []
+
 function createScatterPlot(jsonPCAData) {
   var x;
   var y;
@@ -125,7 +126,7 @@ function createScatterPlot(jsonPCAData) {
         .attr("height", d3.event.selection[1][1] - d3.event.selection[0][1]);
       numberOfBrush++;
       console.log(firstSet.length)
-     console.log(secondSet.length)
+      console.log(secondSet.length)
       console.log("cacca");
     }
   }
