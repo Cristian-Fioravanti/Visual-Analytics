@@ -24,7 +24,7 @@ export function insertCategory(jsonPCAData) {
     // Add the onchange event to each checkbox
     checkbox.addEventListener("change", function () {
       // Your onchange logic here
-      console.log(`Checkbox for ${dataCategory} changed: ${checkbox.checked}`);
+      // console.log(`Checkbox for ${dataCategory} changed: ${checkbox.checked}`);
     });
     // checkbox.style.color = scaleColor(index); // Colore quando selezionato
     // insertStyleCheckBox(dataCategory,scaleColor(index))

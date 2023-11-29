@@ -102,6 +102,7 @@ function createScatterPlot(jsonPCAData) {
       } 
       if (numberOfBrush > 1) {
         svg.selectAll(".brush").remove(); // Rimuovi eventuali rettangoli di selezione precedenti
+        svg.selectAll(".selectedScatterPlot").classed("selectedScatterPlot", false);
         numberOfBrush = 0;
         commonService.setFirstSet([])
         commonService.setSecondSet([])
