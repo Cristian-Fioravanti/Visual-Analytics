@@ -29,22 +29,32 @@ function createHistogramInstalls(jsonData) {
   let dataInstalls = [];
   let dataType = [];
   let dataAppName = [];
+  let dataContentRating = [];
   let dataTypeSet = new Set();
+  let dataContentRatingSet = new Set();
   jsonData.forEach((obj) => {
     dataAppName.push(obj.App);
     var objInstalls = JSON.parse(`{"Installs": ${obj.Installs}}`);
     dataInstalls.push(objInstalls);
-    
-    dataTypeSet.add(obj.Type)
+
+    dataContentRatingSet.add(obj.Content_Rating);
+    dataTypeSet.add(obj.Type);
   });
   dataTypeSet.forEach((Type) => {
-  var objType = JSON.parse(`{"Type": "${Type}","Total": ${jsonData.filter(x=> x.Type == Type).length}}`);
+    var objType = JSON.parse(`{"Type": "${Type}","Total": ${jsonData.filter((x) => x.Type == Type).length}}`);
+    dataType.push(objType);
+  });
 
-  dataType.push(objType)
-  })
+  dataContentRatingSet.forEach((ContentRating) => {
+    var objContentRating = JSON.parse(`{"ContentRating": "${ContentRating}","Total": ${jsonData.filter((x) => x.Content_Rating == ContentRating).length}}`);
 
-  let heightY=jsonData.length
-  histogramService.createHistogramShortInstalls(1, dataInstalls);
-  
-  histogramService.createHistogramShortType(2, dataType, Array.from(dataTypeSet),heightY );
+    dataContentRating.push(objContentRating);
+  });
+
+  let heightY = jsonData.length;
+ 
+
+  histogramService.createHistogramShortType(1, dataType, Array.from(dataTypeSet), heightY);
+  histogramService.createHistogramShortContentRating(2, dataContentRating, Array.from(dataContentRatingSet), heightY);
+   histogramService.createHistogramShortInstalls(3, dataInstalls);
 }
