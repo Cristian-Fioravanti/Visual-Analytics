@@ -52,11 +52,11 @@
     "Histogram1 Histogram2"
   }
   .HistogramSvg1{
-    font-size: 6px !important;
+    font-size: 8px !important;
   }
   .HistogramSvg2{
-      font-size: 6px !important;
-    }
+      font-size: 8px !important;
+    } 
   
 }
 line {
