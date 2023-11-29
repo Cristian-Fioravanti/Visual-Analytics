@@ -12,10 +12,10 @@ function main() {
 }
 
 function populateBoxplots(data) {
-  console.log("Rating",data.map(item => item.Rating))
-  console.log("Reviews",data.map(item => item.Reviews))
-  console.log("Installations",data.map(item => item.Installs))
-  console.log("Size",data.map(item => item.Size))
+  // console.log("Rating",data.map(item => item.Rating))
+  // console.log("Reviews",data.map(item => item.Reviews))
+  // console.log("Installations",data.map(item => item.Installs))
+  // console.log("Size",data.map(item => item.Size))
   let data1 = data.map(item => item.Rating)
   createBoxPlot(data1, 1)
   let data2  = data.map(item => item.Reviews)

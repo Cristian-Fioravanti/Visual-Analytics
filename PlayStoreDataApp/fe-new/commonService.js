@@ -1,7 +1,7 @@
-let scaleColor
-let firstSet = {}
+export let scaleColor
+export let firstSet = {}
 firstSet = Observable(firstSet);
-let secondSet = {}
+export let secondSet = {}
 secondSet = Observable(secondSet);
 
 export const customColors = [
@@ -70,14 +70,7 @@ export function getScaleColor(){
   return scaleColor
 }
 
-export function getFirstSet(){
-  return firstSet
-}
-export function getSecondSet(){
-  return secondSet
-}
-
-export function setFirstSet(newSet){
+export function setFirstSet(newSet) {
   firstSet.value = newSet
 }
 export function setSecondSet(newSet){

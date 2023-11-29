@@ -6,7 +6,6 @@ import * as boxplotsService from "./boxPlot.js"
 import * as histogramService from "./histogram.js";
 import * as commonService from "./commonService.js"
 
-import * as commonService from "./commonService.js";
 
 main();
 
@@ -28,36 +27,20 @@ function getPCAForSchemas() {
   });
 }
 function createHistogramInstalls(jsonData) {
-  //Histogram
-  let dataInstalls = [];
-  let dataType = [];
-  let dataAppName = [];
-  let dataContentRating = [];
-  let dataTypeSet = new Set();
-  let dataContentRatingSet = new Set();
-  jsonData.forEach((obj) => {
-    dataAppName.push(obj.App);
-    var objInstalls = JSON.parse(`{"Installs": ${obj.Installs}}`);
-    dataInstalls.push(objInstalls);
+  const dataInstalls = jsonData.map(obj => ({ Installs: parseInt(obj.Installs) }));
 
-    dataContentRatingSet.add(obj.Content_Rating);
-    dataTypeSet.add(obj.Type);
-  });
-  dataTypeSet.forEach((Type) => {
-    var objType = JSON.parse(`{"Type": "${Type}","Total": ${jsonData.filter((x) => x.Type == Type).length}}`);
-    dataType.push(objType);
-  });
+  const dataType = Array.from(new Set(jsonData.map(obj => obj.Type)))
+    .map(Type => ({ Type, Total: jsonData.filter(x => x.Type === Type).length }));
 
-  dataContentRatingSet.forEach((ContentRating) => {
-    var objContentRating = JSON.parse(`{"ContentRating": "${ContentRating}","Total": ${jsonData.filter((x) => x.Content_Rating == ContentRating).length}}`);
+  const dataContentRating = Array.from(new Set(jsonData.map(obj => obj.Content_Rating)))
+    .map(ContentRating => ({
+      ContentRating,
+      Total: jsonData.filter(x => x.Content_Rating === ContentRating).length
+    }));
 
-    dataContentRating.push(objContentRating);
-  });
+  const heightY = jsonData.length;
 
-  let heightY = jsonData.length;
- 
-
-  histogramService.createHistogramShortType(1, dataType, Array.from(dataTypeSet), heightY);
-  histogramService.createHistogramShortContentRating(2, dataContentRating, Array.from(dataContentRatingSet), heightY);
-   histogramService.createHistogramShortInstalls(3, dataInstalls);
+  histogramService.createHistogramShortType(1, dataType, Array.from(new Set(jsonData.map(obj => obj.Type))), heightY);
+  histogramService.createHistogramShortContentRating(2, dataContentRating, Array.from(new Set(jsonData.map(obj => obj.Content_Rating))), heightY);
+  histogramService.createHistogramShortInstalls(3, dataInstalls);
 }

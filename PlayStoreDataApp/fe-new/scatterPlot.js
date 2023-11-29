@@ -92,7 +92,7 @@ function createScatterPlot(jsonPCAData) {
       //imposto il primo set di punti selezionati
        if (numberOfBrush == 0) {
         commonService.setFirstSet(selectedSet);
-         firstSet = selectedSet
+        firstSet = selectedSet
          
       } 
       else if (numberOfBrush == 1) {
