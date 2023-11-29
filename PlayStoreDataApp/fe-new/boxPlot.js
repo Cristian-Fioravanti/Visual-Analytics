@@ -5,12 +5,28 @@ let ListPlayStoreData = [];
 main();
 
 function main() {
-  createBoxPlot(1);
-  createBoxPlot(2);
-  createBoxPlot(3);
-  createBoxPlot(4);
+  // createBoxPlot(1);
+  // createBoxPlot(2);
+  // createBoxPlot(3);
+  // createBoxPlot(4);
 }
-function createBoxPlot(i) {
+
+function populateBoxplots(data) {
+  console.log("Rating",data.map(item => item.Rating))
+  console.log("Reviews",data.map(item => item.Reviews))
+  console.log("Installations",data.map(item => item.Installs))
+  console.log("Size",data.map(item => item.Size))
+  let data1 = data.map(item => item.Rating)
+  createBoxPlot(data1, 1)
+  let data2  = data.map(item => item.Reviews)
+  createBoxPlot(data2, 2)
+  let data3 = data.map(item => item.Installs)
+  createBoxPlot(data3, 3)
+  let data4 = data.map(item => item.Size)
+  createBoxPlot(data4, 4)
+};
+
+function createBoxPlot(data, i) {
   // set the dimensions and margins of the graph
   var margin = { top: 5, right: 10, bottom: 30, left: 30 },
     width = 298 - margin.left - margin.right,
@@ -25,7 +41,7 @@ function createBoxPlot(i) {
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
   // create dummy data
-  var data = [12, 19, 11, 13, 12, 22, 13, 4, 15, 16, 18, 19, 20, 12, 11, 9];
+  // var data = [12, 19, 11, 13, 12, 22, 13, 4, 15, 16, 18, 19, 20, 12, 11, 9];
 
   // Compute summary statistics used for the box:
   var data_sorted = data.sort(d3.ascending);
@@ -37,7 +53,7 @@ function createBoxPlot(i) {
   var max = q1 + 1.5 * interQuantileRange;
 
   // Show the Y scale
-  var y = d3.scaleLinear().domain([0, 24]).range([height, 0]);
+  var y = d3.scaleLinear().domain([d3.min(data), d3.max(data)]).range([height, 0]);
   svg.call(d3.axisLeft(y));
 
   // a few features for the box
@@ -167,3 +183,5 @@ svg.append("rect")
   
     
 }
+
+export { populateBoxplots };

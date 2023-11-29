@@ -52,8 +52,8 @@ def generateWithData(label, Y, data):
 def positivize(data):
     min_Y1 = min(float(d['Y1']) for d in data) 
     min_Y2 = min(float(d['Y2']) for d in data)
-    print('MINIMO DI y1', min_Y1)
-    print('MINIMO DI y2', min_Y2)
+    # print('MINIMO DI y1', min_Y1)
+    # print('MINIMO DI y2', min_Y2)
     # Aggiungi il minimo di Y1 a tutti gli elementi di Y1 in ogni dizionario
     for d in data:
         d['Y1'] += min_Y1*-1 + 1
