@@ -126,8 +126,8 @@ function createScatterPlot(jsonPCAData) {
         .attr("width", d3.event.selection[1][0] - d3.event.selection[0][0])
         .attr("height", d3.event.selection[1][1] - d3.event.selection[0][1]);
       numberOfBrush++;
-      console.log(firstSet.length)
-      console.log(secondSet.length)
+      console.log(firstSet)
+      console.log(secondSet)
       console.log("cacca");
     }
   }

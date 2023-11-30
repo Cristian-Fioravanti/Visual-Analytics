@@ -12,6 +12,7 @@ function main() {
 }
 
 function populateBoxplots(data) {
+  var group1
   // console.log("Rating",data.map(item => item.Rating))
   // console.log("Reviews",data.map(item => item.Reviews))
   // console.log("Installations",data.map(item => item.Installs))

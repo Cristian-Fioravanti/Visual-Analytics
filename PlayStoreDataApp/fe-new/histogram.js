@@ -28,6 +28,9 @@ export function createHistogramShortInstalls(i, dataSet) {
   // get the data
 
   // X axis: scale and draw:
+  var xTickFormat = function (d) {
+    return "10^" + Math.round(Math.log10(d));
+  };
   var x = d3
     .scaleLog()
     .domain([1, 100000000000]) // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
@@ -36,7 +39,7 @@ export function createHistogramShortInstalls(i, dataSet) {
     .append("g")
     .attr("transform", "translate(0," + height + ")")
     .attr("class", "HistogramSvg" + i)
-    .call(d3.axisBottom(x));
+    .call(d3.axisBottom(x).tickFormat(xTickFormat));
 
   // set the parameters for the histogram
   var histogram = d3
@@ -71,7 +74,7 @@ export function createHistogramShortInstalls(i, dataSet) {
       return "translate(" + x(d.x0) + "," + y(d.length) + ")";
     })
     .attr("width", function (d) {
-      return x(d.x1) - x(d.x0) - 1;
+      return x(d.x1) - x(d.x0);
     })
     .attr("height", function (d) {
       return height - y(d.length);

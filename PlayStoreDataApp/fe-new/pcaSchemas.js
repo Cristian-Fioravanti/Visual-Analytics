@@ -3,6 +3,7 @@ import * as ajaxService from "./ajaxService.js";
 import * as parallelCoordinatesService from "./parallelCoordinates.js";
 import * as categoryService from "./category.js"
 import * as boxplotsService from "./boxPlot.js"
+import * as multiBoxPlotService from "./multiBloxPlot.js"
 import * as histogramService from "./histogram.js";
 import * as commonService from "./commonService.js"
 
@@ -21,9 +22,12 @@ function getPCAForSchemas() {
     scatterPlotService.createScatterPlot(jsonData);
     boxplotsService.populateBoxplots(jsonData)
     parallelCoordinatesService.createParallelCoordinates(jsonData);
-    // createHistogramInstalls(jsonData);
+    createHistogramInstalls(jsonData);
     // histogramService.createHistogramLong(3,dataInstall,dataAppName);
   });
+  ajaxService.getDifferentGroups().done(function (jsondata) {
+    multiBoxPlotService.populateBoxplots(jsondata);
+  })
 }
 function createHistogramInstalls(jsonData) {
   //Histogram
@@ -57,5 +61,5 @@ function createHistogramInstalls(jsonData) {
 
   histogramService.createHistogramShortType(1, dataType, Array.from(dataTypeSet), heightY);
   histogramService.createHistogramShortContentRating(2, dataContentRating, Array.from(dataContentRatingSet), heightY);
-   histogramService.createHistogramShortInstalls(3, dataInstalls);
+  histogramService.createHistogramShortInstalls(3, dataInstalls);
 }
