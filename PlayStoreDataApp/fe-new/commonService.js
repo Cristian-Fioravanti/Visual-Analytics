@@ -76,3 +76,9 @@ export function setFirstSet(newSet) {
 export function setSecondSet(newSet){
   secondSet.value = newSet
 }
+
+export function isEmpty(data){
+    if (data.value == undefined || data.value == [] || data.value.length == 0)
+      return true
+    else false
+  }
