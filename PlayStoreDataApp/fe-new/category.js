@@ -17,19 +17,16 @@ export function insertCategory(jsonPCAData) {
     var checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.id = dataCategory;
-    checkbox.name = dataCategory;
+    // checkbox.name = dataCategory;
     checkbox.value = dataCategory;
     checkbox.style.accentColor = scaleColor(dataCategory);
     
     // Add the onchange event to each checkbox
-    checkbox.addEventListener("change", function () {
+    checkbox.addEventListener("change", function (event) {
       // Your onchange logic here
-      // console.log(`Checkbox for ${dataCategory} changed: ${checkbox.checked}`);
+      selectCircles(event)
     });
-    // checkbox.style.color = scaleColor(index); // Colore quando selezionato
-    // insertStyleCheckBox(dataCategory,scaleColor(index))
-    // checkbox.style.backgroundColor = "yellow"; // Colore quando non selezionato
-    // Creazione dell'elemento label associato al checkbox
+  
     var label = document.createElement("label");
     label.htmlFor = dataCategory;
     label.style.color = scaleColor(dataCategory);
@@ -42,4 +39,33 @@ export function insertCategory(jsonPCAData) {
     categoryElem.appendChild(checkbox);
     categoryElem.appendChild(br);
   });
+
+  function selectCircles(event) {
+    if (event.target.classList.length > 0) {
+        event.target.classList.remove('checked')
+      }
+    else {
+      //deseleziona tutti i cerchi
+        if (isEmpty(commonService.firstSet) && isEmpty(commonService.secondSet)) d3
+    .select("#scatterPlot").selectAll("circle").classed("selectedScatterPlot", false);
+      event.target.classList.add('checked')
+      //popola primo set
+        if (isEmpty(commonService.firstSet)) {
+          let selectedCategory = document.getElementsByName(event.target.id)
+          selectedCategory.forEach(circle=> circle.classList.add("selectedScatterPlot"))
+          commonService.setFirstSet(Array.from(selectedCategory).map(circle => circle.__data__))
+        }
+      //popola secondo set
+        else if (isEmpty(commonService.secondSet)) {
+          let selectedCategory = document.getElementsByName(event.target.id)
+          selectedCategory.forEach(circle=> circle.classList.add("selectedScatterPlot"))
+          commonService.setSecondSet(Array.from(selectedCategory).map(obj => obj.__data__))
+        }
+      }
+  }
 }
+export function isEmpty(data){
+    if (data.value == undefined || data.value == [] || data.value.length == 0)
+      return true
+    else false
+  }

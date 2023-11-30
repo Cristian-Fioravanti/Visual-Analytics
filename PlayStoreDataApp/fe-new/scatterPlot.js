@@ -48,7 +48,7 @@ function createScatterPlot(jsonPCAData) {
   svg
     .append("g")
     .attr("transform", "translate(0," + height + ")")
-    .call(d3.axisBottom(x));
+    .call(d3.axisBottom(x).ticks(0).tickFormat(function(d) { return ""; }));
   // Add Y axis
   y = d3
     .scaleLog()
@@ -60,7 +60,7 @@ function createScatterPlot(jsonPCAData) {
     ])
     .range([height, 0]);
 
-  svg.append("g").call(d3.axisLeft(y));
+  svg.append("g").call(d3.axisLeft(y).ticks(0).tickFormat(function(d) { return ""; }));
 
   populateChart(jsonPCAData, false);
 
@@ -126,9 +126,7 @@ function createScatterPlot(jsonPCAData) {
         .attr("width", d3.event.selection[1][0] - d3.event.selection[0][0])
         .attr("height", d3.event.selection[1][1] - d3.event.selection[0][1]);
       numberOfBrush++;
-      console.log(firstSet.length)
-      console.log(secondSet.length)
-      console.log("cacca");
+
     }
   }
   function getColor(d) {
@@ -140,14 +138,21 @@ function createScatterPlot(jsonPCAData) {
       .selectAll("circle")
       .data(data)
       .join("circle")
-      .classed("selectedScatterPlot", true)
+      .attr("class", function (d) {
+        return "selectedScatterPlot";
+      }).attr("name", function (d) {
+        return d.Category;
+      })
+      .attr("id", function (d) {
+        return +d.ID;
+      })
       .attr("cx", function (d) {
         return x(d.Y1);
       })
       .attr("cy", function (d) {
         return y(d.Y2);
       })
-      .attr("r", 1.5)
+      .attr("r", 2)
       .style("fill", getColor);
   }
 
