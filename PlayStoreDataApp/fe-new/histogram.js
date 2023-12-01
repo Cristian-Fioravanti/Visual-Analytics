@@ -29,6 +29,9 @@ export function createHistogramShortInstalls(i, dataSet) {
   // get the data
 
   // X axis: scale and draw:
+  var xTickFormat = function (d) {
+    return "10^" + Math.round(Math.log10(d));
+  };
   var x = d3
     .scaleLog()
     .domain([1, 100000000000]) // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
@@ -37,7 +40,7 @@ export function createHistogramShortInstalls(i, dataSet) {
     .append("g")
     .attr("transform", "translate(0," + height + ")")
     .attr("class", "HistogramSvg" + i)
-    .call(d3.axisBottom(x));
+    .call(d3.axisBottom(x).tickFormat(xTickFormat));
 
   // set the parameters for the histogram
   var histogram = d3
@@ -62,11 +65,11 @@ export function createHistogramShortInstalls(i, dataSet) {
   ]); // d3.hist has to be called before the Y axis obviously
   svg.append("g").call(d3.axisLeft(y));
 
-  popolaTabella(bins);
+  // popolaTabella(bins);
 
   function popolaTabella(data) {
     d3.select(".ShortInstalls")
-      .selectAll("rect")
+    .selectAll("rect")
       .data(data)
       .join(
         function (enter) {
@@ -80,19 +83,20 @@ export function createHistogramShortInstalls(i, dataSet) {
 
   function enterData(enter) {
     enter
-      .append("rect")
-      .attr("x", 1)
-      .attr("transform", function (d) {
-        return "translate(" + x(d.x0) + "," + y(d.length) + ")";
-      })
-      .attr("width", function (d) {
-        return x(d.x1) - x(d.x0);
-      })
-      .attr("height", function (d) {
-        return height - y(d.length);
-      })
-      .style("fill", "#69b3a2");
+    .append("rect")
+    .attr("x", 1)
+    .attr("transform", function (d) {
+      return "translate(" + x(d.x0) + "," + y(d.length) + ")";
+    })
+    .attr("width", function (d) {
+      return x(d.x1) - x(d.x0);
+    })
+    .attr("height", function (d) {
+      return height - y(d.length);
+    })
+    .style("fill", "#69b3a2");
   }
+  
   function updateData(update) {
     update
       .append("rect")
@@ -113,7 +117,52 @@ export function createHistogramShortInstalls(i, dataSet) {
     popolaTabella(histogram(commonService.firstSet.value.map((obj) => ({ Installs: parseInt(obj.Installs) }))));
   });
 }
+
 export function createHistogramShortType(i, dataSet, dataDistinct, heightY) {
+  function enterData(enter) {
+    enter
+      .append("rect")
+      .attr("x", 1)
+      .attr("transform", function (d) {
+        return "translate(" + (x(d.Type) - 5) + "," + y(d.Total) + ")";
+      })
+      .attr("width", function (d) {
+        return 10;
+      })
+      .attr("height", function (d) {
+        return height - y(d.Total);
+      })
+      .style("fill", "#69b3a2");
+  }
+  function popolaTabella(data) {
+    d3.select(".ShortTicks")
+      .selectAll("rect")
+      .data(data)
+      .join(
+        function (enter) {
+          enterData(enter);
+        },
+        function (update) {
+          updateData(update);
+        }
+      );
+  }  
+  function updateData(update) {
+    update
+      .append("rect")
+      .attr("x", 1)
+      .attr("transform", function (d) {
+        return "translate(" + x(d.x0) + "," + y(d.length) + ")";
+      })
+      .attr("width", function (d) {
+        return x(d.x1) - x(d.x0);
+      })
+      .attr("height", function (d) {
+        return height - y(d.length);
+      })
+      .style("fill", "#69b3a2");
+  }
+  
   // set the dimensions and margins of the graph
   var margin = { top: 10, right: 30, bottom: 30, left: 40 },
     width = 298 - margin.left - margin.right,
@@ -145,15 +194,15 @@ export function createHistogramShortType(i, dataSet, dataDistinct, heightY) {
   // var bins = histogram(dataSet);
 
   // Y axis: scale and draw:
-  // Y axis: scale and draw:
+ // Y axis: scale and draw:
   var y = d3.scaleSymlog().range([height, 0]).domain([0, heightY]);
   function generateCustomTicks(y) {
     var tickValues = [y.domain()[0]];
     var currentValue = y.domain()[1];
 
     while (currentValue > 10) {
-      currentValue /= 2;
-      tickValues.push(currentValue);
+        currentValue /= 2;
+        tickValues.push(currentValue);
     }
 
     tickValues.push(y.domain()[1]);
@@ -185,52 +234,8 @@ export function createHistogramShortType(i, dataSet, dataDistinct, heightY) {
   //   })
   //   .style("fill", "#69b3a2");
 
-  popolaTabella(dataSet);
+  // popolaTabella(dataSet);
 
-  function popolaTabella(data) {
-    d3.select(".ShortTicks")
-      .selectAll("rect")
-      .data(data)
-      .join(
-        function (enter) {
-          enterData(enter);
-        },
-        function (update) {
-          updateData(update);
-        }
-      );
-  }
-
-  function enterData(enter) {
-    enter
-      .append("rect")
-      .attr("x", 1)
-      .attr("transform", function (d) {
-        return "translate(" + (x(d.Type) - 5) + "," + y(d.Total) + ")";
-      })
-      .attr("width", function (d) {
-        return 10;
-      })
-      .attr("height", function (d) {
-        return height - y(d.Total);
-      })
-      .style("fill", "#69b3a2");
-  }
-  function updateData(update) {
-    update
-      .append("rect")
-      .attr("x", 1)
-      .attr("transform", function (d) {
-        return "translate(" + x(d.x0) + "," + y(d.length) + ")";
-      })
-      .attr("width", function (d) {
-        return x(d.x1) - x(d.x0);
-      })
-      .attr("height", function (d) {
-        return height - y(d.length);
-      })
-      .style("fill", "#69b3a2");
-  }
   commonService.firstSet.observe((data) => {
     var newData = commonService.firstSet.value;
     popolaTabella([]);
@@ -276,8 +281,8 @@ export function createHistogramShortContentRating(i, dataSet, dataDistinct, heig
     var currentValue = y.domain()[1];
 
     while (currentValue > 10) {
-      currentValue /= 2;
-      tickValues.push(currentValue);
+        currentValue /= 2;
+        tickValues.push(currentValue);
     }
 
     tickValues.push(y.domain()[1]);
@@ -309,11 +314,11 @@ export function createHistogramShortContentRating(i, dataSet, dataDistinct, heig
   //   })
   //   .style("fill", "#69b3a2");
 
-  popolaTabella(dataSet);
+  // popolaTabella(dataSet);
 
   function popolaTabella(data) {
     d3.select(".ContentRating")
-      .selectAll("rect")
+    .selectAll("rect")
       .data(data)
       .join(
         function (enter) {
@@ -327,18 +332,18 @@ export function createHistogramShortContentRating(i, dataSet, dataDistinct, heig
 
   function enterData(enter) {
     enter
-      .append("rect")
-      .attr("x", 1)
-      .attr("transform", function (d) {
-        return "translate(" + (x(d.ContentRating) - 5) + "," + y(d.Total) + ")";
-      })
-      .attr("width", function (d) {
-        return 10;
-      })
-      .attr("height", function (d) {
-        return height - y(d.Total);
-      })
-      .style("fill", "#69b3a2");
+    .append("rect")
+    .attr("x", 1)
+    .attr("transform", function (d) {
+      return "translate(" + (x(d.ContentRating) - 5) + "," + y(d.Total) + ")";
+    })
+    .attr("width", function (d) {
+      return 10;
+    })
+    .attr("height", function (d) {
+      return height - y(d.Total);
+    })
+    .style("fill", "#69b3a2");
   }
   function updateData(update) {
     update

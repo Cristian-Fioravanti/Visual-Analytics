@@ -3,8 +3,10 @@ import * as ajaxService from "./ajaxService.js";
 import * as parallelCoordinatesService from "./parallelCoordinates.js";
 import * as categoryService from "./category.js"
 import * as boxplotsService from "./boxPlot.js"
+import * as multiBoxPlotService from "./multiBloxPlot.js"
 import * as histogramService from "./histogram.js";
 import * as commonService from "./commonService.js"
+import * as modeService from "./mode.js"
 
 
 main();
@@ -20,7 +22,10 @@ function getPCAForSchemas() {
     //Creation Schemas
     categoryService.insertCategory(jsonData);
     scatterPlotService.createScatterPlot(jsonData);
-    boxplotsService.populateBoxplots(jsonData)
+
+    // boxplotsService.populateBoxplots(jsonData)
+    multiBoxPlotService.populateBoxplots();
+
     parallelCoordinatesService.createParallelCoordinates(jsonData);
     createHistogramInstalls(jsonData);
     // histogramService.createHistogramLong(3,dataInstall,dataAppName);

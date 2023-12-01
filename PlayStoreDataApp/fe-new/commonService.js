@@ -1,5 +1,6 @@
 import * as categoryService from "./category.js"
-
+export let mode = {} // 0=Visualizza 1=Compara
+mode = Observable(mode);
 
 export let scaleColor
 export let firstSet = {}
@@ -78,6 +79,10 @@ export function setFirstSet(newSet) {
 }
 export function setSecondSet(newSet){
   secondSet.value = newSet
+}
+
+export function setMode(newSet) {
+  mode = newSet
 }
 
 export function isEmpty(data){
