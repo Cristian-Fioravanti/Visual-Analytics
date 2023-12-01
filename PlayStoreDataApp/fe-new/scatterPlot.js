@@ -98,16 +98,19 @@ function createScatterPlot(jsonPCAData) {
       else if (numberOfBrush == 1) {
         commonService.setSecondSet(selectedSet);
         secondSet = selectedSet
-       
+        //resetCheckBox
+        commonService.disabledCheckBox()
       } 
       if (numberOfBrush > 1) {
         svg.selectAll(".brush").remove(); // Rimuovi eventuali rettangoli di selezione precedenti
         svg.selectAll(".selectedScatterPlot").classed("selectedScatterPlot", false);
+        
         numberOfBrush = 0;
         commonService.setFirstSet([])
         commonService.setSecondSet([])
         firstSet = []
         secondSet = []
+        commonService.resetCheckBox()
       }
     }
     if (force) svg.selectAll("circle").classed("selectedScatterPlot", true);
@@ -169,5 +172,6 @@ function createScatterPlot(jsonPCAData) {
   }
   
 }
+
 
 export { createScatterPlot };

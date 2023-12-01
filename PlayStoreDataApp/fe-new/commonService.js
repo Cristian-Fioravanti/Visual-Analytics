@@ -1,3 +1,6 @@
+import * as categoryService from "./category.js"
+
+
 export let scaleColor
 export let firstSet = {}
 firstSet = Observable(firstSet);
@@ -81,4 +84,19 @@ export function isEmpty(data){
     if (data.value == undefined || data.value == [] || data.value.length == 0)
       return true
     else false
-  }
+}
+  
+export function resetCheckBox(){
+    categoryService.removeCheckBox()
+    categoryService.createCheckBox(categoryService.distinctPCAData);
+    categoryService.setNumberOfCheckBoxSelected(0);
+}
+
+export function disabledCheckBox() {
+  
+    let nodeListCheckbox = Array.from($("input:checkbox")).filter(checkbox => checkbox.classList.length == 0);
+    for (let i = 0; i < nodeListCheckbox.length; i++) {
+      nodeListCheckbox[i].disabled = true;
+    }
+  
+}

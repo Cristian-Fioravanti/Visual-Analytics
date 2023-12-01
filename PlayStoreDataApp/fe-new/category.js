@@ -2,8 +2,8 @@ import { getAllCategory } from "./ajaxService.js";
 import * as commonService from "./commonService.js";
 
 let scaleColor;
-let numberOfCheckBoxSelected = 0;
-let distinctPCAData = [];
+export var numberOfCheckBoxSelected = 0;
+export let distinctPCAData = [];
 // main();
 
 // function main() {
@@ -16,7 +16,7 @@ export function insertCategory(jsonPCAData) {
   createCheckBox(distinctPCAData);
 }
 
-function createCheckBox(distinctPCAData) {
+export function createCheckBox(distinctPCAData) {
   distinctPCAData["Category"].forEach((dataCategory) => {
     var checkbox = document.createElement("input");
     checkbox.type = "checkbox";
@@ -85,27 +85,16 @@ function selectCircles(event) {
   }
     numberOfCheckBoxSelected++;
   }
- 
- 
   
-
-
-  function removeCheckBox() {
+}
+export function removeCheckBox() {
     let categoryElem = document.getElementById("category")
     while (categoryElem.firstChild) {
     categoryElem.removeChild(categoryElem.firstChild);
     }
-    //  let nodeListCheckbox = $("input:checkbox");
-    // for (let i = 0; i < nodeListCheckbox.length; i++) {
-    //   nodeListCheckbox[i].remove();
-    // }
-    // let nodeListLabel = $("label");
-    // for (let i = 0; i < nodeListLabel.length; i++) {
-    //   nodeListLabel[i].remove();
-    // }
-    // let nodeListBr = $("br");
-    // for (let i = 0; i < nodeListLabel.length; i++) {
-    //   nodeListLabel[i].remove();
-    // }
-  }
+    
+}
+  
+export function setNumberOfCheckBoxSelected(number){
+  numberOfCheckBoxSelected = number
 }

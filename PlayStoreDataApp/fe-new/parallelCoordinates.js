@@ -24,8 +24,8 @@ function createParallelCoordinates(jsonPCAData) {
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-  let dimensions = ["Rating", "Reviews", "Size", "Installs", "Price","Content_Rating","Type"];
-  let dimensionsString = [  "Content_Rating", "Type"]
+  let dimensions = ["Rating", "Reviews", "Size", "Installs", "Price", "Content_Rating", "Type"];
+  let dimensionsString = ["Content_Rating", "Type"]
   const distinctPCAData = commonService.distinctValuesPerKey(jsonPCAData)
   // For each dimension, build a linear scale and store it in the y object
   var y = {};
@@ -34,7 +34,7 @@ function createParallelCoordinates(jsonPCAData) {
       y[dim] = d3
         .scalePoint()
         .domain(distinctPCAData[dim])
-        .range([0,height]);
+        .range([0, height]);
     }
     else {
       y[dim] = d3
@@ -68,9 +68,9 @@ function createParallelCoordinates(jsonPCAData) {
     return scaleColor(d.Category)
   }
   // Draw the lines
-  svg
+  let myPath = svg
     .selectAll(".myPath")
-    .data(jsonPCAData)
+    .data(jsonPCAData.sort((a, b) => d3.ascending(a.Category, b.Category)))
     .enter()
     .append("path")
     .attr("class", "myPath")
@@ -79,8 +79,8 @@ function createParallelCoordinates(jsonPCAData) {
     .style("stroke", getColorPath)
     .style("stroke-width", "0.5px")
     .style("opacity", 0.5);
-  // Draw the axis
-  svg
+ 
+  let axes = svg
     .selectAll(".myAxis")
     .data(dimensions)
     .enter()
@@ -90,7 +90,19 @@ function createParallelCoordinates(jsonPCAData) {
       return "translate(" + x(d) + ")";
     })
     .each(function (d) {
-      d3.select(this).call(d3.axisLeft().scale(y[d]));
+      const axis = d3.axisLeft().scale(y[d]);
+
+      d3.select(this).call(axis);
+
+      // Add vertical brush
+      const brush = d3.brushY()
+        .extent([
+          [-10, 0],
+          [10, height]
+        ])
+        .on("start brush end", brushedVertical);
+
+      d3.select(this).call(brush);
     })
     .append("text")
     .style("text-anchor", "middle")
@@ -99,6 +111,40 @@ function createParallelCoordinates(jsonPCAData) {
       return d;
     })
     .style("fill", "white");
+   
+  const selections = new Map();
+  const deselectedColor = "#red";
+
+  function brushedVertical(key) {
+    if (d3.event != null && d3.event.selection != null) {
+      var selection = d3.event.selection;
+      if (!selection) {
+    selections.delete(key);
+  } else {
+    const invertedSelection = selection.map(y[key].invert);
+    selections.set(key, invertedSelection);
+  }
+
+  const selected = [];
+  svg.selectAll(".myPath").each(function (d) {
+    const isActive = Array.from(selections).every(([brushKey, [min, max]]) => {
+      const value = d[brushKey];
+      return value >= min && value <= max;
+    });
+
+    d3.select(this).style("stroke", isActive ? scaleColor(d[key]) : deselectedColor);
+
+    if (isActive) {
+      d3.select(this).raise();
+      selected.push(d);
+    }
+  });
+
+  svg.property("value", selected).dispatch("input");
+
+      // return Object.assign(svg.property("value", jsonPCAData).node(), { scales: { scaleColor } });
+    }
+  }
 }
 
 export { createParallelCoordinates };
