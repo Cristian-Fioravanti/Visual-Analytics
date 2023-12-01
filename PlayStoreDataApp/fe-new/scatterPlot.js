@@ -113,7 +113,7 @@ function createScatterPlot(jsonPCAData) {
     if (force) svg.selectAll("circle").classed("selectedScatterPlot", true);
   }
   function createRect() {
-    if (d3.event != null && d3.event.selection != null) {
+    if (d3.event != null && d3.event.selection != null && numberOfBrush==0) {
       svg
         .append("rect")
         .attr("class", "brush")
@@ -126,9 +126,22 @@ function createScatterPlot(jsonPCAData) {
         .attr("width", d3.event.selection[1][0] - d3.event.selection[0][0])
         .attr("height", d3.event.selection[1][1] - d3.event.selection[0][1]);
       numberOfBrush++;
-      console.log(firstSet)
-      console.log(secondSet)
-      console.log("cacca");
+      // console.log(firstSet)
+      // console.log(secondSet)
+      // console.log("cacca");
+    } else if (d3.event != null && d3.event.selection != null && numberOfBrush==1) {
+      svg
+        .append("rect")
+        .attr("class", "brush")
+        .attr("fill", "rgba(0, 0, 255, 0.1)")
+        .attr("stroke-width", "1px")
+        .attr("stroke", "white")
+        .attr("color", "trasparent") // Colore del rettangolo di selezione
+        .attr("x", d3.event.selection[0][0])
+        .attr("y", d3.event.selection[0][1])
+        .attr("width", d3.event.selection[1][0] - d3.event.selection[0][0])
+        .attr("height", d3.event.selection[1][1] - d3.event.selection[0][1]);
+      numberOfBrush++;
     }
   }
   function getColor(d) {
@@ -140,7 +153,14 @@ function createScatterPlot(jsonPCAData) {
       .selectAll("circle")
       .data(data)
       .join("circle")
-      .classed("selectedScatterPlot", true)
+      .attr("class", function (d) {
+        return "selectedScatterPlot";
+      }).attr("name", function (d) {
+        return d.Category;
+      })
+      .attr("id", function (d) {
+        return +d.ID;
+      })
       .attr("cx", function (d) {
         return x(d.Y1);
       })

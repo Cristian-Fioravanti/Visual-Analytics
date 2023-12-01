@@ -1,5 +1,6 @@
 import "https://d3js.org/d3.v5.min.js";
 import "./interface.js";
+import * as commonService from "./commonService.js";
 
 let ListPlayStoreData = [];
 main();
@@ -24,6 +25,22 @@ function populateBoxplots(data) {
   createBoxPlot(data3, 3, "Installs")
   let data4 = data.map(item => item.Size)
   createBoxPlot(data4, 4, "Size")
+  commonService.firstSet.observe((data) => {
+    var newData = commonService.firstSet.value;
+    let data1 = newData.map(item => item.Rating)
+    createBoxPlot(data1, 1, "Ratings")
+    let data2  = newData.map(item => item.Reviews)
+    createBoxPlot(data2, 2, "Reviews")
+    let data3 = newData.map(item => item.Installs)
+    createBoxPlot(data3, 3, "Installs")
+    let data4 = newData.map(item => item.Size)
+    createBoxPlot(data4, 4, "Size")
+    // popolaTabella([]);
+    // const dataType = Array.from(new Set(newData.map((obj) => obj.Type))).map((Type) => ({ Type, Total: newData.filter((x) => x.Type === Type).length }));
+    // popolaTabella(dataType);
+  });
+  
+  
 };
 
 function createBoxPlot(data, i, title) {
@@ -32,15 +49,18 @@ function createBoxPlot(data, i, title) {
     width = 298 - margin.left - margin.right,
     height = 167 - margin.top - margin.bottom;
 
-  // append the svg object to the body of the page
-  var svg = d3
+  var svg = d3.select("#boxPlot" + i).select("svg")
+  if(svg.empty()) {
+    svg = d3
     .select("#boxPlot" + i)
     .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
+  }
+  // append the svg object to the body of the page
+  
   // Compute summary statistics used for the box:
   var data_sorted = data.sort(d3.ascending);
   var q1 = d3.quantile(data_sorted, 0.25);
@@ -67,11 +87,7 @@ function createBoxPlot(data, i, title) {
   } else {
     var yAxis = d3.axisLeft(y)
     .tickFormat(yAxisFormat);
-  }
-  svg.append("g")
-  .attr("class", "y axis")
-  .attr("transform", "translate(" + margin.left + ",0)")
-  .call(yAxis);
+  }  
 
   // a few features for the box
   var center = 200;
@@ -130,91 +146,102 @@ function createBoxPlot(data, i, title) {
    
   }
 
-  // Show the box
-  // Show the first box (sopra la linea median)
-  svg.append("rect")
-    .attr("x", center - width / 2)
-    .attr("y", y(q3))
-    .attr("height", y(median) - y(q3))  // Lato più lungo in basso deve equivalere alla linea median
-    .attr("width", width)
-    .attr("stroke", "black")
-    .attr("cursor", "pointer")
-    .style("fill", "rgb(255, 164, 0,0.5)")
-    .on("click", clickRect);
+  if(median != undefined && q3 != undefined && q1 != undefined) {
+    d3.select("#boxPlot" + i).select("g.y.axis").remove()
+    d3.select("#boxPlot" + i).selectAll("rect").remove()
+    d3.select("#boxPlot" + i).selectAll("line").remove()
+    d3.select("#boxPlot" + i).selectAll("toto").remove()
+    d3.select("#boxPlot" + i).selectAll("text").remove()
+    // Show the box
+    // Show the first box (sopra la linea median)
+    svg.append("g")
+      .attr("class", "y axis")
+      .attr("transform", "translate(" + margin.left + ",0)")
+      .call(yAxis);
 
-  // Show the second box (sotto la linea median)
-  svg.append("rect")
-    .attr("x", center - width / 2)
-    .attr("y", y(median))
-    .attr("height", y(q1) - y(median))  // Lato più lungo in alto deve equivalere alla linea median
-    .attr("width", width)
-    .attr("stroke", "black")
-    .attr("cursor", "pointer")
-    .style("fill", "rgb(255, 164, 0,0.5)")
-    .on("click", clickRect);
-  
-  svg.selectAll("rect").classed("selectedBoxPlotRect", true)
+    svg.append("rect")
+      .attr("x", center - width / 2)
+      .attr("y", y(q3))
+      .attr("height", y(median) - y(q3))  // Lato più lungo in basso deve equivalere alla linea median
+      .attr("width", width)
+      .attr("stroke", "black")
+      .attr("cursor", "pointer")
+      .style("fill", "rgb(255, 164, 0,0.5)")
+      .on("click", clickRect);
 
-  // show median, min and max horizontal lines
-  svg
-    .selectAll("toto")
-    .data([min, median, max])
-    .enter()
-    .append("line")
-    .attr("x1", center - width / 2)
-    .attr("x2", center + width / 2)
-    .attr("y1", function (d) {
-      return y(d);
-    })
-    .attr("y2", function (d) {
-      return y(d);
-    })
-    .attr("stroke", "black")
-    .attr("stroke-width", "2px")
-    .classed("toto",true);
-  
-  // Show the upper vertical line
-  svg
-    .append("line")
-    .attr("x1", center)
-    .attr("x2", center)
-    .attr("y1", y(min))
-    .attr("y2", y(q1)) // Puoi regolare questa coordinata per adattarla al tuo grafico
-    .attr("stroke", "white")
-    .attr("stroke-width", "2px")
-    .classed("down", true);
+    // Show the second box (sotto la linea median)
+    svg.append("rect")
+      .attr("x", center - width / 2)
+      .attr("y", y(median))
+      .attr("height", y(q1) - y(median))  // Lato più lungo in alto deve equivalere alla linea median
+      .attr("width", width)
+      .attr("stroke", "black")
+      .attr("cursor", "pointer")
+      .style("fill", "rgb(255, 164, 0,0.5)")
+      .on("click", clickRect);
+    
+    svg.selectAll("rect").classed("selectedBoxPlotRect", true)
 
-  // Show the lower vertical line
-  svg
-    .append("line")
-    .attr("x1", center)
-    .attr("x2", center)
-    .attr("y1", y(q3)) // Puoi regolare questa coordinata per adattarla al tuo grafico
-    .attr("y2", y(max))
-    .attr("stroke", "white")
-    .attr("stroke-width", "2px")
-    .classed("up", true);
-  
-  // Rettangolo parte alta 
-  svg.append("rect")
-    .attr("x", center - width / 2)
-    .attr("y", y(max))
-    .attr("height", y(q3) - y(max))  // Lato più lungo in basso deve equivalere alla linea median
-    .attr("width", width)
-    .attr("cursor", "pointer")
-    .style("fill", "rgb(255, 164, 0,0)")
-    .on("click", clickRect);
+    // show median, min and max horizontal lines
+    svg
+      .selectAll("toto")
+      .data([min, median, max])
+      .enter()
+      .append("line")
+      .attr("x1", center - width / 2)
+      .attr("x2", center + width / 2)
+      .attr("y1", function (d) {
+        return y(d);
+      })
+      .attr("y2", function (d) {
+        return y(d);
+      })
+      .attr("stroke", "black")
+      .attr("stroke-width", "2px")
+      .classed("toto",true);
+    
+    // Show the upper vertical line
+    svg
+      .append("line")
+      .attr("x1", center)
+      .attr("x2", center)
+      .attr("y1", y(min))
+      .attr("y2", y(q1)) // Puoi regolare questa coordinata per adattarla al tuo grafico
+      .attr("stroke", "white")
+      .attr("stroke-width", "2px")
+      .classed("down", true);
 
-  // Show the second box (sotto la linea median)
-  svg.append("rect")
-    .attr("x", center - width / 2)
-    .attr("y", y(q1))
-    .attr("height", y(min) - y(q1))  // Lato più lungo in alto deve equivalere alla linea median
-    .attr("width", width)
-    .attr("cursor", "pointer")
-    .style("fill", "rgb(255, 164, 0,0)")
-    .on("click", clickRect);  
-  
+    // Show the lower vertical line
+    svg
+      .append("line")
+      .attr("x1", center)
+      .attr("x2", center)
+      .attr("y1", y(q3)) // Puoi regolare questa coordinata per adattarla al tuo grafico
+      .attr("y2", y(max))
+      .attr("stroke", "white")
+      .attr("stroke-width", "2px")
+      .classed("up", true);
+    
+    // Rettangolo parte alta 
+    svg.append("rect")
+      .attr("x", center - width / 2)
+      .attr("y", y(max))
+      .attr("height", y(q3) - y(max))  // Lato più lungo in basso deve equivalere alla linea median
+      .attr("width", width)
+      .attr("cursor", "pointer")
+      .style("fill", "rgb(255, 164, 0,0)")
+      .on("click", clickRect);
+
+    // Show the second box (sotto la linea median)
+    svg.append("rect")
+      .attr("x", center - width / 2)
+      .attr("y", y(q1))
+      .attr("height", y(min) - y(q1))  // Lato più lungo in alto deve equivalere alla linea median
+      .attr("width", width)
+      .attr("cursor", "pointer")
+      .style("fill", "rgb(255, 164, 0,0)")
+      .on("click", clickRect);  
+  }
   // Aggiungi un titolo sopra il boxplot
   var titleFontSize = 15;
 

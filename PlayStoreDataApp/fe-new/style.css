@@ -85,9 +85,9 @@ text {
   stroke: white !important;
 }
 
-.selectedBoxPlotRect {
+/* .selectedBoxPlotRect {
   fill: rgb(255, 164, 0) !important;
-}
+} */
 
 .toto {
   &:hover {
