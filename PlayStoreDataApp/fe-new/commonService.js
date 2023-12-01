@@ -83,7 +83,6 @@ export function setSecondSet(newSet){
 export function setMode(newSet) {
   mode = newSet
 }
-}
 
 export function isEmpty(data){
     if (data.value == undefined || data.value == [] || data.value.length == 0)
