@@ -6,15 +6,59 @@ import * as boxplotsService from "./boxPlot.js"
 import * as multiBoxPlotService from "./multiBloxPlot.js"
 import * as histogramService from "./histogram.js";
 import * as commonService from "./commonService.js"
-import * as modeService from "./mode.js"
-
 
 main();
 
 function main() {
-  getPCAForSchemas();
+  // resetView()
+  visualize()
+  commonService.mode.observe((data)=> {
+    if(commonService.mode.value=="Visualize") {
+      commonService.setFirstSet([])
+      commonService.setSecondSet([])
+      visualize()
+    } else {
+      console.log(commonService.mode.value)
+      commonService.setFirstSet([])
+      commonService.setSecondSet([])
+      compare()
+    }
+
+  })
+  // getPCAForSchemas();
 }
 
+function visualize() {
+  ajaxService.getAllDataPCA().done(function (jsonData) {
+    console.log(jsonData.slice(0, 5));
+    commonService.initializeScaleColor(jsonData);
+    //Creation Schemas
+    categoryService.insertCategory(jsonData);
+    scatterPlotService.createScatterPlot(jsonData);
+
+    boxplotsService.populateBoxplots(jsonData)
+    
+    parallelCoordinatesService.createParallelCoordinates(jsonData);
+    createHistogramInstalls(jsonData);
+    // histogramService.createHistogramLong(3,dataInstall,dataAppName);
+  });
+}
+
+function compare() {
+  ajaxService.getAllDataPCA().done(function (jsonData) {
+    console.log(jsonData.slice(0, 5));
+    commonService.initializeScaleColor(jsonData);
+    //Creation Schemas
+    categoryService.insertCategory(jsonData);
+    scatterPlotService.createScatterPlot(jsonData);
+
+    multiBoxPlotService.populateBoxplots();
+
+    parallelCoordinatesService.createParallelCoordinates(jsonData);
+    createHistogramInstalls(jsonData);
+    // histogramService.createHistogramLong(3,dataInstall,dataAppName);
+  });
+}
 function getPCAForSchemas() {
   ajaxService.getAllDataPCA().done(function (jsonData) {
     console.log(jsonData.slice(0, 5));

@@ -119,7 +119,6 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
     var y = d3.scaleLog().domain([1, max]).range([height+margin.top, margin.bottom]);
   
   // Show the X scale
-  var xTickSize = group1.length + group2.length > 30 ? 8 : 10
   var x = d3.scaleBand()
     .range([ margin.left, width+margin.left ])
     .domain([group1, group2])
@@ -388,7 +387,7 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
     svg.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate("+ 0 + ","+  newTopX +")")
-      .call(d3.axisBottom(x))
+      .call(xAxis)
     // Show the box
     // Show the first box (sopra la linea median)
     svg.append("g")
