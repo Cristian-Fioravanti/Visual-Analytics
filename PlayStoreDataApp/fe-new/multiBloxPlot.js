@@ -3,22 +3,9 @@ import "./interface.js";
 import * as commonService from "./commonService.js";
 import * as categoryService from "./category.js";
 
-let ListPlayStoreData = [];
-main();
-
-function main() {
-  // createBoxPlot(1);
-  // createBoxPlot(2);
-  // createBoxPlot(3);
-  // createBoxPlot(4);
-}
 
 function populateBoxplots() {
-  // console.log("Rating",data.map(item => item.Rating))
-  // console.log("Reviews",data.map(item => item.Reviews))
-  // console.log("Installations",data.map(item => item.Installs))
-  // console.log("Size",data.map(item => item.Size))
-  
+  initializeMultiBoxPlot()
   commonService.firstSet.observe((data) => {
     var newData = commonService.firstSet.value;
     var secondGroup = commonService.secondSet.value;
@@ -33,21 +20,17 @@ function populateBoxplots() {
     } else {
       var group2 = "Group 2"
     }
-    createBoxPlot([], [], 1, "Ratings", group1, group2)
-    createBoxPlot([], [], 2, "Reviews", group1, group2)
-    createBoxPlot([], [], 3, "Installs", group1, group2)
-    createBoxPlot([], [], 4, "Size", group1, group2)
     let data1 = newData.map(item => item.Rating)
-    let data11 = secondGroup!= undefined ? secondGroup.map(item => item.Rating) : undefined
+    let data11 = secondGroup!= undefined ? secondGroup.map(item => item.Rating) : []
     createBoxPlot(data1, data11, 1, "Ratings", group1, group2)
     let data2  = newData.map(item => item.Reviews)
-    let data21 = secondGroup!= undefined ? secondGroup.map(item => item.Reviews) : undefined
+    let data21 = secondGroup!= undefined ? secondGroup.map(item => item.Reviews) : []
     createBoxPlot(data2, data21, 2, "Reviews", group1, group2)
     let data3 = newData.map(item => item.Installs)
-    let data31 = secondGroup!= undefined ? secondGroup.map(item => item.Installs) : undefined
+    let data31 = secondGroup!= undefined ? secondGroup.map(item => item.Installs) : []
     createBoxPlot(data3, data31, 3, "Installs", group1, group2)
     let data4 = newData.map(item => item.Size)
-    let data41 = secondGroup!= undefined ? secondGroup.map(item => item.Size) : undefined
+    let data41 = secondGroup!= undefined ? secondGroup.map(item => item.Size) : []
     createBoxPlot(data4, data41, 4, "Size", group1, group2)
   });
   commonService.secondSet.observe((data) => {
@@ -65,16 +48,16 @@ function populateBoxplots() {
       var group2 = "Group 2"
     }
     let data1 = newData.map(item => item.Rating)
-    let data11 = firstGroup.map(item => item.Rating)
+    let data11 = firstGroup!= undefined ? firstGroup.map(item => item.Rating) : []
     createBoxPlot(data11, data1, 1, "Ratings", group1, group2)
     let data2  = newData.map(item => item.Reviews)
-    let data21 = firstGroup.map(item => item.Reviews)
+    let data21 = firstGroup!= undefined ? firstGroup.map(item => item.Reviews) : []
     createBoxPlot(data21, data2, 2, "Reviews", group1, group2)
     let data3 = newData.map(item => item.Installs)
-    let data31 = firstGroup.map(item => item.Installs)
+    let data31 = firstGroup!= undefined ? firstGroup.map(item => item.Installs) : []
     createBoxPlot(data31, data3, 3, "Installs", group1, group2)
     let data4 = newData.map(item => item.Size)
-    let data41 = firstGroup.map(item => item.Size)
+    let data41 = firstGroup!= undefined ? firstGroup.map(item => item.Size) : []
     createBoxPlot(data41, data4, 4, "Size", group1, group2)
   });
   
@@ -99,7 +82,7 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
   }
   // append the svg object to the body of the page
   // Compute summary statistics used for the box:
-  if(data1 != undefined ) {
+  if(data1.length!=0) {
     var data_sorted1 = data1.sort(d3.ascending);
     var q11 = d3.quantile(data_sorted1, 0.25);
     var median1 = d3.quantile(data_sorted1, 0.5);
@@ -107,7 +90,7 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
     var min1 = d3.min(data_sorted1);
     var max1 = d3.max(data_sorted1);
   }
-  if(data2 != undefined) {
+  if(data2.length!=0) {
     var data_sorted2 = data2.sort(d3.ascending);
     var q12 = d3.quantile(data_sorted2, 0.25);
     var median2 = d3.quantile(data_sorted2, 0.5);
@@ -115,18 +98,20 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
     var min2 = d3.min(data_sorted2);
     var max2 = d3.max(data_sorted2)
   }
-  if(data1 != undefined && data2 != undefined) {
+  if(data1.length!=0 && data2.length!=0) {
     var groupedData = data1.concat(data2)
     var min = d3.min(groupedData);
     var max = d3.max(groupedData);
-  } else if(data1 != undefined) {
+  } else if(data1.length!=0 && data2.length==0) {
     var min = d3.min(data_sorted1);
     var max = d3.max(data_sorted1);
-  } else {
+  } else if(data1.length==0 && data2.length!=0){
     var min = d3.min(data_sorted2);
     var max = d3.max(data_sorted2);
+  } else {
+    var min = 1;
+    var max = 1000000;
   }
-
   // Show the Y scale
   if(max-min<10)
     var y = d3.scaleLinear().domain([min, max]).range([height+margin.top, margin.bottom]);  
@@ -134,10 +119,13 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
     var y = d3.scaleLog().domain([1, max]).range([height+margin.top, margin.bottom]);
   
   // Show the X scale
+  var xTickSize = group1.length + group2.length > 30 ? 8 : 10
   var x = d3.scaleBand()
     .range([ margin.left, width+margin.left ])
     .domain([group1, group2])
-    
+  var xAxis = d3.axisBottom(x).tickSize(9);
+
+  // Y Scale
   var powerLabels = d3
     .range(0, Math.ceil(Math.log10(max)+1))
     .map(function(d) { return Math.pow(10, d); });
@@ -154,44 +142,20 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
   // a few features for the box
   // var center = 200;
   var boxWidth = 75;
-  var clickRect1 = function(d) { 
-    var isSelected = d3.select(this).classed("group1BoxPlotRect");
+  var clickRect = function(d) { 
+    var isSelected = d3.select(this).classed("selectedBoxPlotRect");
     if (isSelected) {
-      d3.select(this).classed("group1BoxPlotRect", false);
-      d3.select(this).classed("selectedGroup1BoxPlotRect", true);
+      d3.select(this).classed("selectedBoxPlotRect", false);
     } else {
-      d3.select(this).classed("group1BoxPlotRect", true);
-      d3.select(this).classed("selectedGroup1BoxPlotRect", false);
+      d3.select(this).classed("selectedBoxPlotRect", true);
     }
   }
-  var clickInvRect1 = function(d) { 
-    var isSelected = d3.select(this).classed("invisibleGroup1BoxPlotRect");
+  var clickInvRect = function(d) { 
+    var isSelected = d3.select(this).classed("selectedInvisibleBoxPlotRect");
     if (isSelected) {
-      d3.select(this).classed("invisibleGroup1BoxPlotRect", false);
-      d3.select(this).classed("selectedInvisibleGroup1BoxPlotRect", true);
+      d3.select(this).classed("selectedInvisibleBoxPlotRect", false);
     } else {
-      d3.select(this).classed("invisibleGroup1BoxPlotRect", true);
-      d3.select(this).classed("selectedInvisibleGroup1BoxPlotRect", false);
-    }
-  }
-  var clickRect2 = function(d) { 
-    var isSelected = d3.select(this).classed("group2BoxPlotRect");
-    if (isSelected) {
-      d3.select(this).classed("group2BoxPlotRect", false);
-      d3.select(this).classed("selectedGroup2BoxPlotRect", true);
-    } else {
-      d3.select(this).classed("group2BoxPlotRect", true);
-      d3.select(this).classed("selectedGroup2BoxPlotRect", false);
-    }
-  }
-  var clickInvRect2 = function(d) { 
-    var isSelected = d3.select(this).classed("invisibleGroup2BoxPlotRect");
-    if (isSelected) {
-      d3.select(this).classed("invisibleGroup2BoxPlotRect", false);
-      d3.select(this).classed("selectedInvisibleGroup2BoxPlotRect", true);
-    } else {
-      d3.select(this).classed("invisibleGroup2BoxPlotRect", true);
-      d3.select(this).classed("selectedInvisibleGroup2BoxPlotRect", false);
+      d3.select(this).classed("selectedInvisibleBoxPlotRect", true);
     }
   }
 
@@ -203,12 +167,13 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
     d3.select("#boxPlot" + i).selectAll("toto").remove()
     d3.select("#boxPlot" + i).selectAll("text").remove()
     
+    var color = group1=="Group 1"? "rgb(255,0,0)" : commonService.scaleColor(group1)
     var newTopX = height+margin.top
     // var newTopY = margin.top-20
     svg.append("g")
       .attr("class", "x axis")
       .attr("transform", "translate("+ 0 + ","+  newTopX +")")
-      .call(d3.axisBottom(x))
+      .call(xAxis)
     // Show the box
     // Show the first box (sopra la linea median)
     svg.append("g")
@@ -224,8 +189,9 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
       .attr("width", boxWidth)
       .attr("stroke", "black")
       .attr("cursor", "pointer")
-      .classed("group1BoxPlotRect", true)
-      .on("click", clickRect1);
+      .style("fill", color)
+      .style("opacity",0.5)
+      .on("click", clickRect);
 
     // Show the second box (sotto la linea median)
     svg.append("rect")
@@ -235,8 +201,9 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
       .attr("width", boxWidth)
       .attr("stroke", "black")
       .attr("cursor", "pointer")
-      .classed("group1BoxPlotRect", true)
-      .on("click", clickRect1);
+      .style("fill", color)
+      .style("opacity",0.5)
+      .on("click", clickRect);
 
     // show median, min and max horizontal lines
     svg
@@ -284,8 +251,9 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
       .attr("height", y(q31) - y(max1))  // Lato più lungo in basso deve equivalere alla linea median
       .attr("width", boxWidth)
       .attr("cursor", "pointer")
-      .classed("invisibleGroup1BoxPlotRect", true)
-      .on("click", clickInvRect1);
+      .style("fill", color)
+      .style("opacity",0)
+      .on("click", clickInvRect);
 
     // Show the second box (sotto la linea median)
     svg.append("rect")
@@ -294,9 +262,9 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
       .attr("height", y(min1) - y(q11))  // Lato più lungo in alto deve equivalere alla linea median
       .attr("width", boxWidth)
       .attr("cursor", "pointer")
-      // .style("fill", "rgb(255, 0, 0,0)")
-      .classed("invisibleGroup1BoxPlotRect", true)
-      .on("click", clickInvRect1);  
+      .style("fill", color)
+      .style("opacity",0)
+      .on("click", clickInvRect);  
   } 
   if(median2 != undefined && q32 != undefined && q12 != undefined) {
     if(median1 == undefined || q31 == undefined || q11 == undefined) {
@@ -312,7 +280,7 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
       svg.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate("+ 0 + ","+  newTopX +")")
-        .call(d3.axisBottom(x))
+        .call(xAxis)
       // Show the box
       // Show the first box (sopra la linea median)
       svg.append("g")
@@ -320,6 +288,7 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
         .attr("transform", "translate(" + margin.left + ","+  0+ ")")
         .call(yAxis);
     }
+    var color = group2=="Group 2"? "rgb(0,0,255)" : commonService.scaleColor(group2)
     svg
       .append("rect")
       .attr("x", x(group2)-boxWidth/2+ x.bandwidth()/2)
@@ -328,8 +297,9 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
       .attr("width", boxWidth)
       .attr("stroke", "black")
       .attr("cursor", "pointer")
-      .classed("group2BoxPlotRect", true)
-      .on("click", clickRect2);
+      .style("fill", color)
+      .style("opacity",0.5)
+      .on("click", clickRect); 
 
     // Show the second box (sotto la linea median)
     svg.append("rect")
@@ -339,8 +309,9 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
       .attr("width", boxWidth)
       .attr("stroke", "black")
       .attr("cursor", "pointer")
-      .classed("group2BoxPlotRect", true)
-      .on("click", clickRect2);
+      .style("fill", color)
+      .style("opacity",0.5)
+      .on("click", clickRect); 
     
     // svg.selectAll("rect").classed("selectedBoxPlotRect", true)
 
@@ -390,8 +361,9 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
       .attr("height", y(q32) - y(max2))  // Lato più lungo in basso deve equivalere alla linea median
       .attr("width", boxWidth)
       .attr("cursor", "pointer")
-      .classed("invisibleGroup2BoxPlotRect", true)
-      .on("click", clickInvRect2);
+      .style("fill", color)
+      .style("opacity",0)
+      .on("click", clickInvRect); 
 
     // Show the second box (sotto la linea median)
     svg.append("rect")
@@ -400,17 +372,30 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
       .attr("height", y(min2) - y(q12))  // Lato più lungo in alto deve equivalere alla linea median
       .attr("width", boxWidth)
       .attr("cursor", "pointer")
-      .classed("invisibleGroup2BoxPlotRect", true)
-      .on("click", clickInvRect2);  
+      .style("fill", color)
+      .style("opacity",0)
+      .on("click", clickInvRect); 
   }
-  // else  {
-  //   d3.select("#boxPlot" + i).select("g.y.axis").remove()
-  //   d3.select("#boxPlot" + i).select("g.x.axis").remove()
-  //   d3.select("#boxPlot" + i).selectAll("rect").remove()
-  //   d3.select("#boxPlot" + i).selectAll("line").remove()
-  //   d3.select("#boxPlot" + i).selectAll("toto").remove()
-  //   d3.select("#boxPlot" + i).selectAll("text").remove()
-  // }
+  if(data1.length==0 && data2.length==0)  {
+    d3.select("#boxPlot" + i).select("g.y.axis").remove()
+    d3.select("#boxPlot" + i).select("g.x.axis").remove()
+    d3.select("#boxPlot" + i).selectAll("rect").remove()
+    d3.select("#boxPlot" + i).selectAll("line").remove()
+    d3.select("#boxPlot" + i).selectAll("toto").remove()
+    d3.select("#boxPlot" + i).selectAll("text").remove()
+    var newTopX = height+margin.top
+    // var newTopY = margin.top-20
+    svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate("+ 0 + ","+  newTopX +")")
+      .call(d3.axisBottom(x))
+    // Show the box
+    // Show the first box (sopra la linea median)
+    svg.append("g")
+      .attr("class", "y axis")
+      .attr("transform", "translate(" + margin.left + ","+  0+ ")")
+      .call(yAxis);
+  }
   
 
   // Aggiungi un titolo sopra il boxplot
@@ -424,5 +409,15 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
     .text(title);
 }
 
+function initializeMultiBoxPlot() {
+  createBoxPlot([], [], 1, "Ratings", "Group 1", "Group 2")
+  createBoxPlot([], [], 1, "Ratings", "Group 1", "Group 2")
+  createBoxPlot([], [], 2, "Reviews", "Group 1", "Group 2")
+  createBoxPlot([], [], 2, "Reviews", "Group 1", "Group 2")
+  createBoxPlot([], [], 3, "Installs", "Group 1", "Group 2")
+  createBoxPlot([], [], 3, "Installs", "Group 1", "Group 2")
+  createBoxPlot([], [], 4, "Size", "Group 1", "Group 2")
+  createBoxPlot([], [], 4, "Size", "Group 1", "Group 2")
+}
 
 export { populateBoxplots };

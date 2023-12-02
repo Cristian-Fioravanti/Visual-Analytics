@@ -2,21 +2,7 @@ import "https://d3js.org/d3.v5.min.js";
 import "./interface.js";
 import * as commonService from "./commonService.js";
 
-let ListPlayStoreData = [];
-main();
-
-function main() {
-  // createBoxPlot(1);
-  // createBoxPlot(2);
-  // createBoxPlot(3);
-  // createBoxPlot(4);
-}
-
 function populateBoxplots(data) {
-  // console.log("Rating",data.map(item => item.Rating))
-  // console.log("Reviews",data.map(item => item.Reviews))
-  // console.log("Installations",data.map(item => item.Installs))
-  // console.log("Size",data.map(item => item.Size))
   let data1 = data.map(item => item.Rating)
   createBoxPlot(data1, 1, "Ratings")
   let data2  = data.map(item => item.Reviews)
@@ -35,9 +21,6 @@ function populateBoxplots(data) {
     createBoxPlot(data3, 3, "Installs")
     let data4 = newData.map(item => item.Size)
     createBoxPlot(data4, 4, "Size")
-    // popolaTabella([]);
-    // const dataType = Array.from(new Set(newData.map((obj) => obj.Type))).map((Type) => ({ Type, Total: newData.filter((x) => x.Type === Type).length }));
-    // popolaTabella(dataType);
   });
   
   
