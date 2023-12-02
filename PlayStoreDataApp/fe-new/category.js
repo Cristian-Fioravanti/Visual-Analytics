@@ -3,6 +3,8 @@ import * as commonService from "./commonService.js";
 
 let scaleColor;
 export var numberOfCheckBoxSelected = 0;
+export var firstCategory = null;
+export var secondCategory = null;
 export let distinctPCAData = [];
 // main();
 
@@ -51,38 +53,58 @@ function selectCircles(event) {
     removeCheckBox()
     createCheckBox(distinctPCAData);
     numberOfCheckBoxSelected = 0;
+    firstCategory = null;
+    secondCategory = null;
     commonService.setSecondSet([])
     commonService.setFirstSet([])
     d3.select("#scatterPlot").selectAll("circle").classed("selectedScatterPlot", false);
   } 
-  
+
   if (event.target.classList.length > 0) {
     event.target.classList.remove("checked");
-    if (numberOfCheckBoxSelected>0)
-     numberOfCheckBoxSelected--;
+    if(firstCategory == event.target.id ) {
+      firstCategory=null;
+      commonService.setFirstSet([])
+    } else if (secondCategory == event.target.id) {
+      secondCategory =  null
+      commonService.setSecondSet([])
+    }    
+    if (numberOfCheckBoxSelected>0) {
+      numberOfCheckBoxSelected--;
+      if(numberOfCheckBoxSelected==0) {
+        let nodeListCheckbox= Array.from($("input:checkbox")).filter(checkbox=> checkbox.classList.length == 0);
+        for (let i = 0; i < nodeListCheckbox.length; i++) {
+          nodeListCheckbox[i].disabled = false;
+        }
+      }
+    }
   } else {
     //deseleziona tutti i cerchi
     if (commonService.isEmpty(commonService.firstSet) && commonService.isEmpty(commonService.secondSet))
       d3.select("#scatterPlot").selectAll("circle").classed("selectedScatterPlot", false);
+    
     event.target.classList.add("checked");
     //popola primo set
-    if (commonService.isEmpty(commonService.firstSet)) {
+    if (commonService.isEmpty(commonService.firstSet) && commonService.isEmpty(commonService.secondSet)) {
       let selectedCategory = document.getElementsByName(event.target.id);
+      firstCategory = event.target.id
       selectedCategory.forEach((circle) => circle.classList.add("selectedScatterPlot"));
       commonService.setFirstSet(Array.from(selectedCategory).map((circle) => circle.__data__));
     }
     //popola secondo set
     else if (commonService.isEmpty(commonService.secondSet)) {
       let selectedCategory = document.getElementsByName(event.target.id);
+      secondCategory = event.target.id
       selectedCategory.forEach((circle) => circle.classList.add("selectedScatterPlot"));
       commonService.setSecondSet(Array.from(selectedCategory).map((obj) => obj.__data__));
+      
     }
-     if (numberOfCheckBoxSelected == 1) {
-    let nodeListCheckbox= Array.from($("input:checkbox")).filter(checkbox=> checkbox.classList.length == 0);
-    for (let i = 0; i < nodeListCheckbox.length; i++) {
-      nodeListCheckbox[i].disabled = true;
+    if (numberOfCheckBoxSelected == 1 || !commonService.isEmpty(commonService.secondSet)) {
+      let nodeListCheckbox= Array.from($("input:checkbox")).filter(checkbox=> checkbox.classList.length == 0);
+      for (let i = 0; i < nodeListCheckbox.length; i++) {
+        nodeListCheckbox[i].disabled = true;
+      }
     }
-  }
     numberOfCheckBoxSelected++;
   }
   
@@ -97,4 +119,9 @@ export function removeCheckBox() {
   
 export function setNumberOfCheckBoxSelected(number){
   numberOfCheckBoxSelected = number
+}
+
+export function resetCategory() {
+  firstCategory = null
+  secondCategory = null
 }

@@ -77,6 +77,9 @@ export function getScaleColor(){
 export function setFirstSet(newSet) {
   firstSet.value = newSet
 }
+export function getFirstSet() {
+  return firstSet.value
+}
 export function setSecondSet(newSet){
   secondSet.value = newSet
 }
@@ -98,10 +101,8 @@ export function resetCheckBox(){
 }
 
 export function disabledCheckBox() {
-  
     let nodeListCheckbox = Array.from($("input:checkbox")).filter(checkbox => checkbox.classList.length == 0);
     for (let i = 0; i < nodeListCheckbox.length; i++) {
       nodeListCheckbox[i].disabled = true;
-    }
-  
+    }  
 }

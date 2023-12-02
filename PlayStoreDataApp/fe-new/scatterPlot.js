@@ -1,5 +1,6 @@
 import { getAllDataPCA, getMaxInstalls, getMaxReview } from "./ajaxService.js";
 import * as commonService from "./commonService.js";
+import * as categoryService  from "./category.js"
 
 let scaleColor;
 let numberOfBrush = 0;
@@ -90,18 +91,32 @@ function createScatterPlot(jsonPCAData) {
       // svg.selectAll(".brush").remove(); // Rimuovi eventuali rettangoli di selezione precedenti
       // if (d3.event && d3.event.selection) {
       //imposto il primo set di punti selezionati
-       if (numberOfBrush == 0) {
+      // if (numberOfBrush == 0 && categoryService.numberOfCheckBoxSelected==2) {
+      //   console.log("qui")        
+      //   svg.selectAll(".brush").remove(); // Rimuovi eventuali rettangoli di selezione precedenti
+      //   svg.selectAll(".selectedScatterPlot").classed("selectedScatterPlot", false);
+      //   numberOfBrush = 0;
+      //   commonService.setFirstSet([])
+      //   commonService.setSecondSet([])
+      //   firstSet = []
+      //   secondSet = []
+      //   commonService.resetCheckBox()
+      //   categoryService.resetCategory()
+      // }
+      if (numberOfBrush == 0 && categoryService.numberOfCheckBoxSelected==0) {
         commonService.setFirstSet(selectedSet);
-         firstSet = selectedSet
-         
-      } 
-      else if (numberOfBrush == 1) {
+        firstSet = selectedSet
+      } else if (numberOfBrush == 0 && categoryService.numberOfCheckBoxSelected==1) {
         commonService.setSecondSet(selectedSet);
         secondSet = selectedSet
-        //resetCheckBox
         commonService.disabledCheckBox()
-      } 
-      if (numberOfBrush > 1) {
+      } else if (numberOfBrush == 1 && categoryService.numberOfCheckBoxSelected==0) {
+        commonService.setSecondSet(selectedSet);
+        secondSet = selectedSet
+        commonService.disabledCheckBox()
+      }
+      if (numberOfBrush > 1 || (numberOfBrush == 1 && categoryService.numberOfCheckBoxSelected==1)  ) {
+        console.log("qui")        
         svg.selectAll(".brush").remove(); // Rimuovi eventuali rettangoli di selezione precedenti
         svg.selectAll(".selectedScatterPlot").classed("selectedScatterPlot", false);
         
@@ -111,12 +126,13 @@ function createScatterPlot(jsonPCAData) {
         firstSet = []
         secondSet = []
         commonService.resetCheckBox()
+        categoryService.resetCategory()
       }
     }
     if (force) svg.selectAll("circle").classed("selectedScatterPlot", true);
   }
   function createRect() {
-    if (d3.event != null && d3.event.selection != null && numberOfBrush==0) {
+    if (d3.event != null && d3.event.selection != null && numberOfBrush==0 && categoryService.numberOfCheckBoxSelected==0) {
       svg
         .append("rect")
         .attr("class", "brush")
@@ -132,7 +148,7 @@ function createScatterPlot(jsonPCAData) {
       // console.log(firstSet)
       // console.log(secondSet)
       // console.log("cacca");
-    } else if (d3.event != null && d3.event.selection != null && numberOfBrush==1) {
+    } else if (d3.event != null && d3.event.selection != null && (numberOfBrush==1 || categoryService.numberOfCheckBoxSelected==1)) {
       svg
         .append("rect")
         .attr("class", "brush")

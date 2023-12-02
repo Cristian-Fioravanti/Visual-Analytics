@@ -85,17 +85,32 @@ text {
   stroke: white !important;
 }
 
-/* .selectedBoxPlotRect {
-  fill: rgb(255, 164, 0) !important;
-} */
-
-.toto {
-  &:hover {
-    stroke-width: 8px;
-    transition: stroke-width 2s;
-  }
-  cursor: pointer;
+.invisibleGroup1BoxPlotRect {
+  fill: rgba(255, 0, 0, 0) !important;
 }
+.selectedInvisibleGroup1BoxPlotRect {
+  fill: rgba(255, 0, 0, 0.3) !important;
+}
+.group1BoxPlotRect {
+  fill: rgba(255, 0, 0, 0.5) !important;
+}
+.selectedGroup1BoxPlotRect {
+  fill: rgba(255, 0, 0, 1) !important;
+}
+
+.invisibleGroup2BoxPlotRect {
+  fill: rgba(0, 0, 255, 0) !important;
+}
+.selectedInvisibleGroup2BoxPlotRect {
+  fill: rgba(0, 0, 255, 0.3) !important;
+}
+.group2BoxPlotRect {
+  fill: rgba(0, 0, 255, 0.5) !important;
+}
+.selectedGroup2BoxPlotRect {
+  fill: rgba(0, 0, 255, 1) !important;
+}
+
 
 .removePointer {
   cursor: unset !important;

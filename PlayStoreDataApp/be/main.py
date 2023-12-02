@@ -2,9 +2,7 @@ import json
 from flask import Flask, jsonify, request
 from flaskext.mysql import MySQL
 from flask_cors import CORS
-import csv
 import PCA as pcaService
-import mysql.connector
 import pandas as pd
 from flask import make_response
 class PlayStoreData:
