@@ -39,7 +39,7 @@ function visualize() {
     boxplotsService.populateBoxplots(jsonData)
     
     parallelCoordinatesService.createParallelCoordinates(jsonData);
-    createHistogramInstalls(jsonData);
+    histogramService.populateHistograms(jsonData);
     // histogramService.createHistogramLong(3,dataInstall,dataAppName);
   });
 }
@@ -55,7 +55,8 @@ function compare() {
     multiBoxPlotService.populateBoxplots();
 
     parallelCoordinatesService.createParallelCoordinates(jsonData);
-    createHistogramInstalls(jsonData);
+    // histogramService.populateHistograms();
+    // createHistogramInstalls(jsonData);
     // histogramService.createHistogramLong(3,dataInstall,dataAppName);
   });
 }

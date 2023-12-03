@@ -249,6 +249,8 @@ export function createHistogramShortInstalls(i, dataSet) {
       })
       .style("fill", "#69b3a2");
   }
+  popolaTabella([])
+  popolaTabella(histogram(dataSet.map((obj) => ({ Installs: parseInt(obj.Installs) }))));
   commonService.firstSet.observe((data) => {
     // And apply this function to data to get the bins
     dataSet = commonService.firstSet!=undefined ? commonService.firstSet.value : allDataInstalls
@@ -495,32 +497,20 @@ export function createHistogramShortContentRating(i, dataDistinct, data) {
   popolaTabella(dataContent_Rating);
 }
 
-export function populateHistograms() {
-  initializeHistograms()
+export function populateHistograms(jsonData) {
+  initializeHistograms(jsonData)
   commonService.firstSet.observe((data) => {
     var newData = commonService.firstSet.value;
-    const dataInstalls = newData.map(obj => ({ Installs: parseInt(obj.Installs) }));
-
-    const dataType = Array.from(new Set(newData.map(obj => obj.Type)))
-      .map(Type => ({ Type, Total: newData.filter(x => x.Type === Type).length }));
-
-    const dataContentRating = Array.from(new Set(newData.map(obj => obj.Content_Rating)))
-      .map(ContentRating => ({
-        ContentRating,
-        Total: newData.filter(x => x.Content_Rating === ContentRating).length
-      }));
-
-    const heightY = newData.length;
 
     createHistogramShortType(1, Array.from(new Set(newData.map(obj => obj.Type))), newData);
     createHistogramShortContentRating(2, Array.from(new Set(newData.map(obj => obj.Content_Rating))), newData);
     // createHistogramShortInstalls(3, dataInstalls, newData);
   })
 
-  function initializeHistograms() {
-    createHistogramShortType(1, [], undefined);
-    createHistogramShortContentRating(2, [], undefined);
+  function initializeHistograms(jsonData) {
+    createHistogramShortType(1, Array.from(new Set(jsonData.map(obj => obj.Type))), jsonData);
+    createHistogramShortContentRating(2, Array.from(new Set(jsonData.map(obj => obj.Content_Rating))), jsonData);
     // createHistogramShortInstalls(3, [], undefined);
-    createHistogramShortInstalls(3, []);
+    createHistogramShortInstalls(3,  jsonData.map(obj => ({ Installs: parseInt(obj.Installs) })));
   }
 }
