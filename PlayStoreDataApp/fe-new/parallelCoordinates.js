@@ -1,15 +1,15 @@
 import "./interface.js";
-import * as categoryService from "./category.js"
-import * as commonService from "./commonService.js"
+import * as categoryService from "./category.js";
+import * as commonService from "./commonService.js";
 let countClick = 0;
-let scaleColor; 
+let scaleColor;
 
 function createParallelCoordinates(jsonPCAData) {
-  scaleColor = commonService.getScaleColor()
+  scaleColor = commonService.getScaleColor();
   // jsonPCAData = jsonPCAData.slice(0, 5);
-  
+
   // console.log(commonService.distinctValuesPerKey(jsonPCAData))
-  
+
   // set the dimensions and margins of the graph
   var margin = { top: 30, right: 10, bottom: 10, left: 30 },
     width = 768 - margin.left - margin.right,
@@ -25,18 +25,14 @@ function createParallelCoordinates(jsonPCAData) {
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
   let dimensions = ["Rating", "Reviews", "Size", "Installs", "Price", "Content_Rating", "Type"];
-  let dimensionsString = ["Content_Rating", "Type"]
-  const distinctPCAData = commonService.distinctValuesPerKey(jsonPCAData)
+  let dimensionsString = ["Content_Rating", "Type"];
+  const distinctPCAData = commonService.distinctValuesPerKey(jsonPCAData);
   // For each dimension, build a linear scale and store it in the y object
   var y = {};
   dimensions.forEach((dim) => {
     if (dimensionsString.includes(dim)) {
-      y[dim] = d3
-        .scalePoint()
-        .domain(distinctPCAData[dim])
-        .range([0, height]);
-    }
-    else {
+      y[dim] = d3.scalePoint().domain(distinctPCAData[dim]).range([0, height]).padding(0.5);
+    } else {
       y[dim] = d3
         .scaleLinear()
         .domain([
@@ -65,7 +61,7 @@ function createParallelCoordinates(jsonPCAData) {
   }
 
   function getColorPath(d) {
-    return scaleColor(d.Category)
+    return scaleColor(d.Category);
   }
   // Draw the lines
   let myPath = svg
@@ -77,9 +73,9 @@ function createParallelCoordinates(jsonPCAData) {
     .attr("d", path)
     .style("fill", "none")
     .style("stroke", getColorPath)
-    .style("stroke-width", "0.5px")
+    .style("stroke-width", "2px")
     .style("opacity", 0.5);
- 
+
   let axes = svg
     .selectAll(".myAxis")
     .data(dimensions)
@@ -95,56 +91,108 @@ function createParallelCoordinates(jsonPCAData) {
       d3.select(this).call(axis);
 
       // Add vertical brush
-      const brush = d3.brushY()
+      const brush = d3
+        .brushY()
         .extent([
           [-10, 0],
-          [10, height]
+          [10, height+1],
         ])
-        .on("start brush end", brushedVertical);
+        .on("start brush", brushedVertical);
 
       d3.select(this).call(brush);
     })
     .append("text")
     .style("text-anchor", "middle")
+    .style("z-index", 99)
     .attr("y", -9)
     .text(function (d) {
       return d;
     })
     .style("fill", "white");
-   
-  const selections = new Map();
-  const deselectedColor = "#red";
 
-  function brushedVertical(key) {
-    if (d3.event != null && d3.event.selection != null) {
-      var selection = d3.event.selection;
-      if (!selection) {
-    selections.delete(key);
-  } else {
-    const invertedSelection = selection.map(y[key].invert);
-    selections.set(key, invertedSelection);
-  }
+  let selections = new Map();
+  let selectionsString = new Map();
+  let brushSelectionActive= new Map()
+  const selectedColor = "blue"; // Change the color for selected paths
 
-  const selected = [];
-  svg.selectAll(".myPath").each(function (d) {
-    const isActive = Array.from(selections).every(([brushKey, [min, max]]) => {
-      const value = d[brushKey];
-      return value >= min && value <= max;
+  function brushedVertical(event) {
+    if (!d3.event.selection) {
+      selections.delete(event);
+      selectionsString.delete(event);
+       brushSelectionActive.delete(event)
+    } else {
+      if (d3.event.selection != null && !(d3.event.selection[0] == d3.event.selection[1])) {
+        const invertedSelection = d3.event.selection.map((value, i) => {
+          return y[event].invert ? y[event].invert(value) :  y[event](value);
+        });
+        if (dimensionsString.includes(event)) brushSelectionActive.set(event,d3.event.selection)
+        selections.set(event, invertedSelection);
+      } else {
+        selections.delete(event);
+        selectionsString.delete(event);
+        brushSelectionActive.delete(event)
+      }
+    }
+
+    const selected = [];
+    svg.selectAll(".myPath").each(function (d) {
+      let isActive = Array.from(selections).every(([brushKey, [min, max]]) => {
+        if (dimensionsString.includes(brushKey)) {
+          //todo prendere lista pointInBrush, calcolare brushMin, brushMax e poi effettuare controllo
+          let valueInBrush = isBrushInsidePointScale(brushKey).map(x=> y[brushKey](x))
+        
+          const yCoordinate = y[brushKey](d[brushKey]);
+          
+          return valueInBrush.includes(yCoordinate);
+        } else {
+          const valueKeySelected = d[brushKey];
+          return valueKeySelected >= min && valueKeySelected <= max;
+        }
+      });
+
+      if (selections.size == 0) isActive = false;
+      d3.select(this).style("stroke", isActive ? selectedColor : scaleColor(d.Category));
+
+      if (isActive) {
+        selected.push(d);
+      }
     });
-
-    d3.select(this).style("stroke", isActive ? scaleColor(d[key]) : deselectedColor);
-
-    if (isActive) {
-      d3.select(this).raise();
-      selected.push(d);
-    }
-  });
-
-  svg.property("value", selected).dispatch("input");
-
-      // return Object.assign(svg.property("value", jsonPCAData).node(), { scales: { scaleColor } });
+  }
+function isBrushInsidePointScale(brushKey) {
+  const domainValues = y[brushKey].domain();
+  let ris = []
+  let selection = brushSelectionActive.get(brushKey)
+  for (const value of domainValues) {
+    const position = y[brushKey](value);
+    if (selection[0] <= position && position <= selection[1]) { 
+      ris.push(value)
     }
   }
+
+  return ris; // The brush selection doesn't contain any point
+}
+// function invertPointScale(value, dimension) {
+//   const rangeValues = y[dimension].range();
+//   const domainValues = y[dimension].domain();
+//   const bisect = d3.bisectLeft(rangeValues, value);
+
+//   if (bisect === 0 || bisect === rangeValues.length) {
+//     return domainValues[bisect];
+//   }
+
+//   const leftValue = rangeValues[bisect - 1];
+//   const rightValue = rangeValues[bisect];
+
+//   // Determine if the value is inside the range
+//   if (value >= leftValue && value <= rightValue) {
+//     return domainValues[bisect - 1];
+//   }
+
+//   // If the value is outside the range, return the closest domain value
+//   return value - leftValue > rightValue - value ? domainValues[bisect] : domainValues[bisect - 1];
+//   }
+  
+
 }
 
 export { createParallelCoordinates };
