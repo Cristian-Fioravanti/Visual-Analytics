@@ -9,6 +9,7 @@ let secondSet;
 let firstSet;
 let firstBrush;
 let secondBrush;
+let brushVar;
 
 function createScatterPlot(jsonPCAData) {
   allData = jsonPCAData
@@ -37,8 +38,10 @@ function createScatterPlot(jsonPCAData) {
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
   }
-  
-  svg.call(
+  // if(brushVar!=undefined) {
+  //   brushVar.clear()
+  // }
+  brushVar = svg.call(
     d3
       .brush() // Add the brush feature using the d3.brush function
       .extent([
@@ -214,8 +217,6 @@ function createScatterPlot(jsonPCAData) {
         }
       }
     }
-
-    
     if (force) svg.selectAll("circle").classed("selectedScatterPlot", true);
   }
   function createRect() {

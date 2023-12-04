@@ -38,7 +38,7 @@ function visualize() {
 
     boxplotsService.populateBoxplots(jsonData)
     
-    parallelCoordinatesService.createParallelCoordinates(jsonData);
+    parallelCoordinatesService.createParallelCoordinates(jsonData, []);
     histogramService.populateHistograms(jsonData);
     // histogramService.createHistogramLong(3,dataInstall,dataAppName);
   });
@@ -54,44 +54,9 @@ function compare() {
 
     multiBoxPlotService.populateBoxplots();
 
-    parallelCoordinatesService.createParallelCoordinates(jsonData);
+    parallelCoordinatesService.createParallelCoordinatesCompare();
     // histogramService.populateHistograms();
     // createHistogramInstalls(jsonData);
     // histogramService.createHistogramLong(3,dataInstall,dataAppName);
   });
-}
-function getPCAForSchemas() {
-  ajaxService.getAllDataPCA().done(function (jsonData) {
-    console.log(jsonData.slice(0, 5));
-    commonService.initializeScaleColor(jsonData);
-    //Creation Schemas
-    categoryService.insertCategory(jsonData);
-    scatterPlotService.createScatterPlot(jsonData);
-
-    // boxplotsService.populateBoxplots(jsonData)
-    multiBoxPlotService.populateBoxplots();
-
-    parallelCoordinatesService.createParallelCoordinates(jsonData);
-    histogramService.populateHistograms();
-    // createHistograms(jsonData);
-    // histogramService.createHistogramLong(3,dataInstall,dataAppName);
-  });
-}
-function createHistograms(jsonData) {
-  const dataInstalls = jsonData.map(obj => ({ Installs: parseInt(obj.Installs) }));
-
-  const dataType = Array.from(new Set(jsonData.map(obj => obj.Type)))
-    .map(Type => ({ Type, Total: jsonData.filter(x => x.Type === Type).length }));
-
-  const dataContentRating = Array.from(new Set(jsonData.map(obj => obj.Content_Rating)))
-    .map(ContentRating => ({
-      ContentRating,
-      Total: jsonData.filter(x => x.Content_Rating === ContentRating).length
-    }));
-
-  const heightY = jsonData.length;
-
-  // histogramService.createHistogramShortType(1, dataType, Array.from(new Set(jsonData.map(obj => obj.Type))), heightY);
-  // histogramService.createHistogramShortContentRating(2, dataContentRating, Array.from(new Set(jsonData.map(obj => obj.Content_Rating))), heightY);
-  // histogramService.createHistogramShortInstalls(3, dataInstalls);
 }

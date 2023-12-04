@@ -2,149 +2,7 @@ import "https://d3js.org/d3.v5.min.js";
 import "./interface.js";
 import * as commonService from "./commonService.js";
 
-// main();
 let allDataInstalls;
-
-function main() {
-  // createHistogramShort(1,dataSet);
-  // createHistogramShort(2,dataSet);
-  // createHistogramLong(3,dataSet);
-}
-
-export function createHistogramShortInstalls1(i, dataDistinct, data) {
-  
-  var dataSet = data!=undefined ? data : [] ;
-  // set the dimensions and margins of the graph
-  var margin = { top: 10, right: 30, bottom: 30, left: 40 },
-    width = 600 - margin.left - margin.right,
-    height = 165 - margin.top - margin.bottom;
-
-  // append the svg object to the body of the page
-  var svg = d3.select("#Histogram" + i).select("svg").select("g.ShortInstalls")
-  if(svg.empty()) {
-    var svg = d3
-    .select("#Histogram" + i)
-    .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .classed("ShortInstalls", true)
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-  }
-  // get the data
-
-  // X axis: scale and draw:
-  var xTickFormat = function (d) {
-    return "10^" + Math.round(Math.log10(d));
-  };
-  var domainX = dataDistinct.length!=0 ? d3.max(dataDistinct.map(item => item.Installs)) : 100000000000
-  domainX = domainX.toString().charAt(0) == '5' ? domainX*2 : domainX
-  var x = d3
-    .scaleLog()
-    .domain([1, domainX]) // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
-    .range([0, width]);
-  var xAxis = svg.select("g.x.axis")
-  if(xAxis.empty()) {
-    svg
-      .append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x).tickFormat(xTickFormat));
-    } else {
-      xAxis.attr("transform", "translate(0," + height + ")")
-        .call(d3.axisBottom(x).tickFormat(xTickFormat));
-  }
-  
-  // set the parameters for the histogram
-  var histogram = d3
-    .histogram()
-    .value(function (d) {
-      return d.Installs;
-    }) // I need to give the vector of value
-    .domain(x.domain()) // then the domain of the graphic
-    .thresholds(x.ticks(10)); // then the numbers of bins
-  // And apply this function to data to get the bins
-  var bins = histogram(dataSet);
-  // Y axis: scale and draw:
-  var y = d3.scaleLinear().range([height, 0]);
-  y.domain([0,d3.max(bins, function (d) {return d.length;}),]); 
-  // d3.hist has to be called before the Y axis obviously
-
-  // var domainY = dataSet.length!=0 ? dataSet.length : 7023
-  // var y = d3.scaleLinear().range([height, 0]).domain([0, domainY]);
-  function generateCustomTicks(y) {
-    var tickValues = [y.domain()[0]];
-    var currentValue = y.domain()[1];
-
-    while (currentValue > 10) {
-        currentValue /= 2;
-        tickValues.push(currentValue);
-    }
-    tickValues.push(y.domain()[1]);
-    return tickValues;
-  }
-  var yAxis = svg.select("g.HistogramSvg"+i)
-  if(yAxis.empty()) {
-    svg
-      .append("g")
-      .call(d3.axisLeft(y).tickValues(generateCustomTicks(y)))
-      .attr("class", "HistogramSvg" + i);
-  } else {
-    yAxis.call(d3.axisLeft(y).tickValues(generateCustomTicks(y)))
-    .attr("class", "HistogramSvg" + i);
-  }
-  // popolaTabella(bins);
-
-  function popolaTabella(data) {
-    d3.select(".ShortInstalls")
-    .selectAll("rect")
-      .data(data)
-      .join(
-        function (enter) {
-          enterData(enter);
-        },
-        function (update) {
-          updateData(update);
-        }
-      );
-  }
-
-  function enterData(enter) {
-    enter
-    .append("rect")
-    .attr("x", 1)
-    .attr("transform", function (d) {
-      return "translate(" + x(d.x0) + "," + y(d.length) + ")";
-    })
-    .attr("width", function (d) {
-      return x(d.x1) - x(d.x0);
-    })
-    .attr("height", function (d) {
-      return height - y(d.length);
-    })
-    .style("fill", "#69b3a2");
-  }
-  
-  function updateData(update) {
-    update
-      .append("rect")
-      .attr("x", 1)
-      .attr("transform", function (d) {
-        return "translate(" + x(d.x0) + "," + y(d.length) + ")";
-      })
-      .attr("width", function (d) {
-        return x(d.x1) - x(d.x0);
-      })
-      .attr("height", function (d) {
-        return height - y(d.length);
-      })
-      .style("fill", "#69b3a2");
-  }
-  popolaTabella([]);
-  // const dataType = Array.from(new Set(dataSet.map((obj) => obj.Installs))).map((Installs) => ({ Installs, Total: dataSet.filter((x) => x.Installs === Installs).length }));
-  // popolaTabella(dataType)
-  popolaTabella(histogram(dataSet.map((obj) => ({ Installs: parseInt(obj.Installs) }))));
-}
 
 export function createHistogramShortInstalls(i, dataSet) {
   allDataInstalls = dataSet
@@ -154,15 +12,17 @@ export function createHistogramShortInstalls(i, dataSet) {
     height = 165 - margin.top - margin.bottom;
 
   // append the svg object to the body of the page
-  var svg = d3
-    .select("#Histogram" + i)
-    .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .classed("ShortInstalls", true)
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
+  var svg = d3.select("#Histogram"+ i).select("svg").select("g.ShortInstalls")
+  if(svg.empty()) {
+    var svg = d3
+      .select("#Histogram" + i)
+      .append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .classed("ShortInstalls", true)
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  }
   // get the data
 
   // X axis: scale and draw:
@@ -173,11 +33,15 @@ export function createHistogramShortInstalls(i, dataSet) {
     .scaleLog()
     .domain([1, 100000000000]) // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
     .range([0, width]);
-  svg
-    .append("g")
-    .attr("transform", "translate(0," + height + ")")
-    .attr("class", "HistogramSvg" + i)
-    .call(d3.axisBottom(x).tickFormat(xTickFormat));
+  let histogramSvg = svg.select("g.HistogramSvg"+i)
+  if(histogramSvg.empty()) {
+    svg
+      .append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .attr("class", "HistogramSvg" + i)
+      .call(d3.axisBottom(x).tickFormat(xTickFormat));
+  }
+  
 
   // set the parameters for the histogram
   var histogram = d3
@@ -200,7 +64,12 @@ export function createHistogramShortInstalls(i, dataSet) {
       return d.length;
     }),
   ]); // d3.hist has to be called before the Y axis obviously
-  svg.append("g").attr("class","installsY").call(d3.axisLeft(y));
+  let axisY = svg.select("g.installsY")
+  if(axisY.empty) {
+    svg.append("g").attr("class","installsY").call(d3.axisLeft(y));
+  } else {
+    axisY.call(d3.axisLeft(y));
+  }
 
   // popolaTabella(bins);
 
@@ -254,14 +123,17 @@ export function createHistogramShortInstalls(i, dataSet) {
   commonService.firstSet.observe((data) => {
     // And apply this function to data to get the bins
     dataSet = commonService.firstSet!=undefined ? commonService.firstSet.value : allDataInstalls
-    bins = histogram(dataSet);
+    var dataY = dataSet.length!=0 ? dataSet : allDataInstalls
+    bins = histogram(dataY);
     // Y axis: scale and draw:
     y = d3.scaleLinear().range([height, 0]);
     y.domain([0,d3.max(bins, function (d) {return d.length;}),
     ]); // d3.hist has to be called before the Y axis obviously
     svg.select("g.installsY").call(d3.axisLeft(y));
     popolaTabella([]);
-    popolaTabella(histogram(commonService.firstSet.value.map((obj) => ({ Installs: parseInt(obj.Installs) }))));
+    if(dataSet.length!=0) {
+      popolaTabella(histogram(commonService.firstSet.value.map((obj) => ({ Installs: parseInt(obj.Installs) }))));
+    }
   });
 }
 
