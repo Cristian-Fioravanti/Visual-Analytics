@@ -136,7 +136,7 @@ function createParallelCoordinates(jsonPCAData) {
 
     const selected = [];
     svg.selectAll(".myPath").each(function (d) {
-      let isActive = Array.from(selections).every(([brushKey, [min, max]]) => {
+      let isActive = Array.from(selections).every(([brushKey, [max, min]]) => {
         if (dimensionsString.includes(brushKey)) {
           //todo prendere lista pointInBrush, calcolare brushMin, brushMax e poi effettuare controllo
           let valueInBrush = isBrushInsidePointScale(brushKey).map(x=> y[brushKey](x))
