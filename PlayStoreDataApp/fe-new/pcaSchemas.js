@@ -39,7 +39,7 @@ function visualize() {
     boxplotsService.populateBoxplots(jsonData)
     
     parallelCoordinatesService.createParallelCoordinates(jsonData);
-    createHistogramInstalls(jsonData);
+    histogramService.populateHistograms(jsonData);
     // histogramService.createHistogramLong(3,dataInstall,dataAppName);
   });
 }
@@ -55,7 +55,8 @@ function compare() {
     multiBoxPlotService.populateBoxplots();
 
     parallelCoordinatesService.createParallelCoordinates(jsonData);
-    createHistogramInstalls(jsonData);
+    // histogramService.populateHistograms();
+    // createHistogramInstalls(jsonData);
     // histogramService.createHistogramLong(3,dataInstall,dataAppName);
   });
 }
@@ -71,11 +72,12 @@ function getPCAForSchemas() {
     multiBoxPlotService.populateBoxplots();
 
     parallelCoordinatesService.createParallelCoordinates(jsonData);
-    createHistogramInstalls(jsonData);
+    histogramService.populateHistograms();
+    // createHistograms(jsonData);
     // histogramService.createHistogramLong(3,dataInstall,dataAppName);
   });
 }
-function createHistogramInstalls(jsonData) {
+function createHistograms(jsonData) {
   const dataInstalls = jsonData.map(obj => ({ Installs: parseInt(obj.Installs) }));
 
   const dataType = Array.from(new Set(jsonData.map(obj => obj.Type)))
@@ -89,7 +91,7 @@ function createHistogramInstalls(jsonData) {
 
   const heightY = jsonData.length;
 
-  histogramService.createHistogramShortType(1, dataType, Array.from(new Set(jsonData.map(obj => obj.Type))), heightY);
-  histogramService.createHistogramShortContentRating(2, dataContentRating, Array.from(new Set(jsonData.map(obj => obj.Content_Rating))), heightY);
-  histogramService.createHistogramShortInstalls(3, dataInstalls);
+  // histogramService.createHistogramShortType(1, dataType, Array.from(new Set(jsonData.map(obj => obj.Type))), heightY);
+  // histogramService.createHistogramShortContentRating(2, dataContentRating, Array.from(new Set(jsonData.map(obj => obj.Content_Rating))), heightY);
+  // histogramService.createHistogramShortInstalls(3, dataInstalls);
 }
