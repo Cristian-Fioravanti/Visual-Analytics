@@ -1,7 +1,6 @@
 import { getAllDataPCA, getMaxInstalls, getMaxReview } from "./ajaxService.js";
 import * as commonService from "./commonService.js";
-import * as categoryService  from "./category.js"
-
+import * as categoryService from "./category.js";
 
 let scaleColor;
 let allData;
@@ -13,29 +12,31 @@ let secondBrush;
 let brushVar;
 
 function createScatterPlot(jsonPCAData) {
-  allData = jsonPCAData
+  allData = jsonPCAData;
   var x;
   var y;
   numberOfBrush = 0;
-  secondSet = []
-  firstSet = []
-  firstBrush = []
-  secondBrush = []
+  secondSet = [];
+  firstSet = [];
+  firstBrush = [];
+  secondBrush = [];
   scaleColor = commonService.getScaleColor();
 
   // set the dimensions and margins of the graph
+  var divWidth = d3.select("#scatterPlot").node().clientWidth;
+  var divHeigth = d3.select(".div2").node().clientHeight / 2;
   var margin = { top: 10, right: 20, bottom: 20, left: 80 },
-    width = 768 - margin.left - margin.right,
-    height = 330 - margin.top - margin.bottom;
+    width = divWidth - margin.left - margin.right,
+    height = divHeigth - margin.top - margin.bottom;
 
   // append the svg object to the body of the page
-  var svg = d3.select("#scatterPlot").select("svg").select("g")
-  if(svg.empty()) {
+  var svg = d3.select("#scatterPlot").select("svg").select("g");
+  if (svg.empty()) {
     svg = d3
       .select("#scatterPlot")
       .append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
+      .attr("width", divWidth - 1)
+      .attr("height", divHeigth - 1)
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
   }
@@ -55,58 +56,98 @@ function createScatterPlot(jsonPCAData) {
   // Create scales with log transformation for x and y axes
   x = d3
     .scaleLog()
-    .domain([1, d3.max(jsonPCAData, function (d) {
+    .domain([
+      1,
+      d3.max(jsonPCAData, function (d) {
         return d.Y1;
       }) + 10,
     ])
     .range([0, width]);
-  
-  var axisX = svg.select("g.x.axis") 
-  if(axisX.empty()) {
+
+  var axisX = svg.select("g.x.axis");
+  if (axisX.empty()) {
     svg
-    .append("g")
-    .attr("transform", "translate(0," + height + ")")
-    .attr("class","x axis")
-    .call(d3.axisBottom(x).ticks(0).tickFormat(function(d) { return ""; }));
+      .append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .attr("class", "x axis")
+      .call(
+        d3
+          .axisBottom(x)
+          .ticks(0)
+          .tickFormat(function (d) {
+            return "";
+          })
+      );
   } else {
-    axisX.call(d3.axisBottom(x).ticks(0).tickFormat(function(d) { return ""; }));
+    axisX.call(
+      d3
+        .axisBottom(x)
+        .ticks(0)
+        .tickFormat(function (d) {
+          return "";
+        })
+    );
   }
-  
+
   // Add Y axis
   y = d3
     .scaleLog()
-    .domain([1,d3.max(jsonPCAData, function (d) {
+    .domain([
+      1,
+      d3.max(jsonPCAData, function (d) {
         return d.Y2;
       }) + 10,
     ])
     .range([height, 0]);
 
-  var axisY = svg.select("g.y.axis")
-  if(axisY.empty()) {
-    svg.append("g").attr("class","y axis").call(d3.axisLeft(y).ticks(0).tickFormat(function(d) { return ""; }));
+  var axisY = svg.select("g.y.axis");
+  if (axisY.empty()) {
+    svg
+      .append("g")
+      .attr("class", "y axis")
+      .call(
+        d3
+          .axisLeft(y)
+          .ticks(0)
+          .tickFormat(function (d) {
+            return "";
+          })
+      );
   } else {
-    axisY.call(d3.axisLeft(y).ticks(0).tickFormat(function(d) { return ""; }));
+    axisY.call(
+      d3
+        .axisLeft(y)
+        .ticks(0)
+        .tickFormat(function (d) {
+          return "";
+        })
+    );
   }
   populateChart(jsonPCAData, false);
 
   // Function that is triggered when brushing is performed
   function updateChart(force) {
-    var mode = commonService.mode.value
-    if(mode == 'Visualize') {
+    var mode = commonService.mode.value;
+    if (mode == "Visualize") {
       if (d3.event != null && d3.event.selection != null) {
         var extent = d3.event.selection;
         // Se il brushing è vuoto, reimposta la classe e interrompi la funzione
-        if (extent[0][0]==extent[1][0] && extent[0][1]==extent[1][1]) {
-          svg.selectAll(".selectedScatterPlot").classed("selectedScatterPlot", true);
-          if(numberOfBrush == 1) {
+        if (extent[0][0] == extent[1][0] && extent[0][1] == extent[1][1]) {
+          svg
+            .selectAll(".selectedScatterPlot")
+            .classed("selectedScatterPlot", true);
+          if (numberOfBrush == 1 || numberOfBrush > 1) {
             svg.selectAll(".brush").remove(); // Rimuovi eventuali rettangoli di selezione precedenti
-            svg.selectAll("circle").classed("selectedScatterPlot", true).classed("selectedScatterPlotFilteredParallel", false);
+            svg
+              .selectAll("circle")
+              .classed("selectedScatterPlot", true)
+              .classed("selectedScatterPlotFilteredParallel", false);
             numberOfBrush = 0;
-            commonService.setFirstSet(allData)
-            firstSet = allData
-            firstBrush = []
-            commonService.resetCheckBox()
-            categoryService.resetCategory()   
+            commonService.setFirstSet(allData);
+            firstSet = allData;
+            firstBrush = [];
+            commonService.resetCheckBox();
+            categoryService.resetCategory();
           }
           return;
         }
@@ -115,54 +156,73 @@ function createScatterPlot(jsonPCAData) {
         svg.selectAll("circle").classed("selectedScatterPlot", function (d) {
           var cx = x(d.Y1);
           var cy = y(d.Y2);
-          if (cx >= extent[0][0] && cx <= extent[1][0] && cy >= extent[0][1] && cy <= extent[1][1] ) {
+          if (
+            cx >= extent[0][0] &&
+            cx <= extent[1][0] &&
+            cy >= extent[0][1] &&
+            cy <= extent[1][1]
+          ) {
             //d is in the brush
             selectedSet.push(d);
             return true;
-          }
-          else if (isInsideSet(d)) return true
+          } else if (isInsideSet(d)) return true;
           else return false;
         });
         // Primo brush che faccio e non ho categorie selezionate
-        if (numberOfBrush == 0 && categoryService.selectedCategories.length==0) {
+        if (
+          numberOfBrush == 0 &&
+          categoryService.selectedCategories.length == 0
+        ) {
           commonService.setFirstSet(selectedSet);
-          firstSet = selectedSet
-        } 
+          firstSet = selectedSet;
+        }
         // Primo brush che faccio e ho categoria selezionata
-        else if (numberOfBrush == 0 && categoryService.selectedCategories.length>0) {
-          var oldSet = commonService.firstSet.value
-          if(oldSet==undefined || oldSet.length==0) {
-            var mergedArray = selectedSet
+        else if (
+          numberOfBrush == 0 &&
+          categoryService.selectedCategories.length > 0
+        ) {
+          var oldSet = commonService.firstSet.value;
+          if (oldSet == undefined || oldSet.length == 0) {
+            var mergedArray = selectedSet;
           } else {
-            var unicAddingSet = selectedSet.filter(obj2 => !oldSet.some(obj1 => obj1.ID === obj2.ID));
+            var unicAddingSet = selectedSet.filter(
+              (obj2) => !oldSet.some((obj1) => obj1.ID === obj2.ID)
+            );
             var mergedArray = [...oldSet, ...unicAddingSet];
           }
-          commonService.setFirstSet(mergedArray)
+          commonService.setFirstSet(mergedArray);
           commonService.setFirstSet(newSet);
-          firstSet = newSet
-        } 
+          firstSet = newSet;
+        }
       }
-    } 
-    else {
+    } else {
       if (d3.event != null && d3.event.selection != null) {
         var extent = d3.event.selection;
         // Se il brushing è vuoto, reimposta la classe e interrompi la funzione
-        if (extent[0][0]==extent[1][0] && extent[0][1]==extent[1][1]) {
-          svg.selectAll(".selectedScatterPlot").classed("selectedScatterPlot", true);
-          if(numberOfBrush == 2 || (numberOfBrush == 1 && categoryService.numberOfCheckBoxSelected==1) 
-            || categoryService.numberOfCheckBoxSelected==2) {
+        if (extent[0][0] == extent[1][0] && extent[0][1] == extent[1][1]) {
+          svg
+            .selectAll(".selectedScatterPlot")
+            .classed("selectedScatterPlot", true);
+          if (
+            numberOfBrush == 2 ||
+            (numberOfBrush == 1 &&
+              categoryService.numberOfCheckBoxSelected == 1) ||
+            categoryService.numberOfCheckBoxSelected == 2
+          ) {
             svg.selectAll(".brush").remove(); // Rimuovi eventuali rettangoli di selezione precedenti
-            svg.selectAll(".selectedScatterPlot").classed("selectedScatterPlot", false);
-            
+            svg
+              .selectAll(".selectedScatterPlot")
+              .classed("selectedScatterPlot", false);
+
             numberOfBrush = 0;
-            commonService.setFirstSet([])
-            commonService.setSecondSet([])
-            firstSet = []
-            secondSet = []
-            firstBrush = []
-            secondBrush = []
-            commonService.resetCheckBox()
-            categoryService.resetCategory()   
+            commonService.setFirstSet([]);
+            commonService.setSecondSet([]);
+            firstSet = [];
+            secondSet = [];
+            firstBrush = [];
+            secondBrush = [];
+            commonService.resetCheckBox();
+            categoryService.resetCategory();
           }
           return;
         }
@@ -171,61 +231,80 @@ function createScatterPlot(jsonPCAData) {
         svg.selectAll("circle").classed("selectedScatterPlot", function (d) {
           var cx = x(d.Y1);
           var cy = y(d.Y2);
-          if (cx >= extent[0][0] && cx <= extent[1][0] && cy >= extent[0][1] && cy <= extent[1][1] ) {
+          if (
+            cx >= extent[0][0] &&
+            cx <= extent[1][0] &&
+            cy >= extent[0][1] &&
+            cy <= extent[1][1]
+          ) {
             //d is in the brush
             selectedSet.push(d);
             return true;
-          }
-          else if (isInsideSet(d)) return true
+          } else if (isInsideSet(d)) return true;
           else return false;
         });
         // Primo brush che faccio e non ho categorie selezionate
-        if (numberOfBrush == 0 && categoryService.numberOfCheckBoxSelected==0) {
+        if (
+          numberOfBrush == 0 &&
+          categoryService.numberOfCheckBoxSelected == 0
+        ) {
           commonService.setFirstSet(selectedSet);
-          firstSet = selectedSet
-          
-        } 
-        // Primo brush che faccio e ho categoria selezionata
-        else if (numberOfBrush == 0 && categoryService.numberOfCheckBoxSelected==1) {
-          commonService.setSecondSet(selectedSet);
-          secondSet = selectedSet
-          commonService.disabledCheckBox()
-        } 
-        // Secondo brush che faccio e non ho categorie selezionate
-        else if (numberOfBrush == 1 && categoryService.numberOfCheckBoxSelected==0) {
-          if(firstBrush.length==0) {
-            commonService.setFirstSet(selectedSet);
-            firstSet = selectedSet
-          } else if (secondBrush.length==0) {
-            commonService.setSecondSet(selectedSet);
-            secondSet = selectedSet
-          }
-          commonService.disabledCheckBox()
+          firstSet = selectedSet;
         }
-        
-        if (numberOfBrush > 1 || (numberOfBrush == 1 && categoryService.numberOfCheckBoxSelected==1)  ) {
-          console.log("qui")        
+        // Primo brush che faccio e ho categoria selezionata
+        else if (
+          numberOfBrush == 0 &&
+          categoryService.numberOfCheckBoxSelected == 1
+        ) {
+          commonService.setSecondSet(selectedSet);
+          secondSet = selectedSet;
+          commonService.disabledCheckBox();
+        }
+        // Secondo brush che faccio e non ho categorie selezionate
+        else if (
+          numberOfBrush == 1 &&
+          categoryService.numberOfCheckBoxSelected == 0
+        ) {
+          if (firstBrush.length == 0) {
+            commonService.setFirstSet(selectedSet);
+            firstSet = selectedSet;
+          } else if (secondBrush.length == 0) {
+            commonService.setSecondSet(selectedSet);
+            secondSet = selectedSet;
+          }
+          commonService.disabledCheckBox();
+        }
+
+        if (
+          numberOfBrush > 1 ||
+          (numberOfBrush == 1 && categoryService.numberOfCheckBoxSelected == 1)
+        ) {
+          console.log("qui");
           svg.selectAll(".brush").remove(); // Rimuovi eventuali rettangoli di selezione precedenti
-          svg.selectAll(".selectedScatterPlot").classed("selectedScatterPlot", false);
-          
+          svg
+            .selectAll(".selectedScatterPlot")
+            .classed("selectedScatterPlot", false);
+
           numberOfBrush = 0;
-          commonService.setFirstSet([])
-          commonService.setSecondSet([])
-          firstSet = []
-          secondSet = []
-          firstBrush = []
-          secondBrush = []
-          commonService.resetCheckBox()
-          categoryService.resetCategory()
+          commonService.setFirstSet([]);
+          commonService.setSecondSet([]);
+          firstSet = [];
+          secondSet = [];
+          firstBrush = [];
+          secondBrush = [];
+          commonService.resetCheckBox();
+          categoryService.resetCategory();
         }
       }
     }
-     svg.selectAll("circle").classed("selectedScatterPlotFilteredParallel", false)
+    svg
+      .selectAll("circle")
+      .classed("selectedScatterPlotFilteredParallel", false);
     if (force) svg.selectAll("circle").classed("selectedScatterPlot", true);
   }
   function createRect() {
-    if (d3.event != null && d3.event.selection != null){
-      if(isFirstBrush()) {
+    if (d3.event != null && d3.event.selection != null) {
+      if (isFirstBrush()) {
         svg
           .append("rect")
           .attr("class", "brush")
@@ -238,9 +317,8 @@ function createScatterPlot(jsonPCAData) {
           .attr("width", d3.event.selection[1][0] - d3.event.selection[0][0])
           .attr("height", d3.event.selection[1][1] - d3.event.selection[0][1]);
         numberOfBrush++;
-        firstBrush = firstSet
-        
-      } else  {
+        firstBrush = firstSet;
+      } else {
         svg
           .append("rect")
           .attr("class", "brush")
@@ -253,8 +331,7 @@ function createScatterPlot(jsonPCAData) {
           .attr("width", d3.event.selection[1][0] - d3.event.selection[0][0])
           .attr("height", d3.event.selection[1][1] - d3.event.selection[0][1]);
         numberOfBrush++;
-        secondBrush = secondSet
-       
+        secondBrush = secondSet;
       }
     }
   }
@@ -262,16 +339,18 @@ function createScatterPlot(jsonPCAData) {
     return scaleColor(d.Category);
   }
   function populateChart(data, force) {
-    svg.select("g.gCircles").remove()
+    svg.select("g.gCircles").remove();
     svg.selectAll("rect.brush").remove();
     svg
-      .append("g").attr("class", "gCircles")
+      .append("g")
+      .attr("class", "gCircles")
       .selectAll("circle")
       .data(data)
       .join("circle")
       .attr("class", function (d) {
         return "selectedScatterPlot";
-      }).attr("name", function (d) {
+      })
+      .attr("name", function (d) {
         return d.Category;
       })
       .attr("id", function (d) {
@@ -288,32 +367,36 @@ function createScatterPlot(jsonPCAData) {
   }
 
   function isInsideRect(d) {
-    let res = false
+    let res = false;
     if (firstSet != null) {
-      res = res || firstSet.includes(d)
+      res = res || firstSet.includes(d);
+    } else if (secondSet != null) {
+      res = res || secondSet.includes(d);
     }
-    else if (secondSet != null) {
-      res = res || secondSet.includes(d)
-    }
-    
-    return res
-  }  
+
+    return res;
+  }
   function isInsideSet(d) {
-    let res = false
-    if (commonService.firstSet.value !=undefined) {
-      res = res || commonService.firstSet.value.includes(d)
+    let res = false;
+    if (commonService.firstSet.value != undefined) {
+      res = res || commonService.firstSet.value.includes(d);
+    } else if (commonService.secondSet.value != undefined) {
+      res = res || commonService.secondSet.value.includes(d);
     }
-    else if (commonService.secondSet.value !=undefined) {
-      res = res || commonService.secondSet.value.includes(d)
-    }
-    return res
+    return res;
   }
 }
 
 function isFirstBrush() {
-  return (numberOfBrush==0 && categoryService.numberOfCheckBoxSelected==0) ||
-    (numberOfBrush==0 && categoryService.numberOfCheckBoxSelected==1 && commonService.isEmpty(commonService.firstSet))||
-    (numberOfBrush==1 && categoryService.numberOfCheckBoxSelected==0 && firstBrush.length==0)
+  return (
+    (numberOfBrush == 0 && categoryService.numberOfCheckBoxSelected == 0) ||
+    (numberOfBrush == 0 &&
+      categoryService.numberOfCheckBoxSelected == 1 &&
+      commonService.isEmpty(commonService.firstSet)) ||
+    (numberOfBrush == 1 &&
+      categoryService.numberOfCheckBoxSelected == 0 &&
+      firstBrush.length == 0)
+  );
 }
 
 export { createScatterPlot };
