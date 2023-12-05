@@ -2,6 +2,7 @@ import { getAllDataPCA, getMaxInstalls, getMaxReview } from "./ajaxService.js";
 import * as commonService from "./commonService.js";
 import * as categoryService  from "./category.js"
 
+
 let scaleColor;
 let allData;
 let numberOfBrush;
@@ -99,7 +100,7 @@ function createScatterPlot(jsonPCAData) {
           svg.selectAll(".selectedScatterPlot").classed("selectedScatterPlot", true);
           if(numberOfBrush == 1) {
             svg.selectAll(".brush").remove(); // Rimuovi eventuali rettangoli di selezione precedenti
-            svg.selectAll("circle").classed("selectedScatterPlot", true);
+            svg.selectAll("circle").classed("selectedScatterPlot", true).classed("selectedScatterPlotFilteredParallel", false);
             numberOfBrush = 0;
             commonService.setFirstSet(allData)
             firstSet = allData
@@ -182,6 +183,7 @@ function createScatterPlot(jsonPCAData) {
         if (numberOfBrush == 0 && categoryService.numberOfCheckBoxSelected==0) {
           commonService.setFirstSet(selectedSet);
           firstSet = selectedSet
+          
         } 
         // Primo brush che faccio e ho categoria selezionata
         else if (numberOfBrush == 0 && categoryService.numberOfCheckBoxSelected==1) {
@@ -200,6 +202,7 @@ function createScatterPlot(jsonPCAData) {
           }
           commonService.disabledCheckBox()
         }
+        
         if (numberOfBrush > 1 || (numberOfBrush == 1 && categoryService.numberOfCheckBoxSelected==1)  ) {
           console.log("qui")        
           svg.selectAll(".brush").remove(); // Rimuovi eventuali rettangoli di selezione precedenti
@@ -217,6 +220,7 @@ function createScatterPlot(jsonPCAData) {
         }
       }
     }
+     svg.selectAll("circle").classed("selectedScatterPlotFilteredParallel", false)
     if (force) svg.selectAll("circle").classed("selectedScatterPlot", true);
   }
   function createRect() {
@@ -235,6 +239,7 @@ function createScatterPlot(jsonPCAData) {
           .attr("height", d3.event.selection[1][1] - d3.event.selection[0][1]);
         numberOfBrush++;
         firstBrush = firstSet
+        
       } else  {
         svg
           .append("rect")
@@ -249,6 +254,7 @@ function createScatterPlot(jsonPCAData) {
           .attr("height", d3.event.selection[1][1] - d3.event.selection[0][1]);
         numberOfBrush++;
         secondBrush = secondSet
+       
       }
     }
   }
@@ -277,7 +283,7 @@ function createScatterPlot(jsonPCAData) {
       .attr("cy", function (d) {
         return y(d.Y2);
       })
-      .attr("r", 2)
+      .attr("r", 3)
       .style("fill", getColor);
   }
 

@@ -4,7 +4,9 @@ import * as commonService from "./commonService.js";
 let countClick = 0;
 let scaleColor;
 let allData;
-
+var firstGroup;
+var secondGroup
+export var selected = [];
 function createParallelCoordinates(jsonPCAData) {
   allData = jsonPCAData
   scaleColor = commonService.getScaleColor();
@@ -119,9 +121,10 @@ function createParallelCoordinates(jsonPCAData) {
   let selections = new Map();
   let selectionsString = new Map();
   let brushSelectionActive= new Map()
-  const selectedColor = "blue"; // Change the color for selected paths
+  const selectedColor = "yellow"; // Change the color for selected paths
 
   function brushedVertical(event) {
+    selected = []
     if (!d3.event.selection) {
       selections.delete(event);
       selectionsString.delete(event);
@@ -140,7 +143,7 @@ function createParallelCoordinates(jsonPCAData) {
       }
     }
 
-    const selected = [];
+    
     svg.selectAll(".myPath").each(function (d) {
       let isActive = Array.from(selections).every(([brushKey, [max, min]]) => {
         if (dimensionsString.includes(brushKey)) {
@@ -161,8 +164,13 @@ function createParallelCoordinates(jsonPCAData) {
 
       if (isActive) {
         selected.push(d);
+      } else {
+        let index = selected.indexOf(d)
+        if (index != -1)
+        selected.splice(index,1);
       }
     });
+    addBorderToCircleSelected(selected)
   }
 function isBrushInsidePointScale(brushKey) {
   const domainValues = y[brushKey].domain();
@@ -253,8 +261,8 @@ export function createParallelCoordinatesCompare() {
 
   svg.selectAll(".myPath").remove()
   commonService.firstSet.observe((data) => {
-    var firstGroup = commonService.firstSet!=undefined ? commonService.firstSet.value : [];
-    var secondGroup = commonService.secondSet.value!=undefined ? commonService.secondSet.value : [];
+    firstGroup = commonService.firstSet!=undefined ? commonService.firstSet.value : [];
+    secondGroup = commonService.secondSet.value!=undefined ? commonService.secondSet.value : [];
     
     jsonPCAData = [...firstGroup, ...secondGroup]
     distinctPCAData = commonService.distinctValuesPerKey(jsonPCAData);
@@ -342,7 +350,7 @@ export function createParallelCoordinatesCompare() {
             [-10, 0],
             [10, height+1],
           ])
-          .on("start brush", brushedVertical);
+          .on("start brush", brushedVerticalCompare);
   
         d3.select(this).call(brush);
       })
@@ -356,8 +364,8 @@ export function createParallelCoordinatesCompare() {
       .style("fill", "white");
   })
   commonService.secondSet.observe((data) => {
-    var firstGroup = commonService.firstSet!=undefined ? commonService.firstSet.value : [];
-    var secondGroup = commonService.secondSet.value!=undefined ? commonService.secondSet.value : [];
+    firstGroup = commonService.firstSet!=undefined ? commonService.firstSet.value : [];
+    secondGroup = commonService.secondSet.value!=undefined ? commonService.secondSet.value : [];
     
     jsonPCAData = [...firstGroup, ...secondGroup]
     distinctPCAData = commonService.distinctValuesPerKey(jsonPCAData);
@@ -391,22 +399,8 @@ export function createParallelCoordinatesCompare() {
         })
       );
     }
-
-    function getColorPath(d) {
-      if(firstGroup.includes(d)) {
-        if(categoryService.firstCategory!=null) {      
-          return scaleColor(d.Category);
-        } else {
-          return "rgb(255,0,0)"
-        }
-      } else {
-        if(categoryService.secondCategory!=null) {
-          return scaleColor(d.Category);
-        } else {
-          return "rgb(0,0,255)"
-        }
-      }
-    }
+    
+    
     svg.selectAll(".myPath1").remove()
     svg.selectAll(".myPath2").remove()
     if(jsonPCAData.length!=0) {
@@ -444,7 +438,7 @@ export function createParallelCoordinatesCompare() {
           [-10, 0],
           [10, height+1],
         ])
-        .on("start brush", brushedVertical);
+        .on("start brush", brushedVerticalCompare);
 
       d3.select(this).call(brush);
     })
@@ -455,7 +449,8 @@ export function createParallelCoordinatesCompare() {
     .text(function (d) {
       return d;
     })
-    .style("fill", "white");
+      .style("fill", "white");
+    
   })
     
   svg.selectAll(".myAxis").remove()
@@ -480,7 +475,7 @@ export function createParallelCoordinatesCompare() {
           [-10, 0],
           [10, height+1],
         ])
-        .on("start brush", brushedVertical);
+        .on("start brush", brushedVerticalCompare);
 
       d3.select(this).call(brush);
     })
@@ -496,9 +491,11 @@ export function createParallelCoordinatesCompare() {
   let selections = new Map();
   let selectionsString = new Map();
   let brushSelectionActive= new Map()
-  const selectedColor = "blue"; // Change the color for selected paths
+  const selectedColor = "yellow"; // Change the color for selected paths
 
-  function brushedVertical(event) {
+  
+  function brushedVerticalCompare(event) {
+    selected = []
     if (!d3.event.selection) {
       selections.delete(event);
       selectionsString.delete(event);
@@ -517,8 +514,7 @@ export function createParallelCoordinatesCompare() {
       }
     }
 
-    const selected = [];
-    svg.selectAll(".myPath").each(function (d) {
+    svg.selectAll(".myPath1, .myPath2").each(function (d) {
       let isActive = Array.from(selections).every(([brushKey, [max, min]]) => {
         if (dimensionsString.includes(brushKey)) {
           //todo prendere lista pointInBrush, calcolare brushMin, brushMax e poi effettuare controllo
@@ -534,12 +530,18 @@ export function createParallelCoordinatesCompare() {
       });
 
       if (selections.size == 0) isActive = false;
-      d3.select(this).style("stroke", isActive ? selectedColor : scaleColor(d.Category));
+      d3.select(this).style("stroke", isActive ? selectedColor : getColorPath(d));
 
       if (isActive) {
         selected.push(d);
+        
+      }else {
+        let index = selected.indexOf(d)
+        if (index != -1)
+        selected.splice(index,1);
       }
     });
+    addBorderToCircleSelected(selected)
   }
 function isBrushInsidePointScale(brushKey) {
   const domainValues = y[brushKey].domain();
@@ -552,8 +554,32 @@ function isBrushInsidePointScale(brushKey) {
     }
   }
 
+  
   return ris; // The brush selection doesn't contain any point
+  }
+  
+  function getColorPath(d) {
+      if(firstGroup.includes(d)) {
+        if(categoryService.firstCategory!=null) {      
+          return scaleColor(d.Category);
+        } else {
+          return "rgb(255,0,0)"
+        }
+      } else {
+        if(categoryService.secondCategory!=null) {
+          return scaleColor(d.Category);
+        } else {
+          return "rgb(0,0,255)"
+        }
+      }
+    }
 }
+
+function addBorderToCircleSelected(selectedList) {
+  d3.select("#scatterPlot").selectAll("circle").each(function (d) { 
+    if (selectedList.includes(d)) d3.select(this).classed("selectedScatterPlot", false).classed("selectedScatterPlotFilteredParallel", true)
+    else d3.select(this).classed("selectedScatterPlot", true).classed("selectedScatterPlotFilteredParallel", false)
+  })
 }
 
 

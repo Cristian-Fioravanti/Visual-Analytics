@@ -75,6 +75,14 @@ text {
   stroke: black !important;
   stroke-width: 1px;
 }
+.selectedScatterPlotFilteredParallel {
+  stroke: yellow !important;
+  stroke-width: 1px;
+}
+.selectedScatterPlotFilteredBoxPlot {
+  stroke: yellow !important;
+  stroke-width: 1px;
+}
 .selectedBoxPlotLine {
   stroke: rgb(255, 164, 0) !important;
   border: 1px black solid;
@@ -86,10 +94,10 @@ text {
 }
 
 .selectedBoxPlotRect {
-  opacity: 1 !important;
+  opacity: 0.9 !important;
 }
 .selectedInvisibleBoxPlotRect {
-  opacity: 0.3 !important;
+  opacity: 0.9 !important;
 }
 
 
