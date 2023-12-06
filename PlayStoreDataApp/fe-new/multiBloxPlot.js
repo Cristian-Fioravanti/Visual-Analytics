@@ -159,22 +159,6 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
   // a few features for the box
   // var center = 200;
   var boxWidth = 75;
-  var clickRect = function (d) {
-    var isSelected = d3.select(this).classed("selectedBoxPlotRect");
-    if (isSelected) {
-      d3.select(this).classed("selectedBoxPlotRect", false);
-    } else {
-      d3.select(this).classed("selectedBoxPlotRect", true);
-    }
-  };
-  var clickInvRect = function (d) {
-    var isSelected = d3.select(this).classed("selectedInvisibleBoxPlotRect");
-    if (isSelected) {
-      d3.select(this).classed("selectedInvisibleBoxPlotRect", false);
-    } else {
-      d3.select(this).classed("selectedInvisibleBoxPlotRect", true);
-    }
-  };
 
   if (median1 != undefined && q31 != undefined && q11 != undefined) {
     d3.select("#boxPlot" + i)
@@ -220,10 +204,8 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
       .attr("height", y(median1) - y(q31)) // Lato più lungo in basso deve equivalere alla linea median
       .attr("width", boxWidth)
       .attr("stroke", "black")
-      .attr("cursor", "pointer")
       .style("fill", color)
-      .style("opacity", 0.5)
-      .on("click", clickRect);
+      .style("opacity", 1);
 
     // Show the second box (sotto la linea median)
     svg
@@ -233,10 +215,8 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
       .attr("height", y(q11) - y(median1)) // Lato più lungo in alto deve equivalere alla linea median
       .attr("width", boxWidth)
       .attr("stroke", "black")
-      .attr("cursor", "pointer")
       .style("fill", color)
-      .style("opacity", 0.5)
-      .on("click", clickRect);
+      .style("opacity", 1);
 
     // show median, min and max horizontal lines
     svg
@@ -284,10 +264,8 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
       .attr("y", y(max1))
       .attr("height", y(q31) - y(max1)) // Lato più lungo in basso deve equivalere alla linea median
       .attr("width", boxWidth)
-      .attr("cursor", "pointer")
       .style("fill", color)
-      .style("opacity", 0)
-      .on("click", clickInvRect);
+      .style("opacity", 0);
 
     // Show the second box (sotto la linea median)
     svg
@@ -296,10 +274,8 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
       .attr("y", y(q11))
       .attr("height", y(min1) - y(q11)) // Lato più lungo in alto deve equivalere alla linea median
       .attr("width", boxWidth)
-      .attr("cursor", "pointer")
       .style("fill", color)
-      .style("opacity", 0)
-      .on("click", clickInvRect);
+      .style("opacity", 0);
   }
   if (median2 != undefined && q32 != undefined && q12 != undefined) {
     if (median1 == undefined || q31 == undefined || q11 == undefined) {
@@ -346,10 +322,8 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
       .attr("height", y(median2) - y(q32)) // Lato più lungo in basso deve equivalere alla linea median
       .attr("width", boxWidth)
       .attr("stroke", "black")
-      .attr("cursor", "pointer")
       .style("fill", color)
-      .style("opacity", 0.5)
-      .on("click", clickRect);
+      .style("opacity", 1);
 
     // Show the second box (sotto la linea median)
     svg
@@ -359,10 +333,8 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
       .attr("height", y(q12) - y(median2)) // Lato più lungo in alto deve equivalere alla linea median
       .attr("width", boxWidth)
       .attr("stroke", "black")
-      .attr("cursor", "pointer")
       .style("fill", color)
-      .style("opacity", 0.5)
-      .on("click", clickRect);
+      .style("opacity", 1);
 
     // svg.selectAll("rect").classed("selectedBoxPlotRect", true)
 
@@ -412,10 +384,8 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
       .attr("y", y(max2))
       .attr("height", y(q32) - y(max2)) // Lato più lungo in basso deve equivalere alla linea median
       .attr("width", boxWidth)
-      .attr("cursor", "pointer")
       .style("fill", color)
-      .style("opacity", 0)
-      .on("click", clickInvRect);
+      .style("opacity", 0);
 
     // Show the second box (sotto la linea median)
     svg
@@ -424,10 +394,8 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
       .attr("y", y(q12))
       .attr("height", y(min2) - y(q12)) // Lato più lungo in alto deve equivalere alla linea median
       .attr("width", boxWidth)
-      .attr("cursor", "pointer")
       .style("fill", color)
-      .style("opacity", 0)
-      .on("click", clickInvRect);
+      .style("opacity", 0);
   }
   if (data1.length == 0 && data2.length == 0) {
     d3.select("#boxPlot" + i)
