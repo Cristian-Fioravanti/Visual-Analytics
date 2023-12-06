@@ -12,17 +12,6 @@ function populateBoxplots(data) {
   createBoxPlot(data3, 3, "Installs");
   let data4 = data.map((item) => item.Size);
   createBoxPlot(data4, 4, "Size");
-  // commonService.firstSet.observe((data) => {
-  //   var newData = commonService.firstSet.value;
-  //   let data1 = newData.map(item => item.Rating)
-  //   createBoxPlot(data1, 1, "Ratings")
-  //   let data2  = newData.map(item => item.Reviews)
-  //   createBoxPlot(data2, 2, "Reviews")
-  //   let data3 = newData.map(item => item.Installs)
-  //   createBoxPlot(data3, 3, "Installs")
-  //   let data4 = newData.map(item => item.Size)
-  //   createBoxPlot(data4, 4, "Size")
-  // });
 }
 
 function createBoxPlot(data, i, title) {
@@ -50,6 +39,38 @@ function createBoxPlot(data, i, title) {
   d3.select("#boxPlot" + i)
     .selectAll("g.x.axis")
     .remove();
+
+  var Tooltip = d3
+    .select("#boxPlot" + i)
+    .append("span")
+    .style("opacity", 0)
+    .attr("class", "tooltip")
+    .style("background-color", "white")
+    .style("border", "solid")
+    .style("border-width", "2px")
+    .style("border-radius", "5px")
+    .style("padding", "5px");
+
+  // Three function that change the tooltip when user hover / move / leave a cell
+  var mouseover = function (d) {
+    Tooltip.style("opacity", 1);
+    d3.select(this).style("opacity", 0.7);
+  };
+  var mousemove = function (d) {
+    // Get mouse coordinates
+     var bbox = this.getBoundingClientRect();
+     var offsetLeft = 10;
+    var offsetTop = -10; 
+    let count = countFilterElimintation(this.classList[0], this);
+    Tooltip.html("<div style='background-color: #202124'>" + (count > 0 ? "+" + count : count))
+       .style("left", (bbox.right + offsetLeft) + "px")
+        .style("top", (bbox.top + window.scrollY + offsetTop) + "px");
+  };
+  var mouseleave = function (d) {
+    Tooltip.style("opacity", 0);
+    if (this.classList[1] == "rectUp" || this.classList[1] == "rectDown") d3.select(this).style("opacity", 0.5);
+    else d3.select(this).style("opacity", 0);
+  };
   // Compute summary statistics used for the box:
   if (data.length != 0) {
     var data_sorted = data.sort(d3.ascending);
@@ -82,35 +103,83 @@ function createBoxPlot(data, i, title) {
   var center = 200;
   var width = 100;
 
+  function countFilterElimintation(title, rect) {
+    let number = 0;
+    let classToSearch;
+    let sizeAttuale = 0;
+    let listDataSelected;
+    //if sto in selection
+    let listDataSelectedBefore = Array.from(d3.select("#scatterPlot").selectAll("circle.selectedScatterPlotFilteredBoxPlot")._groups[0]);
+    sizeAttuale = listDataSelectedBefore.length;
+    if (Array.from(rect.classList).indexOf("selectedBoxPlotRect") != -1) {
+      deleteTitleSection(rect, title);
+      addBorderToCircleSelected();
+
+      listDataSelected = Array.from(d3.select("#scatterPlot").selectAll("circle.selectedScatterPlotFilteredBoxPlot")._groups[0]);
+
+      number =  listDataSelected.length -sizeAttuale ;
+      setNewSections(rect, title);
+      addBorderToCircleSelected();
+    } else {
+      setNewSections(rect, title);
+      addBorderToCircleSelected();
+
+      listDataSelected = Array.from(d3.select("#scatterPlot").selectAll("circle.selectedScatterPlotFilteredBoxPlot")._groups[0]);
+      number = listDataSelected.length - sizeAttuale;
+      //   listDataSelected =Array.from(d3.select("#scatterPlot")
+      //     .selectAll(classToSearch)._groups[0])
+      // number = listDataSelected.length - listDataSelectedBefore.length
+
+      deleteTitleSection(rect, title);
+      addBorderToCircleSelected();
+    }
+
+    return number;
+  }
+
   var clickRect = function (d) {
     var isSelected = d3.select(this).classed("selectedBoxPlotRect");
-    var yInverted = y.invert;
-    let rangeMin = yInverted(+this.attributes.y.value + +this.attributes.height.value);
-    let rangeMax = yInverted(+this.attributes.y.value);
-    let titleValue;
+
     if (isSelected) {
       d3.select(this).classed("selectedBoxPlotRect", false);
-      titleValue = selections.get(title);
-      for (let i = 0; i < titleValue.length; i++) {
-        const element = titleValue[i];
-        if (element[0] == rangeMin && element[1] == rangeMax) {
-          titleValue.splice(i, 1);
-          if (titleValue.length == 0 ) selections.delete(title)
-          break;
-        }
-      }
+      deleteTitleSection(this, title);
     } else {
-      titleValue = selections.get(title);
-      if (titleValue != undefined) {
-        titleValue.push([rangeMin, rangeMax]);
-      } else {
-        titleValue = [[rangeMin, rangeMax]];
-      }
-      selections.set(title, titleValue);
+      setNewSections(this, title);
       d3.select(this).classed("selectedBoxPlotRect", true);
     }
     addBorderToCircleSelected();
   };
+
+  function setNewSections(rect, title) {
+    var yInverted = y.invert;
+    let rangeMin = yInverted(+rect.attributes.y.value + +rect.attributes.height.value);
+    let rangeMax = yInverted(+rect.attributes.y.value);
+    let titleValue;
+    titleValue = selections.get(title);
+    if (titleValue != undefined) {
+      titleValue.push([rangeMin, rangeMax]);
+    } else {
+      titleValue = [[rangeMin, rangeMax]];
+    }
+    selections.set(title, titleValue);
+  }
+
+  function deleteTitleSection(rect, title) {
+    var yInverted = y.invert;
+    let rangeMin = yInverted(+rect.attributes.y.value + +rect.attributes.height.value);
+    let rangeMax = yInverted(+rect.attributes.y.value);
+    let titleValue;
+    titleValue = selections.get(title);
+    for (let i = 0; i < titleValue.length; i++) {
+      const element = titleValue[i];
+      if (element[0] == rangeMin && element[1] == rangeMax) {
+        titleValue.splice(i, 1);
+        if (titleValue.length == 0) selections.delete(title);
+        break;
+      }
+    }
+  }
+
   var clickInvRect = function (d) {
     var isSelected = d3.select(this).classed("selectedInvisibleBoxPlotRect");
     var yInverted = y.invert;
@@ -125,7 +194,7 @@ function createBoxPlot(data, i, title) {
         const element = titleValue[i];
         if (element[0] == rangeMin && element[1] == rangeMax) {
           titleValue.splice(i, 1);
-          if (titleValue.length == 0 ) selections.delete(title)
+          if (titleValue.length == 0) selections.delete(title);
           break;
         }
       }
@@ -179,7 +248,10 @@ function createBoxPlot(data, i, title) {
       .attr("cursor", "pointer")
       .style("fill", "rgb(255, 164, 0)")
       .style("opacity", 0.5)
-      .on("click", clickRect);
+      .on("click", clickRect)
+      .on("mouseover", mouseover)
+      .on("mousemove", mousemove)
+      .on("mouseleave", mouseleave);
 
     // Show the second box (sotto la linea median)
     svg
@@ -194,7 +266,10 @@ function createBoxPlot(data, i, title) {
       .attr("cursor", "pointer")
       .style("fill", "rgb(255, 164, 0)")
       .style("opacity", 0.5)
-      .on("click", clickRect);
+      .on("click", clickRect)
+      .on("mouseover", mouseover)
+      .on("mousemove", mousemove)
+      .on("mouseleave", mouseleave);
 
     // show median, min and max horizontal lines
     svg
@@ -248,7 +323,10 @@ function createBoxPlot(data, i, title) {
       .attr("cursor", "pointer")
       .style("fill", "rgb(255, 164, 0)")
       .style("opacity", 0)
-      .on("click", clickInvRect);
+      .on("click", clickInvRect)
+      .on("mouseover", mouseover)
+      .on("mousemove", mousemove)
+      .on("mouseleave", mouseleave);
 
     // Show the second box (sotto la linea median)
     svg
@@ -262,7 +340,10 @@ function createBoxPlot(data, i, title) {
       .attr("cursor", "pointer")
       .style("fill", "rgb(255, 164, 0)")
       .style("opacity", 0)
-      .on("click", clickInvRect);
+      .on("click", clickInvRect)
+      .on("mouseover", mouseover)
+      .on("mousemove", mousemove)
+      .on("mouseleave", mouseleave);
   }
   if (data.length == 0) {
     d3.select("#boxPlot" + i)
@@ -302,21 +383,25 @@ function createBoxPlot(data, i, title) {
 //TODO controllare se era selezionato e gestire
 function addBorderToCircleSelected() {
   d3.select("#scatterPlot")
-    .selectAll("circle.selectedScatterPlot")
+    .selectAll("circle.selectedScatterPlot, circle.selectedScatterPlotFilteredBoxPlot")
     .each(function (d) {
-      let isActive = selections.size > 0 ? Array.from(selections).every(([title, listRange]) => {
-        let ris = true
-      for (let i = 0; i < listRange.length; i++) {
-        const element = listRange[i];
-        let rangeMin = element[0]
-        let rangeMax = element[1]
-        ris = ris && d[title] >= rangeMin && d[title] <= rangeMax
-        
-      } 
-      return ris
-      }) : false;
+      let isActive =
+        selections.size > 0
+          ? Array.from(selections).every(([title, listRange]) => {
+              let ris = true;
+              for (let i = 0; i < listRange.length; i++) {
+                const element = listRange[i];
+                let rangeMin = element[0];
+                let rangeMax = element[1];
+                ris = ris && d[title] >= rangeMin && d[title] <= rangeMax;
+              }
+              return ris;
+            })
+          : false;
+
       if (isActive) d3.select(this).classed("selectedScatterPlot", false).classed("selectedScatterPlotFilteredBoxPlot", true);
-        else d3.select(this).classed("selectedScatterPlotFilteredBoxPlot", false).classed("selectedScatterPlot", true);
+      else d3.select(this).classed("selectedScatterPlotFilteredBoxPlot", false).classed("selectedScatterPlot", true);
     });
 }
+
 export { populateBoxplots };

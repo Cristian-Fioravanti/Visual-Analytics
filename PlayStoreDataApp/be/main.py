@@ -29,7 +29,7 @@ db_config = {
     }
 flask = Flask(__name__)
 CORS(flask)
-mysql_connection = MySQL(flask, prefix="my_database", host="localhost", user="root", password="root", db="va", autocommit=True)
+mysql_connection = MySQL(flask, prefix="my_database", host="localhost", user="root", password="", db="va", autocommit=True)
 
 file_input = "googleplaystore_MODIFICATO_META_MANO.csv"
 
