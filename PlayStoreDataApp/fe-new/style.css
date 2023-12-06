@@ -43,20 +43,24 @@
   .BoxPlotparent {
     display: grid;
     grid-template-columns: repeat(2, 0.5fr);
-    grid-template-rows: repeat(3, 167px);
+    grid-template-rows: repeat(4, 167px);
     grid-column-gap: 0px;
     grid-row-gap: 0px;
     grid-template-areas:
     "BoxPlotdiv1 BoxPlotdiv2"
     "BoxPlotdiv3 BoxPlotdiv4"
     "Histogram1 Histogram2"
+    "Histogram3 .";
   }
   .HistogramSvg1{
     font-size: 8px !important;
   }
   .HistogramSvg2{
       font-size: 8px !important;
-    } 
+  }
+  .Histogram3 {
+    grid-column: span 2;
+  }
   
 }
 line {
@@ -120,7 +124,7 @@ text {
   color: #fff;
   text-align: center;
   padding: 5px 0;
-  position: absolute;
+  position: relative;
   z-index: 1;
   /* bottom: 125%;
   left: 50%; */
@@ -131,7 +135,7 @@ text {
 
 .tooltip .tooltiptext::after {
   content: "";
-  position: absolute;
+  position: relative;
   /* top: 100%;
   left: 50%; */
   /* margin-left: -5px;

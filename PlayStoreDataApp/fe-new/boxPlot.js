@@ -16,10 +16,15 @@ function populateBoxplots(data) {
 
 function createBoxPlot(data, i, title) {
   // set the dimensions and margins of the graph
+  var divWidth = d3.select(".BoxPlotdiv" + i).node().clientWidth;
+  var divHeigth = d3.select(".BoxPlotdiv" + i).node().clientHeight;
   var margin = { top: 25, right: 0, bottom: 5, left: 40 },
-    width = 298 - margin.left - margin.right,
-    height = 167 - margin.top - margin.bottom;
+    width = divWidth - margin.left - margin.right,
+    height = divHeigth - margin.top - margin.bottom;
 
+  d3.select("#boxPlot" + i)
+    .select("svg.svgBoxPlot")
+    .remove();
   var svg = d3
     .select("#boxPlot" + i)
     .select("svg")
@@ -29,8 +34,8 @@ function createBoxPlot(data, i, title) {
     svg = d3
       .select("#boxPlot" + i)
       .append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
+      .attr("width", divWidth - 1)
+      .attr("height", divHeigth - 1)
       .append("g")
       .attr("class", "gBoxPlot")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -45,11 +50,7 @@ function createBoxPlot(data, i, title) {
     .append("span")
     .style("opacity", 0)
     .attr("class", "tooltip")
-    .style("background-color", "white")
-    .style("border", "solid")
-    .style("border-width", "2px")
-    .style("border-radius", "5px")
-    .style("padding", "5px");
+   
 
   // Three function that change the tooltip when user hover / move / leave a cell
   var mouseover = function (d) {
@@ -59,15 +60,17 @@ function createBoxPlot(data, i, title) {
   var mousemove = function (d) {
     // Get mouse coordinates
      var bbox = this.getBoundingClientRect();
-     var offsetLeft = 10;
-    var offsetTop = -10; 
+     var offsetLeft = -900;
+    var offsetTop = -400; 
     let count = countFilterElimintation(this.classList[0], this);
-    Tooltip.html("<div style='background-color: #202124'>" + (count > 0 ? "+" + count : count))
-       .style("left", (bbox.right + offsetLeft) + "px")
-        .style("top", (bbox.top + window.scrollY + offsetTop) + "px");
+    Tooltip.html("<div>" + (count > 0 ? "+" + count : count))
+      .style("left",  "117px")
+      .style("bottom",  "152px");
+
   };
   var mouseleave = function (d) {
     Tooltip.style("opacity", 0);
+    
     if (this.classList[1] == "rectUp" || this.classList[1] == "rectDown") d3.select(this).style("opacity", 0.5);
     else d3.select(this).style("opacity", 0);
   };
@@ -86,12 +89,15 @@ function createBoxPlot(data, i, title) {
   }
 
   // Show the Y scale
-  if (max - min < 10) var y = d3.scaleLinear().domain([min, max]).range([height, 0]);
+  if (max - min < 10)
+    var y = d3.scaleLinear().domain([min, max]).range([height, 0]);
   else var y = d3.scaleLog().domain([1, max]).range([height, 0]);
 
-  var powerLabels = d3.range(0, Math.ceil(Math.log10(max) + 1)).map(function (d) {
-    return Math.pow(10, d);
-  });
+  var powerLabels = d3
+    .range(0, Math.ceil(Math.log10(max) + 1))
+    .map(function (d) {
+      return Math.pow(10, d);
+    });
   var yAxisFormat = d3.format("");
   if (max > 10) {
     var yAxis = d3.axisLeft(y).tickValues(powerLabels).tickFormat(yAxisFormat);
@@ -183,7 +189,9 @@ function createBoxPlot(data, i, title) {
   var clickInvRect = function (d) {
     var isSelected = d3.select(this).classed("selectedInvisibleBoxPlotRect");
     var yInverted = y.invert;
-    let rangeMin = yInverted(+this.attributes.y.value + +this.attributes.height.value);
+    let rangeMin = yInverted(
+      +this.attributes.y.value + +this.attributes.height.value
+    );
     let rangeMax = yInverted(+this.attributes.y.value);
     let titleValue;
     if (isSelected) {
