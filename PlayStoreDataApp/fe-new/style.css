@@ -4,6 +4,9 @@
   grid-template-rows: 0.1fr 1fr 0.1fr;
   grid-column-gap: 0px;
   grid-row-gap: 0px;
+  font-family: monaco,Consolas,
+    "Lucida Console",
+    monospace
 }
 
 .header {
@@ -149,16 +152,16 @@ text {
   opacity: 1;
 }
 
-/* Stile per pulsanti attivi */
+/* Stile per pulsanti attivi 
 .toggle-button.active {
   background-color: #4CAF50;
 
   color: white;
 }
-
-/* Stile per pulsanti disattivi */
+*/
+/* Stile per pulsanti disattivi 
 .toggle-button.disabled {
   background-color: #808080;
 
   color: white;
-}
+}*/
