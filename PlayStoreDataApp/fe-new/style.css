@@ -148,3 +148,17 @@ text {
   visibility: visible;
   opacity: 1;
 }
+
+/* Stile per pulsanti attivi 
+.toggle-button.active {
+  background-color: #4CAF50;
+
+  color: white;
+}
+*/
+/* Stile per pulsanti disattivi 
+.toggle-button.disabled {
+  background-color: #808080;
+
+  color: white;
+}*/

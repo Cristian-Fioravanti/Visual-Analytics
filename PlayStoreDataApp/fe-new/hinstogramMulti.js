@@ -314,11 +314,44 @@ export function createHistogramInstalls(dataSet) {
 
 export function createHistogramType(dataDistinct, data1, data2) {
   var dataSet = [...data1, ...data2];
+  var y
+   var tooltip = d3.select("#Histogram1")
+    .append("span")
+    .style("opacity", 0)
+    .style("background-color", "black")
+    .style("position", "absolute")
+    .style("border-width", "1px")
+    .style("border-radius", "5px")
+    .style("padding", "10px")
 
+  var mouseover = function(d) {
+    tooltip
+      .style("opacity", 1)
+  }
+
+  var mousemove = function(d) {
+    var containerY = d3.event.clientY - d3.select(".Histogram1").node().getBoundingClientRect().top- margin.top;
+    
+    // Calcola le coordinate y relative al grafico
+    var mouseY = y.invert(containerY)
+
+    // Aggiungi il testo desiderato nel tooltip
+    tooltip
+        .html(mouseY.toFixed(2))
+      .style("left", (d3.event.clientX+10) + "px") // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
+      .style("top", (d3.event.clientY-50) + "px")
+  }
+
+  // A function that change this tooltip when the leaves a point: just need to set opacity to 0 again
+  var mouseleave = function(d) {
+    tooltip.style("opacity", 0)
+    
+  }  
   function popolaTabella(firstGroup, secondGroup) {
     // Seleziona l'elemento SVG o il contenitore appropriato
     const svg = d3.select(".ShortTicks");
     svg.selectAll("rect").remove();
+    
     if (categoryService.firstCategory != null) {
       var color1 = commonService.scaleColor(categoryService.firstCategory);
     } else {
@@ -329,6 +362,8 @@ export function createHistogramType(dataDistinct, data1, data2) {
     } else {
       var color2 = "rgb(0,0,255)";
     }
+    var y
+  
     // Seleziona tutti i rettangoli nel contenitore e associa i dati combinati
     const rects1 = svg
       .selectAll("rect.firstGroup")
@@ -368,7 +403,9 @@ export function createHistogramType(dataDistinct, data1, data2) {
           return height - y(d.Total);
         })
         .attr("class", "firstGroup")
-        .style("fill", color);
+        .style("fill", color).on("mouseover", mouseover )
+    .on("mousemove", mousemove )
+    .on("mouseleave", mouseleave );
     } else {
       enter
         .append("rect")
@@ -381,7 +418,9 @@ export function createHistogramType(dataDistinct, data1, data2) {
           return height - y(d.Total);
         })
         .attr("class", "secondGroup")
-        .style("fill", color);
+        .style("fill", color).on("mouseover", mouseover )
+    .on("mousemove", mousemove )
+    .on("mouseleave", mouseleave );
     }
   }
 
@@ -398,7 +437,9 @@ export function createHistogramType(dataDistinct, data1, data2) {
       .attr("height", function (d) {
         return height - y(d.length);
       })
-      .style("fill", "yellow");
+      .style("fill", "yellow").on("mouseover", mouseover )
+    .on("mousemove", mousemove )
+    .on("mouseleave", mouseleave );
   }
 
   // set the dimensions and margins of the graph
@@ -444,7 +485,7 @@ export function createHistogramType(dataDistinct, data1, data2) {
   }
   // Y axis: scale and draw:
   var domainY = dataSet.length != 0 ? dataSet.length : 7023;
-  var y = d3.scaleSymlog().range([height, 0]).domain([0, domainY]);
+  y = d3.scaleSymlog().range([height, 0]).domain([0, domainY]);
   function generateCustomTicks(y) {
     var tickValues = [y.domain()[0]];
     var currentValue = y.domain()[1];
@@ -487,7 +528,39 @@ export function createHistogramContentRating(dataDistinct, data1, data2) {
   var margin = { top: 10, right: 5, bottom: 30, left: 40 },
     width = 350 - margin.left - margin.right,
     height = 165 - margin.top - margin.bottom;
+  var y;
+  var tooltip = d3.select("#Histogram2")
+    .append("span")
+    .style("opacity", 0)
+    .style("background-color", "black")
+    .style("position", "absolute")
+    .style("border-width", "1px")
+    .style("border-radius", "5px")
+    .style("padding", "10px")
 
+  var mouseover = function(d) {
+    tooltip
+      .style("opacity", 1)
+  }
+
+  var mousemove = function(d) {
+    var containerY = d3.event.clientY - d3.select(".Histogram2").node().getBoundingClientRect().top- margin.top;
+    
+    // Calcola le coordinate y relative al grafico
+    var mouseY = y.invert(containerY)
+
+    // Aggiungi il testo desiderato nel tooltip
+    tooltip
+        .html(mouseY.toFixed(2))
+      .style("left", (d3.event.clientX+10) + "px") // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
+      .style("top", (d3.event.clientY-50) + "px")
+  }
+
+  // A function that change this tooltip when the leaves a point: just need to set opacity to 0 again
+  var mouseleave = function(d) {
+    tooltip.style("opacity", 0)
+    
+  }  
   var svg = d3.select("#Histogram2").select("svg").select("g.ContentRating");
   if (svg.empty()) {
     // append the svg object to the body of the page
@@ -525,7 +598,7 @@ export function createHistogramContentRating(dataDistinct, data1, data2) {
 
   // Y axis: scale and draw:
   var domainY = dataSet.length != 0 ? dataSet.length : 7023;
-  var y = d3.scaleSymlog().range([height, 0]).domain([0, domainY]);
+  y = d3.scaleSymlog().range([height, 0]).domain([0, domainY]);
   function generateCustomTicks(y) {
     var tickValues = [y.domain()[0]];
     var currentValue = y.domain()[1];
@@ -606,7 +679,9 @@ export function createHistogramContentRating(dataDistinct, data1, data2) {
           return height - y(d.Total);
         })
         .attr("class", "firstGroup")
-        .style("fill", color);
+        .style("fill", color).on("mouseover", mouseover )
+    .on("mousemove", mousemove )
+    .on("mouseleave", mouseleave );
     } else {
       enter
         .append("rect")
@@ -619,7 +694,9 @@ export function createHistogramContentRating(dataDistinct, data1, data2) {
           return height - y(d.Total);
         })
         .attr("class", "secondGroup")
-        .style("fill", color);
+        .style("fill", color).on("mouseover", mouseover )
+    .on("mousemove", mousemove )
+    .on("mouseleave", mouseleave );
     }
   }
 
@@ -636,7 +713,9 @@ export function createHistogramContentRating(dataDistinct, data1, data2) {
       .attr("height", function (d) {
         return height - y(d.length);
       })
-      .style("fill", "yellow");
+      .style("fill", "yellow").on("mouseover", mouseover )
+    .on("mousemove", mousemove )
+    .on("mouseleave", mouseleave );
   }
   popolaTabella([], []);
   const firstGroup = Array.from(

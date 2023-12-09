@@ -10,7 +10,15 @@ let firstSet;
 let firstBrush;
 let secondBrush;
 let brushVar;
-
+let dimensions = [
+  "Rating",
+  "Reviews",
+  "Size",
+  "Installs",
+  "Price",
+  "Content_Rating",
+  "Type",
+];
 function createScatterPlot(jsonPCAData) {
   allData = jsonPCAData;
   var x;
@@ -29,6 +37,50 @@ function createScatterPlot(jsonPCAData) {
     width = divWidth - margin.left - margin.right,
     height = divHeigth - margin.top - margin.bottom;
 
+  
+  // Add a tooltip div. Here I define the general feature of the tooltip: stuff that do not depend on the data point.
+  // Its opacity is set to 0: we don't see it by default.
+  var tooltip = d3.select("#scatterPlot")
+    .append("div")
+    .style("opacity", 0)
+    .attr("class", "tooltip")
+    .style("background-color", "black")
+    .style("position", "absolute")
+    .style("border", "solid")
+    .style("border-width", "1px")
+    .style("border-radius", "5px")
+    .style("padding", "10px")
+
+
+
+  // A function that change this tooltip when the user hover a point.
+  // Its opacity is set to 1: we can now see it. Plus it set the text and position of tooltip depending on the datapoint (d)
+  var mouseover = function(d) {
+    tooltip
+      .style("opacity", 1)
+  }
+
+  var mousemove = function (d) {
+    // Costruisci il contenuto HTML utilizzando i dati da "d"
+    var htmlContent = "<strong>App:</strong> " + d.App + "<br>";
+
+    // Aggiungi altri dati da "dimensions" se disponibili
+    dimensions.forEach(function (dimension) {
+      // Verifica se la dimensione è presente nell'oggetto "d"
+      if (d[dimension]) {
+        htmlContent += "<strong>" + dimension + ":</strong> " + d[dimension] + "<br>";
+      }
+    });
+    tooltip
+      .html(htmlContent)
+      .style("left", d3.mouse(this)[0] + 350 + "px") // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
+      .style("top", d3.mouse(this)[1] -100+ "px");
+  };
+
+  // A function that change this tooltip when the leaves a point: just need to set opacity to 0 again
+  var mouseleave = function(d) {
+    tooltip.style("opacity", 0)
+  }
   // append the svg object to the body of the page
   var svg = d3.select("#scatterPlot").select("svg").select("g");
   if (svg.empty()) {
@@ -40,6 +92,7 @@ function createScatterPlot(jsonPCAData) {
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
   }
+  
   // if(brushVar!=undefined) {
   //   brushVar.clear()
   // }
@@ -363,7 +416,9 @@ function createScatterPlot(jsonPCAData) {
         return y(d.Y2);
       })
       .attr("r", 3)
-      .style("fill", getColor);
+      .style("fill", getColor).on("mouseover", mouseover )
+    .on("mousemove", mousemove )
+    .on("mouseleave", mouseleave );
   }
 
   function isInsideRect(d) {
