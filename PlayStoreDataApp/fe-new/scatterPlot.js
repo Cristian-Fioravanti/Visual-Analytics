@@ -47,14 +47,15 @@ function createScatterPlot(jsonPCAData) {
     .style("border", "solid")
     .style("border-width", "1px")
     .style("border-radius", "5px")
-    .style("padding", "10px");
+    .style("padding", "10px")
+
   }
   addTooltip()
 
   // A function that change this tooltip when the user hover a point.
   // Its opacity is set to 1: we can now see it. Plus it set the text and position of tooltip depending on the datapoint (d)
   var mouseover = function (d) {
-    tooltip.style("opacity", 1);
+    tooltip.style("opacity", 1).style("display","block");
   };
 
   var mousemove = function (d) {
@@ -70,13 +71,13 @@ function createScatterPlot(jsonPCAData) {
     });
     tooltip
       .html(htmlContent)
-      .style("left", d3.mouse(this)[0] + 350 + "px") // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
-      .style("top", d3.mouse(this)[1] -100+ "px");
+      .style("left", d3.mouse(this)[0] + 280 + "px") // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
+      .style("top", d3.mouse(this)[1] +70+ "px");
   };
 
   // A function that change this tooltip when the leaves a point: just need to set opacity to 0 again
   var mouseleave = function (d) {
-    tooltip.style("opacity", 0);
+    tooltip.style("opacity", 0).style("display","none");
   };
   
   // append the svg object to the body of the page
@@ -128,11 +129,6 @@ function createScatterPlot(jsonPCAData) {
     });
   }
 
-
-
-  if(brushVar!=undefined) {
-    brushVar.clear()
-  }
   brushVar =
     d3
       .brush() // Add the brush feature using the d3.brush function
