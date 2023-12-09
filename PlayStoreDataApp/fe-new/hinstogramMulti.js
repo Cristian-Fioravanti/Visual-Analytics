@@ -13,7 +13,43 @@ export function createHistogramInstalls(dataSet) {
   var margin = { top: 10, right: 15, bottom: 30, left: 40 },
     width = divWidth - margin.left - margin.right,
     height = divHeigth - margin.top - margin.bottom;
+  var y;
+  var x;
 
+   var tooltip = d3.select("#Histogram3")
+       .append("span")
+       .attr("class","tooltipScemo")
+    .style("opacity", 0)
+    .style("background-color", "black")
+    .style("position", "absolute")
+    .style("border-width", "1px")
+    .style("border-radius", "5px")
+    .style("padding", "10px")
+
+  var mouseover = function(d) {
+    tooltip
+      .style("opacity", 1)
+  }
+
+  var mousemove = function (d) {
+     var containerY = d3.event.clientY - d3.select("#Histogram3").node().getBoundingClientRect().top- margin.top;
+    
+    // Calcola le coordinate y relative al grafico
+    var mouseY = y.invert(containerY);
+    
+    // Aggiungi il testo desiderato nel tooltip
+    tooltip.html(mouseY.toFixed(2))
+      .style("left", x(d.x0)-24 + "px")
+       // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
+      .style("top", y(mouseY) -30+ "px")
+      .style("transform", "translate(" + x(d.x0) + ",0)")
+  }
+
+  // A function that change this tooltip when the leaves a point: just need to set opacity to 0 again
+  var mouseleave = function(d) {
+    tooltip.style("opacity", 0)
+    
+  }  
   // append the svg object to the body of the page
   var svg = d3.select("#Histogram3").select("svg").select("g.ShortInstalls");
   if (svg.empty()) {
@@ -32,7 +68,7 @@ export function createHistogramInstalls(dataSet) {
   var xTickFormat = function (d) {
     return "10^" + Math.round(Math.log10(d));
   };
-  var x = d3
+  x = d3
     .scaleLog()
     .domain([1, 100000000000]) // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
     .range([0, width]);
@@ -58,7 +94,7 @@ export function createHistogramInstalls(dataSet) {
   var bins = histogram(dataSet);
 
   // Y axis: scale and draw:
-  var y = d3.scaleLinear().range([height, 0]);
+  y = d3.scaleLinear().range([height, 0]);
   y.domain([
     0,
     d3.max(bins, function (d) {
@@ -131,7 +167,9 @@ export function createHistogramInstalls(dataSet) {
         })
         .attr("class", "firstGroup")
         .style("fill", color)
-        .style("opacity",0.6);
+        .style("opacity",0.6).on("mouseover", mouseover )
+    .on("mousemove", mousemove )
+    .on("mouseleave", mouseleave );
       // Add text on each bar
       // enter.append('text')
       //   .attr('class', 'bar-text')
@@ -161,7 +199,9 @@ export function createHistogramInstalls(dataSet) {
         })
         .attr("class", "secondGroup")
         .style("fill", color)
-        .style("opacity",0.6);
+        .style("opacity",0.6).on("mouseover", mouseover )
+    .on("mousemove", mousemove )
+    .on("mouseleave", mouseleave );
       // enter.append('text')
       //   .attr('class', 'bar-text')
       //   .attr("x", 1)
@@ -188,7 +228,9 @@ export function createHistogramInstalls(dataSet) {
       .attr("height", function (d) {
         return height - y(d.length);
       })
-      .style("fill", "yellow");
+      .style("fill", "yellow").on("mouseover", mouseover )
+    .on("mousemove", mousemove )
+    .on("mouseleave", mouseleave );
   }
   popolaTabella([], []);
   // popolaTabella(histogram(dataSet.map((obj) => ({ Installs: parseInt(obj.Installs) }))));
@@ -272,11 +314,44 @@ export function createHistogramInstalls(dataSet) {
 
 export function createHistogramType(dataDistinct, data1, data2) {
   var dataSet = [...data1, ...data2];
+  var y
+   var tooltip = d3.select("#Histogram1")
+    .append("span")
+    .style("opacity", 0)
+    .style("background-color", "black")
+    .style("position", "absolute")
+    .style("border-width", "1px")
+    .style("border-radius", "5px")
+    .style("padding", "10px")
 
+  var mouseover = function(d) {
+    tooltip
+      .style("opacity", 1)
+  }
+
+  var mousemove = function(d) {
+    var containerY = d3.event.clientY - d3.select(".Histogram1").node().getBoundingClientRect().top- margin.top;
+    
+    // Calcola le coordinate y relative al grafico
+    var mouseY = y.invert(containerY)
+
+    // Aggiungi il testo desiderato nel tooltip
+    tooltip
+        .html(mouseY.toFixed(2))
+      .style("left", (d3.event.clientX+10) + "px") // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
+      .style("top", (d3.event.clientY-50) + "px")
+  }
+
+  // A function that change this tooltip when the leaves a point: just need to set opacity to 0 again
+  var mouseleave = function(d) {
+    tooltip.style("opacity", 0)
+    
+  }  
   function popolaTabella(firstGroup, secondGroup) {
     // Seleziona l'elemento SVG o il contenitore appropriato
     const svg = d3.select(".ShortTicks");
     svg.selectAll("rect").remove();
+    
     if (categoryService.firstCategory != null) {
       var color1 = commonService.scaleColor(categoryService.firstCategory);
     } else {
@@ -287,6 +362,8 @@ export function createHistogramType(dataDistinct, data1, data2) {
     } else {
       var color2 = "rgb(0,0,255)";
     }
+    var y
+  
     // Seleziona tutti i rettangoli nel contenitore e associa i dati combinati
     const rects1 = svg
       .selectAll("rect.firstGroup")
@@ -326,7 +403,9 @@ export function createHistogramType(dataDistinct, data1, data2) {
           return height - y(d.Total);
         })
         .attr("class", "firstGroup")
-        .style("fill", color);
+        .style("fill", color).on("mouseover", mouseover )
+    .on("mousemove", mousemove )
+    .on("mouseleave", mouseleave );
     } else {
       enter
         .append("rect")
@@ -339,7 +418,9 @@ export function createHistogramType(dataDistinct, data1, data2) {
           return height - y(d.Total);
         })
         .attr("class", "secondGroup")
-        .style("fill", color);
+        .style("fill", color).on("mouseover", mouseover )
+    .on("mousemove", mousemove )
+    .on("mouseleave", mouseleave );
     }
   }
 
@@ -356,7 +437,9 @@ export function createHistogramType(dataDistinct, data1, data2) {
       .attr("height", function (d) {
         return height - y(d.length);
       })
-      .style("fill", "yellow");
+      .style("fill", "yellow").on("mouseover", mouseover )
+    .on("mousemove", mousemove )
+    .on("mouseleave", mouseleave );
   }
 
   // set the dimensions and margins of the graph
@@ -402,7 +485,7 @@ export function createHistogramType(dataDistinct, data1, data2) {
   }
   // Y axis: scale and draw:
   var domainY = dataSet.length != 0 ? dataSet.length : 7023;
-  var y = d3.scaleSymlog().range([height, 0]).domain([0, domainY]);
+  y = d3.scaleSymlog().range([height, 0]).domain([0, domainY]);
   function generateCustomTicks(y) {
     var tickValues = [y.domain()[0]];
     var currentValue = y.domain()[1];
@@ -445,7 +528,39 @@ export function createHistogramContentRating(dataDistinct, data1, data2) {
   var margin = { top: 10, right: 5, bottom: 30, left: 40 },
     width = 350 - margin.left - margin.right,
     height = 165 - margin.top - margin.bottom;
+  var y;
+  var tooltip = d3.select("#Histogram2")
+    .append("span")
+    .style("opacity", 0)
+    .style("background-color", "black")
+    .style("position", "absolute")
+    .style("border-width", "1px")
+    .style("border-radius", "5px")
+    .style("padding", "10px")
 
+  var mouseover = function(d) {
+    tooltip
+      .style("opacity", 1)
+  }
+
+  var mousemove = function(d) {
+    var containerY = d3.event.clientY - d3.select(".Histogram2").node().getBoundingClientRect().top- margin.top;
+    
+    // Calcola le coordinate y relative al grafico
+    var mouseY = y.invert(containerY)
+
+    // Aggiungi il testo desiderato nel tooltip
+    tooltip
+        .html(mouseY.toFixed(2))
+      .style("left", (d3.event.clientX+10) + "px") // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
+      .style("top", (d3.event.clientY-50) + "px")
+  }
+
+  // A function that change this tooltip when the leaves a point: just need to set opacity to 0 again
+  var mouseleave = function(d) {
+    tooltip.style("opacity", 0)
+    
+  }  
   var svg = d3.select("#Histogram2").select("svg").select("g.ContentRating");
   if (svg.empty()) {
     // append the svg object to the body of the page
@@ -483,7 +598,7 @@ export function createHistogramContentRating(dataDistinct, data1, data2) {
 
   // Y axis: scale and draw:
   var domainY = dataSet.length != 0 ? dataSet.length : 7023;
-  var y = d3.scaleSymlog().range([height, 0]).domain([0, domainY]);
+  y = d3.scaleSymlog().range([height, 0]).domain([0, domainY]);
   function generateCustomTicks(y) {
     var tickValues = [y.domain()[0]];
     var currentValue = y.domain()[1];
@@ -564,7 +679,9 @@ export function createHistogramContentRating(dataDistinct, data1, data2) {
           return height - y(d.Total);
         })
         .attr("class", "firstGroup")
-        .style("fill", color);
+        .style("fill", color).on("mouseover", mouseover )
+    .on("mousemove", mousemove )
+    .on("mouseleave", mouseleave );
     } else {
       enter
         .append("rect")
@@ -577,7 +694,9 @@ export function createHistogramContentRating(dataDistinct, data1, data2) {
           return height - y(d.Total);
         })
         .attr("class", "secondGroup")
-        .style("fill", color);
+        .style("fill", color).on("mouseover", mouseover )
+    .on("mousemove", mousemove )
+    .on("mouseleave", mouseleave );
     }
   }
 
@@ -594,7 +713,9 @@ export function createHistogramContentRating(dataDistinct, data1, data2) {
       .attr("height", function (d) {
         return height - y(d.length);
       })
-      .style("fill", "yellow");
+      .style("fill", "yellow").on("mouseover", mouseover )
+    .on("mousemove", mousemove )
+    .on("mouseleave", mouseleave );
   }
   popolaTabella([], []);
   const firstGroup = Array.from(
