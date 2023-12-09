@@ -72,12 +72,12 @@ export function createHistogramInstalls(dataSet) {
     .scaleLog()
     .domain([1, 100000000000]) // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
     .range([0, width]);
-  let histogramSvg = svg.select("g.HistogramSvg3");
+  let histogramSvg = svg.select("g.x.axis");
   if (histogramSvg.empty()) {
     svg
       .append("g")
       .attr("transform", "translate(0," + height + ")")
-      .attr("class", "HistogramSvg3")
+      .attr("class", "x axis")
       .call(d3.axisBottom(x).tickFormat(xTickFormat));
   }
 

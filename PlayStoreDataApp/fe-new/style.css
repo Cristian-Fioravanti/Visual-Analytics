@@ -22,7 +22,7 @@
 .parent {
   overflow-y: hidden;
   display: grid;
-  grid-template-columns: 0.2fr repeat(2, 1fr);
+  grid-template-columns: 0.7fr repeat(2, 1fr);
   grid-template-rows: 1fr;
   grid-column-gap: 0px;
   grid-row-gap: 0px;
@@ -30,8 +30,8 @@
 
 .category {
   grid-area: 1 / 1 / 2 / 2;
-  font-size: 16px;
-  width: 145px;
+  font-size: 17px;
+  /* width: 145px; */
   padding: 5px;
 }
 
@@ -150,6 +150,12 @@ text {
   opacity: 1;
 }
 
+.BoxPlotparent .xAxis .tick {
+  font-size: 8.7px;
+}
+.BoxPlotparent .x .tick {
+  font-size: 12px;
+}
 
 
 /* CSS
@@ -157,133 +163,6 @@ text {
   appearance: button;
   background-color: #d01515;
   border: solid transparent;
-  border-radius: 25px;
-  border-width: 0 0 5px;
-  box-sizing: border-box;
-  color: #FFFFFF;
-  cursor: pointer;
-  display: inline-block;
-  font-family: din-round, sans-serif;
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: .8px;
-  line-height: 20px;
-  margin: 0;
-  outline: none;
-  overflow: visible;
-  padding: 13px 16px;
-  text-align: center;
-  text-transform: uppercase;
-  touch-action: manipulation;
-  transform: translateZ(0);
-  transition: filter .2s;
-  user-select: none;
-  -webkit-user-select: none;
-  vertical-align: middle;
-  white-space: nowrap;
-  width: 100%;
-}
-
-.button-visualize:after {
-  background-clip: padding-box;
-  background-color: #f51818;
-  border: solid transparent;
-  border-radius: 21px;
-  border-width: 0 0 7px;
-  bottom: -4px;
-  content: "";
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
-  z-index: -1;
-}
-
-.button-visualize:main,
-.button-visualize:focus {
-  user-select: auto;
-}
-
-.button-visualize:hover:not(:disabled) {
-  filter: brightness(1.1);
-  -webkit-filter: brightness(1.1);
-}
-
-.button-visualize:disabled {
-  cursor: auto;
-}
-
-.button-visualize:active {
-  border-width: 4px 0 0;
-  background: none;
-} */
-
-
-/* .button-compare {
-  appearance: button;
-  background-color: #1899D6;
-  border: solid transparent;
-  border-radius: 21px;
-  border-width: 0 0 7px;
-  box-sizing: border-box;
-  color: #FFFFFF;
-  cursor: pointer;
-  display: inline-block;
-  font-family: din-round, sans-serif;
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: .8px;
-  line-height: 20px;
-  margin: 0;
-  outline: none;
-  overflow: visible;
-  padding: 13px 16px;
-  text-align: center;
-  text-transform: uppercase;
-  touch-action: manipulation;
-  transform: translateZ(0);
-  transition: filter .2s;
-  user-select: none;
-  -webkit-user-select: none;
-  vertical-align: middle;
-  white-space: nowrap;
-  width: 100%;
-}
-
-.button-compare:after {
-  background-clip: padding-box;
-  background-color: #1CB0F6;
-  border: solid transparent;
-  border-radius: 21px;
-  border-width: 0 0 7px;
-  bottom: -4px;
-  content: "";
-  left: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
-  z-index: -1;
-}
-
-.button-compare:main,
-.button-compare:focus {
-  user-select: auto;
-}
-
-.button-compare:hover:not(:disabled) {
-  filter: brightness(1.1);
-  -webkit-filter: brightness(1.1);
-}
-
-.button-compare:disabled {
-  cursor: auto;
-}
-
-.button-compare:active {
-  border-width: 4px 0 0;
-  background: none;
-} */
-
 /* Stile per pulsanti attivi 
 .toggle-button.active {
   background-color: #4CAF50;
