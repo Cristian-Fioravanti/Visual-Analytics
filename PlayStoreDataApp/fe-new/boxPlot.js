@@ -132,9 +132,6 @@ function createBoxPlot(data, i, title) {
 
       listDataSelected = Array.from(d3.select("#scatterPlot").selectAll("circle.selectedScatterPlotFilteredBoxPlot")._groups[0]);
       number = listDataSelected.length - sizeAttuale;
-      //   listDataSelected =Array.from(d3.select("#scatterPlot")
-      //     .selectAll(classToSearch)._groups[0])
-      // number = listDataSelected.length - listDataSelectedBefore.length
 
       deleteTitleSection(rect, title);
       addBorderToCircleSelected();
@@ -393,8 +390,7 @@ function addBorderToCircleSelected() {
   d3.select("#scatterPlot")
     .selectAll("circle.selectedScatterPlot, circle.selectedScatterPlotFilteredBoxPlot")
     .each(function (d) {
-      let isActive =
-        selections.size > 0
+      let isActive = selections.size > 0 
           ? Array.from(selections).every(([title, listRange]) => {
               let ris = true;
               for (let i = 0; i < listRange.length; i++) {

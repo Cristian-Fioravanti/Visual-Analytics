@@ -4,9 +4,7 @@
   grid-template-rows: 0.1fr 1fr 0.1fr;
   grid-column-gap: 0px;
   grid-row-gap: 0px;
-  font-family: monaco,Consolas,
-    "Lucida Console",
-    monospace
+  font-family: monaco, Consolas, "Lucida Console", monospace;
 }
 
 .header {
@@ -24,7 +22,7 @@
 .parent {
   overflow-y: hidden;
   display: grid;
-  grid-template-columns: 0.2fr repeat(2, 1fr);
+  grid-template-columns: 0.7fr repeat(2, 1fr);
   grid-template-rows: 1fr;
   grid-column-gap: 0px;
   grid-row-gap: 0px;
@@ -32,8 +30,8 @@
 
 .category {
   grid-area: 1 / 1 / 2 / 2;
-  font-size: 10px;
-  width: 145px;
+  font-size: 17px;
+  /* width: 145px; */
   padding: 5px;
 }
 
@@ -152,7 +150,20 @@ text {
   opacity: 1;
 }
 
+.BoxPlotparent .xAxis .tick {
+  font-size: 8.7px;
+}
+.BoxPlotparent .x .tick {
+  font-size: 12px;
+}
 
+
+/* CSS
+.button-visualize {
+  appearance: button;
+  background-color: #d01515;
+  border: solid transparent;
+/* Stile per pulsanti attivi 
 .toggle-button.active {
   background-color: #4CAF50;
 
@@ -163,4 +174,92 @@ text {
   background-color: #808080;
 
   color: white;
+}*/
+
+
+/* CSS */
+.button-visualize {
+  appearance: none;
+  background-color: #202124;
+  border: 2px solid rgb(255, 164, 0,0.3);
+  border-radius: 15px;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: inline-block;
+  font-family: Roobert, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-size: 16px;
+  font-weight: 600;
+  line-height: normal;
+  margin: 0;
+  min-height: 60px;
+  min-width: 0;
+  outline: none;
+  padding: 16px 24px;
+  text-align: center;
+  text-decoration: none;
+  transition: all 300ms cubic-bezier(.23, 1, 0.32, 1);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  width: 100%;
+  will-change: transform;
+}
+
+.button-visualize:disabled {
+  pointer-events: none;
+}
+
+.button-visualize:hover {
+  box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
+  transform: translateY(-2px);
+}
+
+.button-visualize:active {
+  box-shadow: none;
+  transform: translateY(0);
+}
+
+
+/* CSS */
+.button-compare {
+  appearance: none;
+  background-color: #202124;
+  border: 2px solid rgb(204, 15, 15,0.3);
+  border-radius: 15px;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: inline-block;
+  font-family: Roobert, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-size: 16px;
+  font-weight: 600;
+  line-height: normal;
+  margin: 0;
+  min-height: 60px;
+  min-width: 0;
+  outline: none;
+  padding: 16px 24px;
+  text-align: center;
+  text-decoration: none;
+  transition: all 300ms cubic-bezier(.23, 1, 0.32, 1);
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  width: 100%;
+  will-change: transform;
+}
+
+.button-compare:disabled {
+  pointer-events: none;
+}
+
+.button-compare:hover {
+  box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
+  transform: translateY(-2px);
+}
+
+.button-compare:active {
+  box-shadow: none;
+  transform: translateY(0);
 }

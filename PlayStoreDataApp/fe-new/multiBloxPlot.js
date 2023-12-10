@@ -141,7 +141,7 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
     .scaleBand()
     .range([margin.left, width + margin.left])
     .domain([group1, group2]);
-  var xAxis = d3.axisBottom(x).tickSize(9);
+  var xAxis = d3.axisBottom(x).tickSize(8);
 
   // Y Scale
   var powerLabels = d3
@@ -165,7 +165,7 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
       .select("g.y.axis")
       .remove();
     d3.select("#boxPlot" + i)
-      .select("g.x.axis")
+      .select("g.xAxis")
       .remove();
     d3.select("#boxPlot" + i)
       .selectAll("rect")
@@ -186,7 +186,7 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
     // var newTopY = margin.top-20
     svg
       .append("g")
-      .attr("class", "x axis")
+      .attr("class", "xAxis")
       .attr("transform", "translate(" + 0 + "," + newTopX + ")")
       .call(xAxis);
     // Show the box
@@ -283,7 +283,7 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
         .select("g.y.axis")
         .remove();
       d3.select("#boxPlot" + i)
-        .select("g.x.axis")
+        .select("g.xAxis")
         .remove();
       d3.select("#boxPlot" + i)
         .selectAll("rect")
@@ -302,7 +302,7 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
       // var newTopY = margin.top-20
       svg
         .append("g")
-        .attr("class", "x axis")
+        .attr("class", "xAxis")
         .attr("transform", "translate(" + 0 + "," + newTopX + ")")
         .call(xAxis);
       // Show the box
@@ -402,7 +402,7 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
       .select("g.y.axis")
       .remove();
     d3.select("#boxPlot" + i)
-      .select("g.x.axis")
+      .select("g.xAxis")
       .remove();
     d3.select("#boxPlot" + i)
       .selectAll("rect")
@@ -420,7 +420,7 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
     // var newTopY = margin.top-20
     svg
       .append("g")
-      .attr("class", "x axis")
+      .attr("class", "xAxis")
       .attr("transform", "translate(" + 0 + "," + newTopX + ")")
       .call(xAxis);
     // Show the box
@@ -437,8 +437,8 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
 
   svg
     .append("text")
-    .attr("x", x(group2) + x.bandwidth() / 2) // Posizione x al centro del grafico
-    .attr("y", 10) // Posizione y sopra il boxplot, regolabile in base alle tue esigenze
+    .attr("x", x(group1) + x.bandwidth() / 2) // Posizione x al centro del grafico
+    .attr("y", 15) // Posizione y sopra il boxplot, regolabile in base alle tue esigenze
     .attr("text-anchor", "middle") // Allinea il testo al centro
     .style("font-size", titleFontSize + "px")
     .text(title);
