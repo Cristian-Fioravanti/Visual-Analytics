@@ -42,7 +42,7 @@ function createBoxPlot(data, i, title) {
   }
   // append the svg object to the body of the page
   d3.select("#boxPlot" + i)
-    .selectAll("g.x.axis")
+    .selectAll("g.xAxis")
     .remove();
 
   var Tooltip = d3

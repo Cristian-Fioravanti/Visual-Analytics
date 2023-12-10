@@ -1,6 +1,6 @@
-import { getAllDataPCA, getMaxInstalls, getMaxReview } from "./ajaxService.js";
 import * as commonService from "./commonService.js";
 import * as categoryService from "./category.js";
+import * as ajaxService from "./ajaxService.js";
 
 let scaleColor;
 let allData;
@@ -40,7 +40,9 @@ function createScatterPlot(jsonPCAData) {
   
   // Add a tooltip div. Here I define the general feature of the tooltip: stuff that do not depend on the data point.
   // Its opacity is set to 0: we don't see it by default.
-  var tooltip = d3.select("#scatterPlot")
+  var tooltip = d3.select("#scatterPlot").select("div.tooltip")
+  if(tooltip.empty()) {
+    tooltip = d3.select("#scatterPlot")
     .append("div")
     .style("opacity", 0)
     .attr("class", "tooltip")
@@ -50,8 +52,7 @@ function createScatterPlot(jsonPCAData) {
     .style("border-width", "1px")
     .style("border-radius", "5px")
     .style("padding", "10px")
-
-
+  }
 
   // A function that change this tooltip when the user hover a point.
   // Its opacity is set to 1: we can now see it. Plus it set the text and position of tooltip depending on the datapoint (d)
@@ -93,9 +94,6 @@ function createScatterPlot(jsonPCAData) {
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
   }
   
-  // if(brushVar!=undefined) {
-  //   brushVar.clear()
-  // }
   brushVar = svg.call(
     d3
       .brush() // Add the brush feature using the d3.brush function
@@ -106,6 +104,19 @@ function createScatterPlot(jsonPCAData) {
       .on("start brush", updateChart)
       .on("end", createRect) // Each time the brush selection changes, trigger the 'updateChart' function
   );
+
+  // Bottone Compute PCA
+  var button = d3.select("#scatterPlot").select("buttton")
+  if(button.empty()) {
+    if(commonService.mode.value=='Compare') {
+      d3.select("#scatterPlot").append("button").attr("id","computePCA").on("click",computePCA).html("Compute PCA")
+    }
+  } else {
+    if(commonService.mode.value=='Visualize') {
+      button.remove()
+    }
+  }
+
   // Create scales with log transformation for x and y axes
   x = d3
     .scaleLog()
@@ -452,6 +463,17 @@ function isFirstBrush() {
       categoryService.numberOfCheckBoxSelected == 0 &&
       firstBrush.length == 0)
   );
+}
+
+function computePCA() {
+  let firstGroup = commonService.firstSet.value!=undefined ? commonService.firstSet.value : []
+  let secondGroup = commonService.secondSet.value!=undefined ? commonService.secondSet.value : []
+  let newGroup = [...firstGroup,...secondGroup]
+  let ids = newGroup.map(obj => obj.ID)
+  ajaxService.computePCA(ids).done(function (jsonData) {
+    console.log(jsonData.slice(0, 5));
+    createScatterPlot(jsonData);
+  });
 }
 
 export { createScatterPlot };

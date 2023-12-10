@@ -5,6 +5,7 @@ from flask_cors import CORS
 import PCA as pcaService
 import pandas as pd
 from flask import make_response
+
 class PlayStoreData:
     def __init__(self, rating: float, review: int, size: float, install: int, price: float):
         self.rating = rating
@@ -53,6 +54,36 @@ def star():
 @flask.route('/all-data-pca')
 def allDataPca():
     query = 'SELECT * FROM googleplaystore LIMIT 4000'
+
+    # Esecuzione della query e ottenimento dei dati in un DataFrame
+    cur = mysql_connection.get_db().cursor()
+    cur.execute(query)
+    row_headers = [x[0] for x in cur.description]  # estrae le intestazioni di riga
+    rv = cur.fetchall()
+
+    # Creazione del JSON dai risultati del database
+    json_data = []
+
+    # Chiamata a pcaService.evaluatePCA e ottenimento del risultato
+    df = pd.DataFrame(rv, columns=row_headers)
+    d = df.iloc[:, 3:8].values
+    pca_result = pcaService.evaluatePCA(df, d)
+
+    # Creazione di un oggetto di risposta Flask JSON
+    response = json.loads(pca_result)
+
+    # Creazione di una risposta Flask con gli headers appropriati
+    resp = make_response(response)
+    resp.headers['Content-Type'] = 'application/json'
+
+    return response
+
+@flask.route('/id-pca', methods=['POST'])
+def selectInIDPca():
+    req = request.request.get_json()
+    ids = req['id']
+    print(ids)
+    query = 'SELECT * FROM googleplaystore WHERE ID IN ('+ ids +')'
 
     # Esecuzione della query e ottenimento dei dati in un DataFrame
     cur = mysql_connection.get_db().cursor()
