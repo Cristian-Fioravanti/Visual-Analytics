@@ -73,11 +73,21 @@ function createScatterPlot(jsonPCAData) {
       if (d[dimension]) {
         htmlContent += "<strong>" + dimension + ":</strong> " + d[dimension] + "<br>";
       }
+      
     });
-    tooltip
+     if (d3.select(this)._groups[0][0].classList[0] != "selectedScatterPlot") {
+       htmlContent += "<strong style='color: #cd1919'>Not selected</strong> "
+    }
+    else {
+         htmlContent += "<strong style='color: #2ecd19'>Selected</strong> ";
+    }
+  
+   
+     tooltip
       .html(htmlContent)
       .style("left", d3.mouse(this)[0] + 320 + "px") // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
-      .style("top", d3.mouse(this)[1] + 70 + "px");
+       .style("top", d3.mouse(this)[1] + 70 + "px")
+       .style("background-color",background).style("color","black");
   };
 
   // A function that change this tooltip when the leaves a point: just need to set opacity to 0 again
@@ -445,6 +455,7 @@ function createScatterPlot(jsonPCAData) {
         numberOfBrush++;
         secondBrush = secondSet;
       }
+      moveLastChildToFirst(svg._groups[0][0])
     }
   }
   function getColor(d) {
