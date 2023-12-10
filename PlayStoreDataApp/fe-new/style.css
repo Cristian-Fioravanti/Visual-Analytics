@@ -22,7 +22,7 @@
 .parent {
   overflow-y: hidden;
   display: grid;
-  grid-template-columns: 0.7fr repeat(2, 1fr);
+  grid-template-columns: 0.3fr repeat(2, 1fr);
   grid-template-rows: 1fr;
   grid-column-gap: 0px;
   grid-row-gap: 0px;
@@ -122,7 +122,7 @@ text {
   visibility: hidden;
   width: 120px;
   
-  color: #fff;
+  color: black;
   text-align: center;
   padding: 5px 0;
   position: relative;
@@ -158,24 +158,22 @@ text {
 }
 
 
-/* CSS
-.button-visualize {
-  appearance: button;
-  background-color: #d01515;
-  border: solid transparent;
-/* Stile per pulsanti attivi 
-.toggle-button.active {
-  background-color: #4CAF50;
-
-  color: white;
+.toggle-button{
+  height: 40px;
+  width: 40px;
 }
-*/
-/* Stile per pulsanti disattivi 
-.toggle-button.disabled {
-  background-color: #808080;
 
+.toggle-button.active {
+  background-color: #202124;
+  cursor: pointer;
+  color: #4CAF50;
+}
+
+.toggle-button.disabled {
+  background-color: #202124;
+  cursor: pointer;
   color: white;
-}*/
+} 
 
 
 /* CSS */

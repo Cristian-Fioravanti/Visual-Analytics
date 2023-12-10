@@ -337,7 +337,7 @@ export function createHistogramType(dataDistinct, data1, data2) {
 
     // Aggiungi il testo desiderato nel tooltip
     tooltip
-        .html(d.length)
+        .html(d.Total)
       .style("left", (d3.event.clientX+10) + "px") // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
       .style("top", (d3.event.clientY-50) + "px")
   }
@@ -551,7 +551,7 @@ export function createHistogramContentRating(dataDistinct, data1, data2) {
 
     // Aggiungi il testo desiderato nel tooltip
     tooltip
-        .html(d.length)
+        .html(d.Total)
       .style("left", (d3.event.clientX+10) + "px") // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
       .style("top", (d3.event.clientY-50) + "px")
   }

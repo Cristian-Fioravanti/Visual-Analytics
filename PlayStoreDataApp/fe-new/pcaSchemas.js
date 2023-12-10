@@ -34,7 +34,7 @@ function visualize() {
     commonService.initializeScaleColor(jsonData);
     //Creation Schemas
     categoryService.insertCategory(jsonData);
-    scatterPlotService.createScatterPlot(jsonData);
+    scatterPlotService.createScatterPlot(jsonData, false);
 
     boxplotsService.populateBoxplots(jsonData);
 
@@ -49,7 +49,7 @@ function compare() {
     commonService.initializeScaleColor(jsonData);
     //Creation Schemas
     categoryService.insertCategory(jsonData);
-    scatterPlotService.createScatterPlot(jsonData);
+    scatterPlotService.createScatterPlot(jsonData, false);
 
     multiBoxPlotService.populateBoxplots();
 
