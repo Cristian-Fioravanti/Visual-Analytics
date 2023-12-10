@@ -7,10 +7,15 @@ function main() {
   button.on("click", function (d) {
     if (button.text() == "Visualize") {
       button.text("Compare");
+      button.classed("button-compare", true)
+      button.classed("button-visualize",false)
       commonService.setMode("Compare");
     } else {
       button.text("Visualize");
+      button.classed("button-compare", false)
+      button.classed("button-visualize",true)
       commonService.setMode("Visualize");
+      this.style.backgroundColor="blu"
     }
   });
 }
