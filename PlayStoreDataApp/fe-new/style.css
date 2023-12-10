@@ -261,3 +261,9 @@ text {
   box-shadow: none;
   transform: translateY(0);
 }
+
+#spanButton {
+  position: absolute;
+  left: 56%;
+  bottom: 81%;
+}
