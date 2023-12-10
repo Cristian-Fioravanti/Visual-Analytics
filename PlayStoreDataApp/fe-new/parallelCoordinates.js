@@ -291,7 +291,7 @@ export function createParallelCoordinatesCompare() {
   });
 
   // Build the X scale -> it finds the best position for each Y axis
-  var x = d3.scalePoint().range([0, width]).padding(1).domain(dimensions);
+  var x = d3.scalePoint().range([0, width]).padding(0.1).domain(dimensions);
 
   // Draw the lines
   svg.selectAll(".myPath").remove();
