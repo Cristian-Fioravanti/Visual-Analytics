@@ -15,7 +15,7 @@ export function createParallelCoordinates(jsonPCAData) {
   // console.log(commonService.distinctValuesPerKey(jsonPCAData))
 
   // set the dimensions and margins of the graph
-  var margin = { top: 30, right: 10, bottom: 10, left: 30 },
+  var margin = { top: 30, right: 10, bottom: 10, left: 10 },
     width = 768 - margin.left - margin.right,
     height = 330 - margin.top - margin.bottom;
 
@@ -70,7 +70,7 @@ export function createParallelCoordinates(jsonPCAData) {
   });
 
   // Build the X scale -> it finds the best position for each Y axis
-  var x = d3.scalePoint().range([0, width]).padding(1).domain(dimensions);
+  var x = d3.scalePoint().range([0, width]).padding(0.1).domain(dimensions);
 
   // The path function takes a row of the data as input and returns x and y coordinates of the line to draw for this row.
   function path(d) {
