@@ -36,6 +36,9 @@ export function createParallelCoordinates(jsonPCAData) {
       .attr("class", "parallelG")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
   }
+  
+  svg.selectAll(".myPath2").remove();
+  svg.selectAll(".myPath1").remove();
   let dimensions = [
     "Rating",
     "Reviews",

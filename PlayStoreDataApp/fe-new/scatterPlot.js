@@ -39,9 +39,7 @@ function createScatterPlot(jsonPCAData, recalculated) {
   var margin = { top: 10, right: 0, bottom: 20, left: 0 },
     width = divWidth - margin.left - margin.right,
     height = divHeigth - margin.top - margin.bottom;
-
-  console.log(divHeigth)
-  console.log(divWidth)
+    
   function addTooltip() {
     // Add a tooltip div. Here I define the general feature of the tooltip: stuff that do not depend on the data point.
     // Its opacity is set to 0: we don't see it by default.
