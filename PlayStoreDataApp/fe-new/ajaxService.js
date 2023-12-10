@@ -33,4 +33,14 @@ function getAllDataPCA(){
     dataType: 'json'
   });
 }
+
+export function computePCA(ids){
+  return $.ajax({
+    url: 'http://localhost:8099/id-pca',
+    method: 'POST',
+    data: JSON.stringify({id: ids}),
+    contentType: "application/json; charset=utf-8",
+    dataType: 'json'
+  });
+}
 export {getAllData, getMaxInstalls, getMaxReview, getAllCategory, getAllDataPCA}

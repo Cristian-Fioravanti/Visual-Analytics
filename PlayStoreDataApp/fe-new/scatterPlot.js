@@ -1,5 +1,5 @@
-import { getAllDataPCA, getMaxInstalls, getMaxReview } from "./ajaxService.js";
 import * as commonService from "./commonService.js";
+import * as ajaxService from "./ajaxService.js";
 import * as categoryService from "./category.js";
 
 let scaleColor;
@@ -18,7 +18,7 @@ var initilizedY;
   var newX;
 var newY;
    var zoom
-function createScatterPlot(jsonPCAData) {
+function createScatterPlot(jsonPCAData, recalculated) {
   allData = jsonPCAData;
 
   var xAxis;
@@ -34,17 +34,20 @@ function createScatterPlot(jsonPCAData) {
   scaleColor = commonService.getScaleColor();
 
   // set the dimensions and margins of the graph
-  var divWidth = d3.select("#scatterPlot").node().clientWidth + 100;
+  var divWidth = d3.select("#scatterPlot").node().offsetWidth;
   var divHeigth = d3.select(".div2").node().clientHeight / 2;
   var margin = { top: 10, right: 0, bottom: 20, left: 0 },
     width = divWidth - margin.left - margin.right,
     height = divHeigth - margin.top - margin.bottom;
 
+  console.log(divHeigth)
+  console.log(divWidth)
   function addTooltip() {
     // Add a tooltip div. Here I define the general feature of the tooltip: stuff that do not depend on the data point.
     // Its opacity is set to 0: we don't see it by default.
-    tooltip = d3
-      .select("#scatterPlot")
+    tooltip = d3.select("#scatterPlot").select("div.tooltip")
+    if(tooltip.empty()) {
+      tooltip = d3.select("#scatterPlot")
       .append("div")
       .style("opacity", 0)
       .attr("class", "tooltip")
@@ -53,7 +56,8 @@ function createScatterPlot(jsonPCAData) {
       .style("border", "solid")
       .style("border-width", "1px")
       .style("border-radius", "5px")
-      .style("padding", "10px");
+        .style("padding", "10px");
+    }  
   }
   addTooltip();
 
@@ -83,11 +87,10 @@ function createScatterPlot(jsonPCAData) {
     }
   
    
-     tooltip
+    tooltip
       .html(htmlContent)
       .style("left", d3.mouse(this)[0] + 320 + "px") // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
-       .style("top", d3.mouse(this)[1] + 70 + "px")
-       .style("background-color",background).style("color","black");
+      .style("top", d3.mouse(this)[1] + 70 + "px");
   };
 
   // A function that change this tooltip when the leaves a point: just need to set opacity to 0 again
@@ -101,8 +104,8 @@ function createScatterPlot(jsonPCAData) {
     svg = d3
       .select("#scatterPlot")
       .append("svg")
-      .attr("width", divWidth - 1)
-      .attr("height", divHeigth - 1)
+      .attr("width", divWidth - 10)
+      .attr("height", divHeigth - 10)
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
   }
@@ -116,15 +119,6 @@ function createScatterPlot(jsonPCAData) {
       [width, height],
     ])
     .on("zoom", zoomed);
-
-  // svg.append("rect")
-  //     .attr("class","zoomRect")
-  //     .attr("width", width)
-  //     .attr("height", height)
-  //     .style("fill", "none")
-  //     .style("pointer-events", "all")
-  //     .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')')
-  //     .call(zoom);
 
   function zoomed() {
     // recover the new scale
@@ -149,14 +143,16 @@ function createScatterPlot(jsonPCAData) {
   }
 
   brushVar = d3
-    .brush() // Add the brush feature using the d3.brush function
-    .extent([
-      [0, 0],
-      [width, height],
-    ]) // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
-    .on("start brush", updateChart)
+      .brush() // Add the brush feature using the d3.brush function
+      .extent([
+        [0, 0],
+        [width, height],
+      ]) // initialise the brush area: start at 0,0 and finishes at width,height: it means I select the whole graph area
+      .on("start brush", updateChart)
     .on("end", createRect); // Each time the brush selection changes, trigger the 'updateChart' function
-
+  
+  
+  d3.select(".brushRect").remove();
   svg.append("g").attr("class", "brushRect").call(brushVar);
 
   // Inizializza le variabili di stato per lo zoom e il pennello
@@ -245,6 +241,11 @@ function createScatterPlot(jsonPCAData) {
     brushEnabled = !brushEnabled; // Inverti lo stato del pennello
     updateButtonStyles();
   });
+
+  // Bottone Compute PCA
+  var button = d3.select("#computePCA")
+  button.on("click",computePCA).html("Compute PCA")
+
   // Create scales with log transformation for x and y axes
   x = d3
     .scaleLog()
@@ -300,20 +301,24 @@ function createScatterPlot(jsonPCAData) {
       .call(
         d3
           .axisLeft(y)
-          .ticks(0)
+          // .ticks(0)
           .tickFormat(function (d) {
             return "";
           })
       );
   } else {
-    yAxis.call(
-      d3
-        .axisLeft(y)
-        .ticks(0)
-        .tickFormat(function (d) {
-          return "";
-        })
-    );
+    yAxis.remove()
+    svg
+      .append("g")
+      .attr("class", "y axis")
+      .call(
+        d3
+          .axisLeft(y)
+          // .ticks(0)
+          .tickFormat(function (d) {
+            return "";
+          })
+      );
   }
   populateChart(jsonPCAData, false);
 
@@ -459,7 +464,17 @@ function createScatterPlot(jsonPCAData) {
     }
   }
   function getColor(d) {
-    return scaleColor(d.Category);
+    if(recalculated) {
+      let group1 = commonService.firstSet.value.map(obj => obj.ID)
+      if(group1.includes(d.ID)){
+        var color = categoryService.firstCategory==null ? "rgb(255,0,0)" : commonService.scaleColor(categoryService.firstCategory);
+      } else {
+        var color = categoryService.secondCategory==null ? "rgb(0,0,255)" : commonService.scaleColor(categoryService.secondCategory);
+      }
+      return color
+    } else {
+      return scaleColor(d.Category);
+    }
   }
   function populateChart(data, force) {
     svg.select("g.gCircles").remove();
@@ -492,16 +507,6 @@ function createScatterPlot(jsonPCAData) {
       .on("mouseleave", mouseleave);
   }
 
-  function isInsideRect(d) {
-    let res = false;
-    if (firstSet != null) {
-      res = res || firstSet.includes(d);
-    } else if (secondSet != null) {
-      res = res || secondSet.includes(d);
-    }
-
-    return res;
-  }
   function isInsideSet(d) {
     let res = false;
     if (commonService.firstSet.value != undefined) {
@@ -519,6 +524,17 @@ function isFirstBrush() {
     (numberOfBrush == 0 && categoryService.numberOfCheckBoxSelected == 1 && commonService.isEmpty(commonService.firstSet)) ||
     (numberOfBrush == 1 && categoryService.numberOfCheckBoxSelected == 0 && firstBrush.length == 0)
   );
+}
+
+function computePCA() {
+  let firstGroup = commonService.firstSet.value!=undefined ? commonService.firstSet.value : []
+  let secondGroup = commonService.secondSet.value!=undefined ? commonService.secondSet.value : []
+  let newGroup = [...firstGroup,...secondGroup]
+  let ids = newGroup.map(obj => obj.ID)
+  console.log(ids)
+  ajaxService.computePCA(ids).done(function (jsonData) {
+    createScatterPlot(jsonData, true);
+  });
 }
 
 function putAllEmpty(svg) {
@@ -547,11 +563,11 @@ function resetToInitialPointVisualize(svg) {
   categoryService.resetCategory();
 }
 export function setAxisToInitialValue() {
-  if (initilizedX != undefined && initilizedY != undefined) {
+  // if (initilizedX != undefined && initilizedY != undefined) {
     x = newX;
     y = newY;
     
-  }
+  // }
   
 }
 

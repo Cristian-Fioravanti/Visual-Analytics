@@ -15,9 +15,11 @@ export function createParallelCoordinates(jsonPCAData) {
   // console.log(commonService.distinctValuesPerKey(jsonPCAData))
 
   // set the dimensions and margins of the graph
+  var divWidth = d3.select("#scatterPlot").node().offsetWidth;
+  var divHeigth = d3.select(".div2").node().clientHeight / 2;
   var margin = { top: 30, right: 10, bottom: 10, left: 10 },
-    width = 768 - margin.left - margin.right,
-    height = 330 - margin.top - margin.bottom;
+    width = divWidth - margin.left - margin.right,
+    height = divHeigth - margin.top - margin.bottom;
 
   // append the svg object to the body of the page
   var svg = d3
@@ -28,8 +30,8 @@ export function createParallelCoordinates(jsonPCAData) {
     svg = d3
       .select("#parallelCoordinates")
       .append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
+      .attr("width", divWidth-1)
+      .attr("height", divHeigth-1)
       .append("g")
       .attr("class", "parallelG")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");

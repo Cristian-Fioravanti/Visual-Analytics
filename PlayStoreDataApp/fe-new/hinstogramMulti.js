@@ -38,7 +38,7 @@ export function createHistogramInstalls(dataSet) {
     var mouseY = y.invert(containerY);
     
     // Aggiungi il testo desiderato nel tooltip
-    tooltip.html(mouseY.toFixed(2))
+    tooltip.html(d.length)
       .style("left", x(d.x0)-24 + "px")
        // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
       .style("top", y(mouseY) -30+ "px")
@@ -337,7 +337,7 @@ export function createHistogramType(dataDistinct, data1, data2) {
 
     // Aggiungi il testo desiderato nel tooltip
     tooltip
-        .html(mouseY.toFixed(2))
+        .html(d.Total)
       .style("left", (d3.event.clientX+10) + "px") // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
       .style("top", (d3.event.clientY-50) + "px")
   }
@@ -551,7 +551,7 @@ export function createHistogramContentRating(dataDistinct, data1, data2) {
 
     // Aggiungi il testo desiderato nel tooltip
     tooltip
-        .html(mouseY.toFixed(2))
+        .html(d.Total)
       .style("left", (d3.event.clientX+10) + "px") // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
       .style("top", (d3.event.clientY-50) + "px")
   }
