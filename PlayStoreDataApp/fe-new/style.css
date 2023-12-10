@@ -158,23 +158,22 @@ text {
 }
 
 
-/* CSS
-.button-visualize {
-  appearance: button;
-  background-color: #d01515;
-  border: solid transparent;
-/* Stile per pulsanti attivi 
-.toggle-button.active {
-  background-color: #4CAF50;
+.toggle-button{
+  height: 40px;
+  width: 40px;
+}
 
-  color: white;
+.toggle-button.active {
+  background-color: #202124;
+  cursor: pointer;
+  color: #4CAF50;
 }
 
 .toggle-button.disabled {
-  background-color: #808080;
-
+  background-color: #202124;
+  cursor: pointer;
   color: white;
-}*/
+} 
 
 
 /* CSS */

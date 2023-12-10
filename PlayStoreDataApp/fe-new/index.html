@@ -1,64 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <link href="https://unpkg.com/css.gg@2.0.0/icons/css/zoom-in.css" rel="stylesheet" />
+<link href='https://unpkg.com/css.gg@2.0.0/icons/css/brush.css' rel='stylesheet'>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Document</title>
-  <link rel="stylesheet" href="./style.css" />
-  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-  <script src="https://d3js.org/d3.v4.min.js"></script>
-
-</head>
-
-<body style="overflow: hidden; background-color: #202124; color: white; margin-top: 5px;">
-  <div class="body">
-    <button class="button-visualize header" role="button"  id="bottone" >Visualize</button>
-    <div class="analytics" style="margin-top: 5px;">
-      <div>
-        <div class="parent">
-          <div id="category" class="category">
-          </div>
-          <div class="div2">
-            <div id="scatterPlot"></div>
-            <div id="parallelCoordinates"></div>
-          </div>
-          <div class="div3">
-            <div class="BoxPlotparent">
-              <div class="BoxPlotdiv1"><span id="boxPlot1"></span></div>
-              <div class="BoxPlotdiv2"><span id="boxPlot2"></span></div>
-              <div class="BoxPlotdiv3"><span id="boxPlot3"></span></div>
-              <div class="BoxPlotdiv4"><span id="boxPlot4"></span></div>
-              <div class="Histogram1"><span id="Histogram1"></span></div>
-              <div class="Histogram2"><span id="Histogram2"></span></div>
-              <div class="Histogram3"><span id="Histogram3" style="position: absolute;"></span></div>
+  <body style="overflow: hidden; background-color: #202124; color: white; margin-top: 5px;">
+    <div class="body">
+      <button class="button-visualize header" role="button" id="bottone">Visualize</button>
+      <div class="analytics" style="margin-top: 5px;">
+        <div>
+          <div class="parent">
+            <div id="category" class="category"></div>
+            <div class="div2">
+              <div id="scatterPlot"></div>
+              <span style="position: absolute;left: 127vh;bottom: 83vh;">
+                <a id="toggleZoom" class="toggle-button"><i align="center"class="gg-zoom-in"></i></a>
+                <br>
+                <a id="toggleBrush" class="toggle-button"><i align="center" class="gg-brush"></i></a>
+              </span>
+              <div id="parallelCoordinates"></div>
+            </div>
+            <div class="div3">
+              <div class="BoxPlotparent">
+                <div class="BoxPlotdiv1"><span id="boxPlot1"></span></div>
+                <div class="BoxPlotdiv2"><span id="boxPlot2"></span></div>
+                <div class="BoxPlotdiv3"><span id="boxPlot3"></span></div>
+                <div class="BoxPlotdiv4"><span id="boxPlot4"></span></div>
+                <div class="Histogram1"><span id="Histogram1"></span></div>
+                <div class="Histogram2"><span id="Histogram2"></span></div>
+                <div class="Histogram3"><span id="Histogram3" style="position: absolute;"></span></div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="footer">Cristian Fioravanti 1861593<br> Paolo Caruso 1843152<br> 
-    <div class="footer">
-      <div   style="position: absolute;left: 85%;     top: 94%;">
-        Cristian Fioravanti 1861593<br> Paolo Caruso <br> 
-      </div>
-     
-         <h2 class="header" style="position: absolute;left: 45%; top: 92%;"> Play Store Data</h2>
-      
-    <button id="toggleZoom" class="toggle-button">Zoom On</button>
-  <button id="toggleBrush" class="toggle-button">Brush On</button></div>
-    
-  </div>
-  <script src="interface.js" type="module"></script>
-  <script src="commonService.js" type="module"></script>
-  <script src="mode.js" type="module"></script>
-  <script src="category.js" type="module"></script>
-  <script src="boxPlot.js" type="module"></script>
-  <script src="histogram.js" type="module"></script>
-  <script src="hinstogramMulti.js" type="module"></script>
-  <script src="scatterPlot.js" type="module"></script>
-  <script src="parallelCoordinates.js" type="module"></script>
-  <script src="pcaSchemas.js" type="module"></script>
-</body>
+      <div class="footer">
+        <div style="position: absolute;left: 85%;     top: 94%;">
+          Cristian Fioravanti 1861593<br />
+          Paolo Caruso <br />
+        </div>
 
+        <h2 class="header" style="position: absolute;left: 45%; top: 92%;">Play Store Data</h2>
+      </div>
+    </div>
+    <script src="interface.js" type="module"></script>
+    <script src="commonService.js" type="module"></script>
+    <script src="mode.js" type="module"></script>
+    <script src="category.js" type="module"></script>
+    <script src="boxPlot.js" type="module"></script>
+    <script src="histogram.js" type="module"></script>
+    <script src="hinstogramMulti.js" type="module"></script>
+    <script src="scatterPlot.js" type="module"></script>
+    <script src="parallelCoordinates.js" type="module"></script>
+    <script src="pcaSchemas.js" type="module"></script>
+  </body>
 </html>
