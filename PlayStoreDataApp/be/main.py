@@ -53,7 +53,7 @@ def star():
 
 @flask.route('/all-data-pca')
 def allDataPca():
-    query = 'SELECT * FROM googleplaystore LIMIT 4000'
+    query = 'SELECT * FROM googleplaystore LIMIT 600'
 
     # Esecuzione della query e ottenimento dei dati in un DataFrame
     cur = mysql_connection.get_db().cursor()
@@ -80,10 +80,11 @@ def allDataPca():
 
 @flask.route('/id-pca', methods=['POST'])
 def selectInIDPca():
-    req = request.request.get_json()
+    req = request.get_json()
     ids = req['id']
-    print(ids)
-    query = 'SELECT * FROM googleplaystore WHERE ID IN ('+ ids +')'
+    strIds = ','.join(str(num) for num in ids)
+    print()
+    query = 'SELECT * FROM googleplaystore WHERE ID IN ('+ strIds +')'
 
     # Esecuzione della query e ottenimento dei dati in un DataFrame
     cur = mysql_connection.get_db().cursor()

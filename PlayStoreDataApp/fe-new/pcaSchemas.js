@@ -30,7 +30,7 @@ function main() {
 
 function visualize() {
   ajaxService.getAllDataPCA().done(function (jsonData) {
-    console.log(jsonData.slice(0, 5));
+    // console.log(jsonData.slice(0, 5));
     commonService.initializeScaleColor(jsonData);
     //Creation Schemas
     categoryService.insertCategory(jsonData);
@@ -40,13 +40,12 @@ function visualize() {
 
     parallelCoordinatesService.createParallelCoordinates(jsonData, []);
     histogramService.populateHistograms(jsonData);
-    // histogramService.createHistogramLong(3,dataInstall,dataAppName);
   });
 }
 
 function compare() {
   ajaxService.getAllDataPCA().done(function (jsonData) {
-    console.log(jsonData.slice(0, 5));
+    // console.log(jsonData.slice(0, 5));
     commonService.initializeScaleColor(jsonData);
     //Creation Schemas
     categoryService.insertCategory(jsonData);

@@ -106,7 +106,7 @@ function createScatterPlot(jsonPCAData) {
   );
 
   // Bottone Compute PCA
-  var button = d3.select("#scatterPlot").select("buttton")
+  var button = d3.select("#scatterPlot").select("button")
   if(button.empty()) {
     if(commonService.mode.value=='Compare') {
       d3.select("#scatterPlot").append("button").attr("id","computePCA").on("click",computePCA).html("Compute PCA")
@@ -172,7 +172,7 @@ function createScatterPlot(jsonPCAData) {
       .call(
         d3
           .axisLeft(y)
-          .ticks(0)
+          // .ticks(0)
           .tickFormat(function (d) {
             return "";
           })
@@ -181,11 +181,11 @@ function createScatterPlot(jsonPCAData) {
     axisY.call(
       d3
         .axisLeft(y)
-        .ticks(0)
-        .tickFormat(function (d) {
-          return "";
-        })
-    );
+          // .ticks(0)
+          .tickFormat(function (d) {
+            return "";
+          })
+      );
   }
   populateChart(jsonPCAData, false);
 
@@ -432,16 +432,6 @@ function createScatterPlot(jsonPCAData) {
     .on("mouseleave", mouseleave );
   }
 
-  function isInsideRect(d) {
-    let res = false;
-    if (firstSet != null) {
-      res = res || firstSet.includes(d);
-    } else if (secondSet != null) {
-      res = res || secondSet.includes(d);
-    }
-
-    return res;
-  }
   function isInsideSet(d) {
     let res = false;
     if (commonService.firstSet.value != undefined) {
@@ -470,8 +460,8 @@ function computePCA() {
   let secondGroup = commonService.secondSet.value!=undefined ? commonService.secondSet.value : []
   let newGroup = [...firstGroup,...secondGroup]
   let ids = newGroup.map(obj => obj.ID)
+  console.log(ids)
   ajaxService.computePCA(ids).done(function (jsonData) {
-    console.log(jsonData.slice(0, 5));
     createScatterPlot(jsonData);
   });
 }
