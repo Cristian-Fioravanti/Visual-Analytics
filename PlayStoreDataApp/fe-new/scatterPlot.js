@@ -509,6 +509,7 @@ function createScatterPlot(jsonPCAData, recalculated) {
       .on("mousemove", mousemove)
       .on("mouseleave", mouseleave);
   }
+  
 
   function isInsideSet(d) {
     let res = false;
@@ -519,6 +520,8 @@ function createScatterPlot(jsonPCAData, recalculated) {
     }
     return res;
   }
+  let WidthCateg = d3.select("#category").node().offsetWidth;
+  d3.select("#spanButton").attr("style","position: absolute; left: "+ (divWidth+WidthCateg+10)+"px; bottom:"+(divHeigth-38)*2+"px;"); 
 }
 
 function isFirstBrush() {

@@ -17,7 +17,8 @@ function main() {
       button.classed("button-compare", false);
       button.classed("button-visualize", true);
       this.style.backgroundColor = "blu";
-      d3.select("#computePCAImg").style("display","none")
+      d3.select("#computePCAImg").style("display", "none")
+      
       commonService.setMode("Visualize");
       
     }
