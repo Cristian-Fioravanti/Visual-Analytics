@@ -242,7 +242,12 @@ function createScatterPlot(jsonPCAData, recalculated) {
 
   // Bottone Compute PCA
   var button = d3.select("#computePCA")
-  button.on("click",computePCA).html("Compute PCA")
+  button.on("click",computePCA).on("mouseover", function (d) {
+        d3.select("#computePCAImg")._groups[0][0].src="./scatter-graph-green.png"
+      }).on("mouseleave",function (d) {
+       d3.select("#computePCAImg")._groups[0][0].src="./scatter-graph.png"
+     
+      })
 
   // Create scales with log transformation for x and y axes
   x = d3

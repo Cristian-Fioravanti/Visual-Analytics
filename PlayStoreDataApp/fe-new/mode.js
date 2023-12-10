@@ -11,13 +11,15 @@ function main() {
       button.classed("button-compare", true);
       button.classed("button-visualize", false);
       commonService.setMode("Compare");
-      
+      d3.select("#computePCAImg").style("display","block")
     } else {
       button.text("Visualize");
       button.classed("button-compare", false);
       button.classed("button-visualize", true);
-      commonService.setMode("Visualize");
       this.style.backgroundColor = "blu";
+      d3.select("#computePCAImg").style("display","none")
+      commonService.setMode("Visualize");
+      
     }
   });
 }
