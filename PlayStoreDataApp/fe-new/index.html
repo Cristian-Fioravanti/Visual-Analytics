@@ -8,7 +8,7 @@
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <link href="https://unpkg.com/css.gg@2.0.0/icons/css/zoom-in.css" rel="stylesheet" />
-<link href='https://unpkg.com/css.gg@2.0.0/icons/css/brush.css' rel='stylesheet'>
+    <link href="https://unpkg.com/css.gg@2.0.0/icons/css/brush.css" rel="stylesheet" />
   </head>
 
   <body style="overflow: hidden; background-color: #202124; color: white; margin-top: 5px;">
@@ -19,15 +19,19 @@
           <div class="parent">
             <div id="category" class="category"></div>
             <div class="div2">
-              <div id="scatterPlot">
-                <span id="spanButton">
-                  <a id="toggleZoom" class="toggle-button"><i class="gg-zoom-in"></i></a>
-                  <br>
-                  <a id="toggleBrush" class="toggle-button"><i class="gg-brush"></i></a>
-                  <br>
-                  <a id="computePCA" class="icon-scatter"><img style="width: 20px; height: 20px; cursor: pointer; display: none;" id="computePCAImg" src="scatter-graph.png"> </a>
-                </span>
+              <div style="position: relative; width: 0; height: 0">
+                <span id="spanButton" >
+                <a id="toggleZoom" class="toggle-button" title="Allow zoom"><i class="gg-zoom-in"></i></a>
+                <br />
+                <a id="toggleBrush" class="toggle-button" title="Allow brush element"><i class="gg-brush"></i></a>
+                <br />
+                <a id="computePCA" class="icon-scatter" title="This button allows you to run PCA on the applications you selected" style="width: 20px; height: 20px; display: block;"
+                  ><img style="width: 20px; height: 20px; cursor: pointer; display: none;" id="computePCAImg" src="scatter-graph.png" />
+                </a>
+              </span>
               </div>
+              
+              <div id="scatterPlot"></div>
               <div id="parallelCoordinates"></div>
             </div>
             <div class="div3">
