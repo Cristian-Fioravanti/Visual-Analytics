@@ -251,9 +251,9 @@ function createScatterPlot(jsonPCAData, recalculated) {
 
   // Create scales with log transformation for x and y axes
   x = d3
-    .scaleLog()
+    .scaleSymlog()
     .domain([
-      1,
+      0.8,
       d3.max(jsonPCAData, function (d) {
         return d.Y1;
       }) + 10,
@@ -287,9 +287,9 @@ function createScatterPlot(jsonPCAData, recalculated) {
 
   // Add Y axis
   y = d3
-    .scaleLog()
+    .scaleSymlog()
     .domain([
-      1,
+      0.8,
       d3.max(jsonPCAData, function (d) {
         return d.Y2;
       }) + 10,
@@ -520,7 +520,7 @@ function createScatterPlot(jsonPCAData, recalculated) {
     return res;
   }
   let WidthCateg = d3.select("#category").node().offsetWidth;
-  d3.select("#spanButton").attr("style","position: absolute; left: "+ (divWidth+WidthCateg+10)+"px; bottom:"+(divHeigth)*1.7+"px;"); 
+  d3.select("#spanButton").attr("style","position: absolute; left: "+ (divWidth)+"px;top: 30px"); 
 }
 
 function isFirstBrush() {
