@@ -124,96 +124,73 @@ export function createHistogramInstalls(dataSet) {
     } else {
       var color2 = "rgb(0,0,255)";
     }
-    // Seleziona tutti i rettangoli nel contenitore e associa i dati combinati
-    const rects1 = svg
-      .selectAll("rect.firstGroup")
-      .data(firstGroup)
+    var groups = []
+    for (let i = 0; i < firstGroup.length; i++) {
+      const firstLength = firstGroup[i].length
+      const secondLength = secondGroup[i].length
+      if(firstLength>secondLength) {
+        groups.push({
+          length: firstLength,
+          x0 : firstGroup[i].x0,
+          x1 : firstGroup[i].x1,
+          color: color1
+        });
+        groups.push({
+          length: secondLength,
+          x0 : firstGroup[i].x0,
+          x1 : firstGroup[i].x1,
+          color: color2
+        });
+      } else {
+        groups.push({
+          length: secondLength,
+          x0 : firstGroup[i].x0,
+          x1 : firstGroup[i].x1,
+          color: color2
+        });
+        groups.push({
+          length: firstLength,
+          x0 : firstGroup[i].x0,
+          x1 : firstGroup[i].x1,
+          color: color1
+        });
+      }
+    }
+    const rects = svg
+      .selectAll("rect")
+      .data(groups)
       .join(
         function (enter) {
-          enterData(enter, 1, color1);
+          enterData(enter);
         },
         function (update) {
           updateData(update);
         }
-      );
-    const rects2 = svg
-      .selectAll("rect.secondGroup")
-      .data(secondGroup)
-      .join(
-        function (enter) {
-          enterData(enter, 2, color2);
-        },
-        function (update) {
-          updateData(update);
-        }
-      );
+      ); 
   }
 
-  function enterData(enter, group, color) {
-    // Aggiungi rettangoli per il primo gruppo
-    if (group == 1) {
-      enter
-        .append("rect")
-        .attr("x", 1)
-        .attr("transform", function (d) {
-          return "translate(" + x(d.x0) + "," + y(d.length) + ")";
-        })
-        .attr("width", function (d) {
-          // return (x(d.x1) - x(d.x0)) / 2;
-          return x(d.x1) - x(d.x0);
-        })
-        .attr("height", function (d) {
-          return height - y(d.length);
-        })
-        .attr("class", "firstGroup")
-        .style("fill", color)
-        .style("opacity",0.6).on("mouseover", mouseover )
-    .on("mousemove", mousemove )
-    .on("mouseleave", mouseleave );
-      // Add text on each bar
-      // enter.append('text')
-      //   .attr('class', 'bar-text')
-      //   .attr("x", 1)
-      //   .attr("transform", function (d) {
-      //     let width = (x(d.x1)-x(d.x0))/2
-      //     return "translate(" + (x(d.x0)+width) + "," + (y(d.length)+10) + ")";
-      //   })
-      //   .attr('font-size', 10)
-      //   .attr('text-anchor', 'middle')
-      //   .text(d => (d.length).toFixed(1))
-    } else {
-      enter
-        .append("rect")
-        .attr("x", 1)
-        .attr("transform", function (d) {
-          let width = (x(d.x1) - x(d.x0)) / 2;
-          // return "translate(" + (x(d.x0) + width) + "," + y(d.length) + ")";
-          return "translate(" + x(d.x0) + "," + y(d.length) + ")";
-        })
-        .attr("width", function (d) {
-          // return (x(d.x1) - x(d.x0)) / 2;
-          return x(d.x1) - x(d.x0);
-        })
-        .attr("height", function (d) {
-          return height - y(d.length);
-        })
-        .attr("class", "secondGroup")
-        .style("fill", color)
-        .style("opacity",0.6).on("mouseover", mouseover )
-    .on("mousemove", mousemove )
-    .on("mouseleave", mouseleave );
-      // enter.append('text')
-      //   .attr('class', 'bar-text')
-      //   .attr("x", 1)
-      //   .attr("transform", function (d) {
-      //     let width = (x(d.x1)-x(d.x0))/2
-      //     return "translate(" + (x(d.x0)+width) + "," + (y(d.length)-3) + ")";
-      //   })
-      //   .attr('font-size', 10)
-      //   .attr('text-anchor', 'middle')
-      //   .text(d => (d.length).toFixed(1))
-    }
+  function enterData(enter) {
+    enter
+      .append("rect")
+      .attr("x", 1)
+      .attr("transform", function (d) {
+        return "translate(" + x(d.x0) + "," + y(d.length) + ")";
+      })
+      .attr("width", function (d) {
+        return x(d.x1) - x(d.x0);
+      })
+      .attr("height", function (d) {
+        return height - y(d.length);
+      })
+      .attr("class", "firstGroup")
+      .style("fill", function (d) {
+        return d.color;
+      })
+      .style("opacity",0.6).on("mouseover", mouseover )
+      .on("mousemove", mousemove )
+      .on("mouseleave", mouseleave );
   }
+
 
   function updateData(update) {
     update
@@ -233,7 +210,6 @@ export function createHistogramInstalls(dataSet) {
     .on("mouseleave", mouseleave );
   }
   popolaTabella([], []);
-  // popolaTabella(histogram(dataSet.map((obj) => ({ Installs: parseInt(obj.Installs) }))));
   commonService.firstSet.observe((data) => {
     if (commonService.mode.value == "Compare") {
       // And apply this function to data to get the bins

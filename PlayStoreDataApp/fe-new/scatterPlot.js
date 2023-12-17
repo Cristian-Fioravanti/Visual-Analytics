@@ -424,7 +424,6 @@ function createScatterPlot(jsonPCAData, recalculated) {
         }
 
         if (numberOfBrush > 1 || (numberOfBrush == 1 && categoryService.numberOfCheckBoxSelected == 1)) {
-          console.log("qui");
           putAllEmpty(svg);
         }
       }

@@ -644,7 +644,7 @@ function addBorderToCircleSelected(selectedList) {
     .each(function (d) {
       if (selectedList.includes(d))
         d3.select(this)
-          .classed("selectedScatterPlot", false)
+          .classed("selectedScatterPlot", true)
           .classed("selectedScatterPlotFilteredParallel", true);
       else
         d3.select(this)

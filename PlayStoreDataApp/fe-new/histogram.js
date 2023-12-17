@@ -9,7 +9,7 @@ export function createHistogramInstalls(dataSet) {
   // set the dimensions and margins of the graph
   var divWidth = d3.select(".Histogram3").node().clientWidth;
   var divHeigth = d3.select(".Histogram3").node().clientHeight;
-  var margin = { top: 10, right: 15, bottom: 30, left: 40 },
+  var margin = { top: 20, right: 15, bottom: 30, left: 40 },
     width = divWidth - margin.left - margin.right,
     height = divHeigth - margin.top - margin.bottom;
   var y;
@@ -158,6 +158,20 @@ export function createHistogramInstalls(dataSet) {
     .on("mousemove", mousemove )
     .on("mouseleave", mouseleave );
   }
+
+  // Aggiungi un titolo sopra l'istogramma
+  var titleFontSize = 15;
+  if(svg.select("text.Installs").empty()) {
+    svg
+      .append("text")
+      .attr("x", x(100)) // Posizione x al centro del grafico
+      .attr("y", -5) // Posizione y sopra il boxplot, regolabile in base alle tue esigenze
+      .attr("text-anchor", "middle") // Allinea il testo al centro
+      .style("font-size", titleFontSize + "px")
+      .attr("class","Installs")
+      .text("Installs of selected data"); 
+  } 
+
   popolaTabella([]);
   popolaTabella(histogram(dataSet.map((obj) => ({ Installs: parseInt(obj.Installs) }))));
   commonService.firstSet.observe((data) => {
@@ -275,7 +289,7 @@ export function createHistogramType(dataDistinct, data) {
   // set the dimensions and margins of the graph
   var divWidth = d3.select(".Histogram1").node().clientWidth;
   var divHeigth = d3.select(".Histogram1").node().clientHeight;
-  var margin = { top: 10, right: 5, bottom: 30, left: 40 },
+  var margin = { top: 20, right: 5, bottom: 30, left: 40 },
     width = divWidth - margin.left - margin.right,
     height = divHeigth - margin.top - margin.bottom;
 
@@ -333,7 +347,18 @@ export function createHistogramType(dataDistinct, data) {
     yAxis.call(d3.axisLeft(y).tickValues(generateCustomTicks(y)).tickSizeOuter(0)).attr("class", "HistogramSvg1");
   }
 
-   
+  // Aggiungi un titolo sopra l'istogramma
+  var titleFontSize = 15;
+  if(svg.select("text.Type").empty()) {
+    svg
+      .append("text")
+      .attr("x", x("Free")) // Posizione x al centro del grafico
+      .attr("y", -5) // Posizione y sopra il boxplot, regolabile in base alle tue esigenze
+      .attr("text-anchor", "middle") // Allinea il testo al centro
+      .style("font-size", titleFontSize + "px")
+      .attr("class","Type")
+      .text("Type of selected data"); 
+  } 
 
   popolaTabella([]);
   const dataType = Array.from(new Set(dataSet.map((obj) => obj.Type))).map((Type) => ({ Type, Total: dataSet.filter((x) => x.Type === Type).length }));
@@ -346,7 +371,7 @@ export function createHistogramContentRating(dataDistinct, data) {
   var y;
   var divWidth = d3.select(".Histogram2").node().clientWidth;
   var divHeigth = d3.select(".Histogram2").node().clientHeight;
-  var margin = { top: 10, right: 5, bottom: 30, left: 40 },
+  var margin = { top: 20, right: 5, bottom: 30, left: 40 },
     width = 350 - margin.left - margin.right,
     height = 165 - margin.top - margin.bottom;
 
@@ -483,6 +508,20 @@ export function createHistogramContentRating(dataDistinct, data) {
     .on("mousemove", mousemove )
     .on("mouseleave", mouseleave );
   }
+  
+  // Aggiungi un titolo sopra l'istogramma
+  var titleFontSize = 15;
+  if(svg.select("text.Ratings").empty()) {
+    svg
+      .append("text")
+      .attr("x", (x("Everyone")+5)) // Posizione x al centro del grafico
+      .attr("y", -5) // Posizione y sopra il boxplot, regolabile in base alle tue esigenze
+      .attr("text-anchor", "middle") // Allinea il testo al centro
+      .style("font-size", titleFontSize + "px")
+      .attr("class","Ratings")
+      .text("Ratings of selected data"); 
+  } 
+
   popolaTabella([]);
   const dataContent_Rating = Array.from(new Set(dataSet.map((obj) => obj.Content_Rating))).map((Content_Rating) => ({
     Content_Rating,
