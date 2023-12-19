@@ -7,7 +7,6 @@ import * as multiBoxPlotService from "./multiBloxPlot.js";
 import * as histogramService from "./histogram.js";
 import * as histogramMultiService from "./hinstogramMulti.js";
 import * as commonService from "./commonService.js";
-
 main();
 
 function main() {

@@ -404,7 +404,7 @@ function addBorderToCircleSelected() {
             })
           : false;
 
-      if (isActive || selected.includes(d)) d3.select(this).classed("selectedScatterPlot", false).classed("selectedScatterPlotFilteredBoxPlot", true);
+      if (isActive || selected.includes(d)) d3.select(this).classed("selectedScatterPlot", true).classed("selectedScatterPlotFilteredBoxPlot", true);
       else d3.select(this).classed("selectedScatterPlotFilteredBoxPlot", false).classed("selectedScatterPlot", true);
     });
 }

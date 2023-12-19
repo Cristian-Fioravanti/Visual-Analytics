@@ -75,14 +75,49 @@ path {
 text {
   fill: white;
 }
-
 .selectedScatterPlot {
-  stroke: black !important;
+  stroke: black ;
   stroke-width: 1px;
+}
+.selectedScatterPlot.selectedScatterPlotFilteredParallel {
+  stroke: yellow !important;
+    stroke-width: 1px;
 }
 .selectedScatterPlotFilteredParallel {
   stroke: yellow !important;
   stroke-width: 1px;
+}
+.selectedScatterPlot.group1.selectedScatterPlotFilteredParallel {
+  stroke: yellow !important;
+    stroke-width: 1px;
+}
+.selectedScatterPlot.group2.selectedScatterPlotFilteredParallel {
+  stroke: yellow !important;
+  stroke-width: 1px;
+}
+.selectedScatterPlot.group2 {
+  stroke: blue !important;
+  stroke-width: 2px;
+}
+.selectedScatterPlot.group1 {
+  stroke: red !important;
+    stroke-width: 2px;
+}
+.selectedScatterPlot.group2 {
+  stroke: blue !important;
+  stroke-width: 2px;
+}
+.group1{
+  stroke: red !important;
+  stroke-width: 2px;
+}
+.group2 {
+  stroke: blue !important;
+  stroke-width: 2px;
+}
+.selectedScatterPlotFilteredParallel {
+  stroke: yellow !important;
+    stroke-width: 1px;
 }
 .selectedScatterPlotFilteredBoxPlot {
   stroke: yellow !important;
