@@ -1,6 +1,7 @@
 import "https://d3js.org/d3.v5.min.js";
 import "./interface.js";
 import * as commonService from "./commonService.js";
+import { selected } from "./parallelCoordinates.js";
 let selections = new Map();
 
 function populateBoxplots(data) {
@@ -403,7 +404,7 @@ function addBorderToCircleSelected() {
             })
           : false;
 
-      if (isActive) d3.select(this).classed("selectedScatterPlot", false).classed("selectedScatterPlotFilteredBoxPlot", true);
+      if (isActive || selected.includes(d)) d3.select(this).classed("selectedScatterPlot", false).classed("selectedScatterPlotFilteredBoxPlot", true);
       else d3.select(this).classed("selectedScatterPlotFilteredBoxPlot", false).classed("selectedScatterPlot", true);
     });
 }

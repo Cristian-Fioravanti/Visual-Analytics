@@ -17,7 +17,9 @@ let dimensions = ["Rating", "Reviews", "Size", "Installs", "Price", "Content_Rat
 var initilizedY;
   var newX;
 var newY;
-   var zoom
+var zoom
+var divWidth
+var   divHeigth
 function createScatterPlot(jsonPCAData, recalculated) {
   allData = jsonPCAData;
 
@@ -34,8 +36,8 @@ function createScatterPlot(jsonPCAData, recalculated) {
   scaleColor = commonService.getScaleColor();
 
   // set the dimensions and margins of the graph
-  var divWidth = d3.select("#scatterPlot").node().offsetWidth;
-  var divHeigth = d3.select(".div2").node().clientHeight / 2;
+  divWidth = d3.select("#scatterPlot").node().offsetWidth;
+  divHeigth = d3.select(".div2").node().clientHeight / 2;
   var margin = { top: 10, right: 0, bottom: 20, left: 0 },
     width = divWidth - margin.left - margin.right,
     height = divHeigth - margin.top - margin.bottom;
@@ -325,9 +327,145 @@ function createScatterPlot(jsonPCAData, recalculated) {
   }
   populateChart(jsonPCAData, false);
 
-  // Function that is triggered when brushing is performed
-  function updateChart(force) {
-    var mode = commonService.mode.value;
+
+  function createRect() {
+    if (d3.event != null && d3.event.selection != null) {
+      if (isFirstBrush()) {
+        svg
+          .append("rect")
+          .attr("class", "brush")
+          .attr("fill", "rgba(255, 0, 0, 0.1)")
+          .attr("stroke-width", "1px")
+          .attr("stroke", "white")
+          .attr("color", "trasparent") // Colore del rettangolo di selezione
+          .attr("x", d3.event.selection[0][0])
+          .attr("y", d3.event.selection[0][1])
+          .attr("width", d3.event.selection[1][0] - d3.event.selection[0][0])
+          .attr("height", d3.event.selection[1][1] - d3.event.selection[0][1]);
+        numberOfBrush++;
+        firstBrush = firstSet;
+      } else {
+        svg
+          .append("rect")
+          .attr("class", "brush")
+          .attr("fill", "rgba(0, 0, 255, 0.1)")
+          .attr("stroke-width", "1px")
+          .attr("stroke", "white")
+          .attr("color", "trasparent") // Colore del rettangolo di selezione
+          .attr("x", d3.event.selection[0][0])
+          .attr("y", d3.event.selection[0][1])
+          .attr("width", d3.event.selection[1][0] - d3.event.selection[0][0])
+          .attr("height", d3.event.selection[1][1] - d3.event.selection[0][1]);
+        numberOfBrush++;
+        secondBrush = secondSet;
+      }
+      moveLastChildToFirst(svg._groups[0][0])
+    }
+  }
+  function getColor(d) {
+    if(recalculated) {
+      let group1 = commonService.firstSet.value.map(obj => obj.ID)
+      if(group1.includes(d.ID)){
+        var color = categoryService.firstCategory==null ? "rgb(255,0,0)" : commonService.scaleColor(categoryService.firstCategory);
+      } else {
+        var color = categoryService.secondCategory==null ? "rgb(0,0,255)" : commonService.scaleColor(categoryService.secondCategory);
+      }
+      return color
+    } else {
+      return scaleColor(d.Category);
+    }
+  }
+  function populateChart(data, force) {
+    svg.select("g.gCircles").remove();
+    svg.selectAll("rect.brush").remove();
+    svg
+      .append("g")
+      .attr("class", "gCircles")
+      .selectAll("circle")
+      .data(data)
+      .join("circle")
+      .attr("class", function (d) {
+        return "selectedScatterPlot";
+      })
+      .attr("name", function (d) {
+        return d.Category;
+      })
+      .attr("id", function (d) {
+        return +d.ID;
+      })
+      .attr("cx", function (d) {
+        return x(d.Y1);
+      })
+      .attr("cy", function (d) {
+        return y(d.Y2);
+      })
+      .attr("r", 3)
+      .style("fill", getColor)
+      .on("mouseover", mouseover)
+      .on("mousemove", mousemove)
+      .on("mouseleave", mouseleave);
+  }
+  
+
+  
+}
+
+function isFirstBrush() {
+  return (
+    (numberOfBrush == 0 && categoryService.numberOfCheckBoxSelected == 0) ||
+    (numberOfBrush == 0 && categoryService.numberOfCheckBoxSelected == 1 && commonService.isEmpty(commonService.firstSet)) ||
+    (numberOfBrush == 1 && categoryService.numberOfCheckBoxSelected == 0 && firstBrush.length == 0)
+  );
+}
+
+function computePCA() {
+  let firstGroup = commonService.firstSet.value!=undefined ? commonService.firstSet.value : []
+  let secondGroup = commonService.secondSet.value!=undefined ? commonService.secondSet.value : []
+  let newGroup = [...firstGroup,...secondGroup]
+  let ids = newGroup.map(obj => obj.ID)
+  console.log(ids)
+  ajaxService.computePCA(ids).done(function (jsonData) {
+    createScatterPlot(jsonData, true);
+  });
+}
+
+function putAllEmpty(svg) {
+  svg.selectAll(".brush").remove(); // Rimuovi eventuali rettangoli di selezione precedenti
+  svg.selectAll(".selectedScatterPlot").classed("selectedScatterPlot", false);
+
+  numberOfBrush = 0;
+  commonService.setFirstSet([]);
+  commonService.setSecondSet([]);
+  firstSet = [];
+  secondSet = [];
+  firstBrush = [];
+  secondBrush = [];
+  commonService.resetCheckBox();
+  categoryService.resetCategory();
+}
+
+function resetToInitialPointVisualize(svg) {
+  svg.selectAll(".brush").remove(); // Rimuovi eventuali rettangoli di selezione precedenti
+  svg.selectAll("circle").classed("selectedScatterPlot", true).classed("selectedScatterPlotFilteredParallel", false);
+  numberOfBrush = 0;
+  commonService.setFirstSet(allData);
+  firstSet = allData;
+  firstBrush = [];
+  commonService.resetCheckBox();
+  categoryService.resetCategory();
+}
+export function setAxisToInitialValue() {
+  // if (initilizedX != undefined && initilizedY != undefined) {
+    x = newX;
+    y = newY;
+    
+  // }
+  
+}
+// Function that is triggered when brushing is performed
+export function updateChart(force) {
+  var mode = commonService.mode.value;
+  var svg = d3.select("#scatterPlot").select("svg").select("g")
     if (mode == "Visualize") {
       if (d3.event != null && d3.event.selection != null) {
         var extent = d3.event.selection;
@@ -431,87 +569,9 @@ function createScatterPlot(jsonPCAData, recalculated) {
     }
     svg.selectAll("circle").classed("selectedScatterPlotFilteredParallel", false);
     if (force) svg.selectAll("circle").classed("selectedScatterPlot", true);
-  }
-  function createRect() {
-    if (d3.event != null && d3.event.selection != null) {
-      if (isFirstBrush()) {
-        svg
-          .append("rect")
-          .attr("class", "brush")
-          .attr("fill", "rgba(255, 0, 0, 0.1)")
-          .attr("stroke-width", "1px")
-          .attr("stroke", "white")
-          .attr("color", "trasparent") // Colore del rettangolo di selezione
-          .attr("x", d3.event.selection[0][0])
-          .attr("y", d3.event.selection[0][1])
-          .attr("width", d3.event.selection[1][0] - d3.event.selection[0][0])
-          .attr("height", d3.event.selection[1][1] - d3.event.selection[0][1]);
-        numberOfBrush++;
-        firstBrush = firstSet;
-      } else {
-        svg
-          .append("rect")
-          .attr("class", "brush")
-          .attr("fill", "rgba(0, 0, 255, 0.1)")
-          .attr("stroke-width", "1px")
-          .attr("stroke", "white")
-          .attr("color", "trasparent") // Colore del rettangolo di selezione
-          .attr("x", d3.event.selection[0][0])
-          .attr("y", d3.event.selection[0][1])
-          .attr("width", d3.event.selection[1][0] - d3.event.selection[0][0])
-          .attr("height", d3.event.selection[1][1] - d3.event.selection[0][1]);
-        numberOfBrush++;
-        secondBrush = secondSet;
-      }
-      moveLastChildToFirst(svg._groups[0][0])
-    }
-  }
-  function getColor(d) {
-    if(recalculated) {
-      let group1 = commonService.firstSet.value.map(obj => obj.ID)
-      if(group1.includes(d.ID)){
-        var color = categoryService.firstCategory==null ? "rgb(255,0,0)" : commonService.scaleColor(categoryService.firstCategory);
-      } else {
-        var color = categoryService.secondCategory==null ? "rgb(0,0,255)" : commonService.scaleColor(categoryService.secondCategory);
-      }
-      return color
-    } else {
-      return scaleColor(d.Category);
-    }
-  }
-  function populateChart(data, force) {
-    svg.select("g.gCircles").remove();
-    svg.selectAll("rect.brush").remove();
-    svg
-      .append("g")
-      .attr("class", "gCircles")
-      .selectAll("circle")
-      .data(data)
-      .join("circle")
-      .attr("class", function (d) {
-        return "selectedScatterPlot";
-      })
-      .attr("name", function (d) {
-        return d.Category;
-      })
-      .attr("id", function (d) {
-        return +d.ID;
-      })
-      .attr("cx", function (d) {
-        return x(d.Y1);
-      })
-      .attr("cy", function (d) {
-        return y(d.Y2);
-      })
-      .attr("r", 3)
-      .style("fill", getColor)
-      .on("mouseover", mouseover)
-      .on("mousemove", mousemove)
-      .on("mouseleave", mouseleave);
-  }
+}
   
-
-  function isInsideSet(d) {
+function isInsideSet(d) {
     let res = false;
     if (commonService.firstSet.value != undefined) {
       res = res || commonService.firstSet.value.includes(d);
@@ -522,59 +582,4 @@ function createScatterPlot(jsonPCAData, recalculated) {
   }
   let WidthCateg = d3.select("#category").node().offsetWidth;
   d3.select("#spanButton").attr("style","position: absolute; left: "+ (divWidth)+"px;top: 30px"); 
-}
-
-function isFirstBrush() {
-  return (
-    (numberOfBrush == 0 && categoryService.numberOfCheckBoxSelected == 0) ||
-    (numberOfBrush == 0 && categoryService.numberOfCheckBoxSelected == 1 && commonService.isEmpty(commonService.firstSet)) ||
-    (numberOfBrush == 1 && categoryService.numberOfCheckBoxSelected == 0 && firstBrush.length == 0)
-  );
-}
-
-function computePCA() {
-  let firstGroup = commonService.firstSet.value!=undefined ? commonService.firstSet.value : []
-  let secondGroup = commonService.secondSet.value!=undefined ? commonService.secondSet.value : []
-  let newGroup = [...firstGroup,...secondGroup]
-  let ids = newGroup.map(obj => obj.ID)
-  console.log(ids)
-  ajaxService.computePCA(ids).done(function (jsonData) {
-    createScatterPlot(jsonData, true);
-  });
-}
-
-function putAllEmpty(svg) {
-  svg.selectAll(".brush").remove(); // Rimuovi eventuali rettangoli di selezione precedenti
-  svg.selectAll(".selectedScatterPlot").classed("selectedScatterPlot", false);
-
-  numberOfBrush = 0;
-  commonService.setFirstSet([]);
-  commonService.setSecondSet([]);
-  firstSet = [];
-  secondSet = [];
-  firstBrush = [];
-  secondBrush = [];
-  commonService.resetCheckBox();
-  categoryService.resetCategory();
-}
-
-function resetToInitialPointVisualize(svg) {
-  svg.selectAll(".brush").remove(); // Rimuovi eventuali rettangoli di selezione precedenti
-  svg.selectAll("circle").classed("selectedScatterPlot", true).classed("selectedScatterPlotFilteredParallel", false);
-  numberOfBrush = 0;
-  commonService.setFirstSet(allData);
-  firstSet = allData;
-  firstBrush = [];
-  commonService.resetCheckBox();
-  categoryService.resetCategory();
-}
-export function setAxisToInitialValue() {
-  // if (initilizedX != undefined && initilizedY != undefined) {
-    x = newX;
-    y = newY;
-    
-  // }
-  
-}
-
 export { createScatterPlot };

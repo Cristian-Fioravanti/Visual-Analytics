@@ -1,6 +1,7 @@
 import "./interface.js";
 import * as categoryService from "./category.js";
 import * as commonService from "./commonService.js";
+import { updateChart } from "./scatterPlot.js";
 let countClick = 0;
 let scaleColor;
 let allData;
@@ -651,4 +652,5 @@ function addBorderToCircleSelected(selectedList) {
           .classed("selectedScatterPlot", true)
           .classed("selectedScatterPlotFilteredParallel", false);
     });
+  updateChart()
 }
