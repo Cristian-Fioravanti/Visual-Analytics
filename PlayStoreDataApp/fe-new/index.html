@@ -11,50 +11,71 @@
     <link href="https://unpkg.com/css.gg@2.0.0/icons/css/brush.css" rel="stylesheet" />
   </head>
 
-  <body style="overflow: hidden; background-color: #202124; color: white; margin-top: 5px;">
-    <div class="body">
-      <button class="button-visualize header" role="button" id="bottone">Visualize</button>
-      <div class="analytics" style="margin-top: 5px;">
-        <div>
-          <div class="parent">
-            <div id="category" class="category"></div>
-            <div class="div2">
-              <div style="position: relative; width: 0; height: 0">
-                <span id="spanButton" >
+  <body style="overflow: hidden; background-color: #202124; color: white; margin-top: -2px;">
+    <div style="display: flex;justify-content: flex-start;     align-items: center;">
+      <button class="button-visualize header" role="button" id="bottone" style="margin-top: 5px;">Visualize</button>
+      <div>
+        <div style="padding: 16px;     margin-top: 6px;">
+          <a id="toggleZoom" class="toggle-button" title="Allow zoom"><i class="gg-zoom-in"></i></a>
+        </div>
+      </div>
+      <div>
+        <div style="padding: 16px;     margin-top: 2px;">
+          <a id="toggleBrush" class="toggle-button" title="Allow brush element"><i class="gg-brush"></i></a>
+        </div>
+      </div>
+      <div>
+        <div style="padding: 16px;">
+        <a id="computePCA" class="icon-scatter" title="This button allows you to run PCA on the applications you selected" style="width: 20px; height: 20px; display: block;"
+          ><img style="width: 20px; height: 20px; cursor: pointer; display: none;" id="computePCAImg" src="scatter-graph.png" />
+        </a>
+      </div>
+      </div>
+      
+      <div align="center" style="width: 40%;"><h1 class="header" style="width: 40%;">Play Store Data</h1></div>
+    </div>
+    <div class="analytics" style="margin-top: 5px;">
+      <div>
+        <div class="parent">
+          <div id="category" class="category"></div>
+          <div class="div2">
+            <div style="position: relative; width: 0; height: 0">
+              <!-- <span id="spanButton">
                 <a id="toggleZoom" class="toggle-button" title="Allow zoom"><i class="gg-zoom-in"></i></a>
                 <br />
                 <a id="toggleBrush" class="toggle-button" title="Allow brush element"><i class="gg-brush"></i></a>
                 <br />
-                <a id="computePCA" class="icon-scatter" title="This button allows you to run PCA on the applications you selected" style="width: 20px; height: 20px; display: block;"
+                <a
+                  id="computePCA"
+                  class="icon-scatter"
+                  title="This button allows you to run PCA on the applications you selected"
+                  style="width: 20px; height: 20px; display: block;"
                   ><img style="width: 20px; height: 20px; cursor: pointer; display: none;" id="computePCAImg" src="scatter-graph.png" />
                 </a>
-              </span>
-              </div>
-              
-              <div id="scatterPlot"></div>
-              <div id="parallelCoordinates"></div>
+              </span> -->
             </div>
-            <div class="div3">
-              <div class="BoxPlotparent">
-                <div class="BoxPlotdiv1"><span id="boxPlot1"></span></div>
-                <div class="BoxPlotdiv2"><span id="boxPlot2"></span></div>
-                <div class="BoxPlotdiv3"><span id="boxPlot3"></span></div>
-                <div class="BoxPlotdiv4"><span id="boxPlot4"></span></div>
-                <div class="Histogram1"><span id="Histogram1"></span></div>
-                <div class="Histogram2"><span id="Histogram2"></span></div>
-                <div class="Histogram3"><span id="Histogram3" style="position: absolute;"></span></div>
-              </div>
+
+            <div id="scatterPlot"></div>
+            <div id="parallelCoordinates"></div>
+          </div>
+          <div class="div3">
+            <div class="BoxPlotparent">
+              <div class="BoxPlotdiv1"><span id="boxPlot1"></span></div>
+              <div class="BoxPlotdiv2"><span id="boxPlot2"></span></div>
+              <div class="BoxPlotdiv3"><span id="boxPlot3"></span></div>
+              <div class="BoxPlotdiv4"><span id="boxPlot4"></span></div>
+              <div class="Histogram1"><span id="Histogram1"></span></div>
+              <div class="Histogram2"><span id="Histogram2"></span></div>
+              <div class="Histogram3"><span id="Histogram3" style="position: absolute;"></span></div>
             </div>
           </div>
         </div>
       </div>
-      <div class="footer">
-        <div style="position: absolute;left: 85%;     top: 94%;">
-          Cristian Fioravanti 1861593<br />
-          Paolo Caruso 1843152<br />
-        </div>
-
-        <h2 class="header" style="position: absolute;left: 45%; top: 92%;">Play Store Data</h2>
+    </div>
+    <div class="footer">
+      <div style="position: absolute;left: 92%;top: 95%;margin-top: 10px; font-size: 10px;">
+        Cristian Fioravanti 1861593<br />
+        Paolo Caruso 1843152<br />
       </div>
     </div>
     <script src="interface.js" type="module"></script>
