@@ -639,16 +639,17 @@ export function createParallelCoordinatesCompare() {
 }
 
 function addBorderToCircleSelected(selectedList) {
+  let listId = selectedList.map(obj => obj.ID)
   d3.select("#scatterPlot")
     .selectAll("circle")
     .each(function (d) {
-      if (selectedList.includes(d))
+      if (listId.includes(d.ID))
         d3.select(this)
-          .classed("selectedScatterPlot", true)
+          // .classed("selectedScatterPlot", true)
           .classed("selectedScatterPlotFilteredParallel", true);
       else
         d3.select(this)
-          .classed("selectedScatterPlot", true)
+          // .classed("selectedScatterPlot", true)
           .classed("selectedScatterPlotFilteredParallel", false);
     });
 }

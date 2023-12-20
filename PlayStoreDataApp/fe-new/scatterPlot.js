@@ -482,7 +482,7 @@ export function updateChart(force) {
         var extent = d3.event.selection;
         // Se il brushing è vuoto, reimposta la classe e interrompi la funzione
         if (extent[0][0] == extent[1][0] && extent[0][1] == extent[1][1]) {
-          svg.selectAll(".selectedScatterPlot").classed("selectedScatterPlot", true);
+          svg.selectAll(".selectedScatterPlot").classed("selectedScatterPlot", true).classed("selectedScatterPlotFilteredParallel", false);
           if (numberOfBrush == 1 || numberOfBrush > 1) {
             svg.selectAll(".brush").remove(); // Rimuovi eventuali rettangoli di selezione precedenti
             svg.selectAll("circle").classed("selectedScatterPlot", true).classed("selectedScatterPlotFilteredParallel", false);
@@ -531,7 +531,7 @@ export function updateChart(force) {
         var extent = d3.event.selection;
         // Se il brushing è vuoto, reimposta la classe e interrompi la funzione
         if (extent[0][0] == extent[1][0] && extent[0][1] == extent[1][1]) {
-          svg.selectAll(".selectedScatterPlot").classed("selectedScatterPlot", true);
+          svg.selectAll(".selectedScatterPlot").classed("selectedScatterPlot", true).classed("selectedScatterPlotFilteredParallel", false);
           if (numberOfBrush == 2 || (numberOfBrush == 1 && categoryService.numberOfCheckBoxSelected == 1) || categoryService.numberOfCheckBoxSelected == 2) {
             putAllEmpty(svg);
           }
