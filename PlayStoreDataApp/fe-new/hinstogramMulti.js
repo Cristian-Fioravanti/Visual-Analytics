@@ -117,12 +117,12 @@ export function createHistogramInstalls(dataSet) {
     if (categoryService.firstCategory != null) {
       var color1 = commonService.scaleColor(categoryService.firstCategory);
     } else {
-      var color1 = "rgb(255,0,0)";
+      var color1 = "#cb2322";
     }
     if (categoryService.secondCategory != null) {
       var color2 = commonService.scaleColor(categoryService.secondCategory);
     } else {
-      var color2 = "rgb(0,0,255)";
+      var color2 = "#00e3fd";
     }
     var groups = []
     for (let i = 0; i < firstGroup.length; i++) {
@@ -331,12 +331,12 @@ export function createHistogramType(dataDistinct, data1, data2) {
     if (categoryService.firstCategory != null) {
       var color1 = commonService.scaleColor(categoryService.firstCategory);
     } else {
-      var color1 = "rgb(255,0,0)";
+      var color1 = "#cb2322";
     }
     if (categoryService.secondCategory != null) {
       var color2 = commonService.scaleColor(categoryService.secondCategory);
     } else {
-      var color2 = "rgb(0,0,255)";
+      var color2 = "#00e3fd";
     }
     var y
   
@@ -607,12 +607,12 @@ export function createHistogramContentRating(dataDistinct, data1, data2) {
     if (categoryService.firstCategory != null) {
       var color1 = commonService.scaleColor(categoryService.firstCategory);
     } else {
-      var color1 = "rgb(255,0,0)";
+      var color1 = "#cb2322";
     }
     if (categoryService.secondCategory != null) {
       var color2 = commonService.scaleColor(categoryService.secondCategory);
     } else {
-      var color2 = "rgb(0,0,255)";
+      var color2 = "#00e3fd";
     }
     // Seleziona tutti i rettangoli nel contenitore e associa i dati combinati
     const rects1 = svg

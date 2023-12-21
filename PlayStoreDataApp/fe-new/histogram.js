@@ -136,7 +136,7 @@ export function createHistogramInstalls(dataSet) {
       .attr("height", function (d) {
         return height - y(d.length);
       })
-      .style("fill", "#69b3a2").on("mouseover", mouseover )
+      .style("fill", "#cb2322").on("mouseover", mouseover )
     .on("mousemove", mousemove )
     .on("mouseleave", mouseleave );
   }
@@ -154,7 +154,7 @@ export function createHistogramInstalls(dataSet) {
       .attr("height", function (d) {
         return height - y(d.length);
       })
-      .style("fill", "#69b3a2").on("mouseover", mouseover )
+      .style("fill", "#cb2322").on("mouseover", mouseover )
     .on("mousemove", mousemove )
     .on("mouseleave", mouseleave );
   }
@@ -263,7 +263,7 @@ export function createHistogramType(dataDistinct, data) {
       .attr("height", function (d) {
         return height - y(d.Total);
       })
-      .style("fill", "#69b3a2").on("mouseover", mouseover )
+      .style("fill", "#cb2322").on("mouseover", mouseover )
     .on("mousemove", mousemove )
     .on("mouseleave", mouseleave );
   }
@@ -281,7 +281,7 @@ export function createHistogramType(dataDistinct, data) {
       .attr("height", function (d) {
         return height - y(d.length);
       })
-      .style("fill", "#69b3a2").on("mouseover", mouseover )
+      .style("fill", "#cb2322").on("mouseover", mouseover )
     .on("mousemove", mousemove )
     .on("mouseleave", mouseleave );
   }
@@ -486,7 +486,7 @@ export function createHistogramContentRating(dataDistinct, data) {
       .attr("height", function (d) {
         return height - y(d.Total);
       })
-      .style("fill", "#69b3a2").on("mouseover", mouseover )
+      .style("fill", "#cb2322").on("mouseover", mouseover )
     .on("mousemove", mousemove )
     .on("mouseleave", mouseleave );
   }
@@ -504,7 +504,7 @@ export function createHistogramContentRating(dataDistinct, data) {
       .attr("height", function (d) {
         return height - y(d.Total);
       })
-      .style("fill", "#69b3a2").on("mouseover", mouseover )
+      .style("fill", "#cb2322").on("mouseover", mouseover )
     .on("mousemove", mousemove )
     .on("mouseleave", mouseleave );
   }

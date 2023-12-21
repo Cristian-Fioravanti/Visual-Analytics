@@ -10,7 +10,7 @@ let firstSet;
 let firstBrush;
 let secondBrush;
 let brushVar;
-let dimensions = ["Rating", "Reviews", "Size", "Installs", "Price", "Content_Rating", "Type"];
+let dimensions = ["Rating", "Category", "Reviews", "Size", "Installs", "Price", "Content_Rating", "Type"];
 var x;
 var y;
 var initilizedX;
@@ -77,6 +77,8 @@ function createScatterPlot(jsonPCAData, recalculated) {
     dimensions.forEach(function (dimension) {
       // Verifica se la dimensione è presente nell'oggetto "d"
       if (d[dimension]) {
+        if (dimension == "Category") htmlContent += "<strong '>" + dimension + ":</strong> " + "<label style='color: "+scaleColor(d.Category)+"'>"+d[dimension]+"</label> <br>"
+        else
         htmlContent += "<strong>" + dimension + ":</strong> " + d[dimension] + "<br>";
       }
     });
@@ -119,27 +121,28 @@ function createScatterPlot(jsonPCAData, recalculated) {
     ])
     .on("zoom", zoomed);
 
-  function zoomed() {
-    // recover the new scale
-    newX = d3.event.transform.rescaleX(x);
-    newY = d3.event.transform.rescaleY(y);
+ function zoomed() {
+  // recover the new scale
+  newX = d3.event.transform.rescaleX(x);
+  newY = d3.event.transform.rescaleY(y);
 
-    // update axes with these new boundaries
-    xAxis.call(d3.axisBottom(newX));
-    yAxis.call(d3.axisLeft(newY));
+  // update axes with these new boundaries
+  xAxis.call(d3.axisBottom(newX));
+  yAxis.call(d3.axisLeft(newY));
 
-    // update circle position
-    svg
-      .selectAll("circle")
-      .attr("cx", function (d) {
-        var cx = newX(d.Y1);
-        return cx >= 0 && cx <= width ? cx : cx < 0 ? 0 : width;
-      })
-      .attr("cy", function (d) {
-        var cy = newY(d.Y2);
-        return cy >= 0 && cy <= height ? cy : cy < 0 ? 0 : height;
-      });
-  }
+  // update circle position
+  svg
+    .selectAll("circle")
+    .attr("cx", function (d) {
+      var cx = newX(d.Y1);
+      return cx >= 0 && cx <= width ? cx : cx < 0 ? 0 : width;
+    })
+    .attr("cy", function (d) {
+      var cy = newY(d.Y2);
+      return cy >= 0 && cy <= height ? cy : cy < 0 ? 0 : height;
+    });
+}
+
 
   brushVar = d3
     .brush() // Add the brush feature using the d3.brush function
@@ -333,7 +336,7 @@ function createScatterPlot(jsonPCAData, recalculated) {
         svg
           .append("rect")
           .attr("class", "brush")
-          .attr("fill", "rgba(255, 0, 0, 0.1)")
+          .attr("fill", "rgb(255, 0, 0, 0.1)")
           .attr("stroke-width", "1px")
           .attr("stroke", "white")
           .attr("color", "trasparent") // Colore del rettangolo di selezione
@@ -347,7 +350,7 @@ function createScatterPlot(jsonPCAData, recalculated) {
         svg
           .append("rect")
           .attr("class", "brush")
-          .attr("fill", "rgba(0, 0, 255, 0.1)")
+          .attr("fill", "rgb(0, 0, 255, 0.1)")
           .attr("stroke-width", "1px")
           .attr("stroke", "white")
           .attr("color", "trasparent") // Colore del rettangolo di selezione

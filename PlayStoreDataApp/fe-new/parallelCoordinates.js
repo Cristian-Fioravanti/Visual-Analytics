@@ -351,13 +351,13 @@ export function createParallelCoordinatesCompare() {
           if (categoryService.firstCategory != null) {
             return scaleColor(d.Category);
           } else {
-            return "rgb(255,0,0)";
+            return "#cb2322";
           }
         } else {
           if (categoryService.secondCategory != null) {
             return scaleColor(d.Category);
           } else {
-            return "rgb(0,0,255)";
+            return "#00e3fd";
           }
         }
       }
@@ -626,13 +626,13 @@ export function createParallelCoordinatesCompare() {
       if (categoryService.firstCategory != null) {
         return scaleColor(d.Category);
       } else {
-        return "rgb(255,0,0)";
+        return "#cb2322";
       }
     } else {
       if (categoryService.secondCategory != null) {
         return scaleColor(d.Category);
       } else {
-        return "rgb(0,0,255)";
+        return "#00e3fd";
       }
     }
   }

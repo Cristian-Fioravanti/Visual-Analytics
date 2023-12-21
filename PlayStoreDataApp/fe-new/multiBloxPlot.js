@@ -181,7 +181,7 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
       .remove();
 
     var color =
-      group1 == "Group 1" ? "rgb(255,0,0)" : commonService.scaleColor(group1);
+      group1 == "Group 1" ? "#cb2322" : commonService.scaleColor(group1);
     var newTopX = height + margin.top;
     // var newTopY = margin.top-20
     svg
@@ -314,7 +314,7 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
         .call(yAxis);
     }
     var color =
-      group2 == "Group 2" ? "rgb(0,0,255)" : commonService.scaleColor(group2);
+      group2 == "Group 2" ? "#00e3fd" : commonService.scaleColor(group2);
     svg
       .append("rect")
       .attr("x", x(group2) - boxWidth / 2 + x.bandwidth() / 2)
