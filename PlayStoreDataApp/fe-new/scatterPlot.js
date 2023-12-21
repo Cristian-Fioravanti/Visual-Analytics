@@ -539,15 +539,22 @@ export function updateChart(force) {
         }
         // Imposta la classe "selected" per i cerchi all'interno della selezione del brushing
         let selectedSet = [];
+        if (numberOfBrush == 0) {
+          putAllEmpty(svg)
+        }
         svg.selectAll("circle").classed("selectedScatterPlot", function (d) {
           var cx = x(d.Y1);
           var cy = y(d.Y2);
           if (cx >= extent[0][0] && cx <= extent[1][0] && cy >= extent[0][1] && cy <= extent[1][1]) {
             //d is in the brush
-            if (numberOfBrush == 0)
+            if (numberOfBrush == 0) {
               d3.select(this).classed("group1", true)
+               d3.select(this).classed("group2", false)
+            }
+              
             else if (numberOfBrush == 1) {
-               d3.select(this).classed("group2",true)
+              d3.select(this).classed("group2", true)
+              d3.select(this).classed("group1", false)
             }
             else {
               d3.select(this).classed("group2", false)
@@ -557,11 +564,14 @@ export function updateChart(force) {
             return true;
           } else if (isInsideSet(d)) return true;
           else {
-             if (numberOfBrush == 0)
-              d3.select(this).classed("group1", false)
-            else if (numberOfBrush == 1) {
-               d3.select(this).classed("group2",false)
-            }
+            // if (numberOfBrush == 0) {
+            //   svg.selectAll(".group1").classed("group1", false);
+            //   svg.selectAll(".group2").classed("group2", false);
+            //  }
+             
+            // else if (numberOfBrush == 1) {
+            //    d3.select(this).classed("group2",false)
+            // }
            
           } return false;
         });
