@@ -7,33 +7,36 @@ let allDataInstalls;
 export function createHistogramInstalls(dataSet) {
   allDataInstalls = dataSet;
   // set the dimensions and margins of the graph
-  var divWidth = d3.select(".Histogram3").node().clientWidth;
-  var divHeigth = d3.select(".Histogram3").node().clientHeight;
+  let divWidth = d3.select(".Histogram3").node().clientWidth;
+  let divHeigth = d3.select(".Histogram3").node().clientHeight;
   var margin = { top: 20, right: 15, bottom: 30, left: 40 },
     width = divWidth - margin.left - margin.right,
     height = divHeigth - margin.top - margin.bottom;
   var y;
   var x;
-     var tooltip = d3.select("#Histogram3")
-       .append("span")
-       .attr("class","tooltipScemo")
-    .style("opacity", 0)
-    .style("background-color", "black")
-    .style("position", "absolute")
-    .style("border-width", "1px")
-    .style("border-radius", "5px")
-    .style("padding", "10px")
+  let tooltip = d3.select("#Histogram3").select("span.tooltip")
+  if(tooltip.empty()){
+    tooltip = d3.select("#Histogram3")
+      .append("span")
+      .attr("class","tooltip")
+      .style("opacity", 0)
+      .style("background-color", "black")
+      .style("position", "absolute")
+      .style("border-width", "1px")
+      .style("border-radius", "5px")
+      .style("padding", "10px")
+  }
 
-  var mouseover = function(d) {
+  let mouseover = function(d) {
     tooltip
       .style("opacity", 1)
   }
 
-  var mousemove = function (d) {
-    var containerY = d3.event.clientY - d3.select("#Histogram3").node().getBoundingClientRect().top- margin.top;
+  let mousemove = function (d) {
+    let containerY = d3.event.clientY - d3.select("#Histogram3").node().getBoundingClientRect().top- margin.top;
     
     // Calcola le coordinate y relative al grafico
-    var mouseY = y.invert(containerY);
+    let mouseY = y.invert(containerY);
     
     // Aggiungi il testo desiderato nel tooltip
     tooltip.html(d.length)
@@ -45,14 +48,14 @@ export function createHistogramInstalls(dataSet) {
   }
 
   // A function that change this tooltip when the leaves a point: just need to set opacity to 0 again
-  var mouseleave = function(d) {
+  let mouseleave = function(d) {
     tooltip.style("opacity", 0)
     
   }  
   // append the svg object to the body of the page
-  var svg = d3.select("#Histogram3").select("svg").select("g.ShortInstalls");
+  let svg = d3.select("#Histogram3").select("svg").select("g.ShortInstalls");
   if (svg.empty()) {
-    var svg = d3
+    svg = d3
       .select("#Histogram3")
       .append("svg")
       .attr("width", divWidth - 1)
@@ -64,7 +67,7 @@ export function createHistogramInstalls(dataSet) {
   // get the data
 
   // X axis: scale and draw:
-  var xTickFormat = function (d) {
+  const xTickFormat = function (d) {
     return "10^" + Math.round(Math.log10(d));
   };
   x = d3
@@ -81,7 +84,7 @@ export function createHistogramInstalls(dataSet) {
   }
 
   // set the parameters for the histogram
-  var histogram = d3
+  const histogram = d3
     .histogram()
     .value(function (d) {
       return d.Installs;
@@ -90,11 +93,11 @@ export function createHistogramInstalls(dataSet) {
     .thresholds(x.ticks(10)); // then the numbers of bins
 
   // And apply this function to data to get the bins
-  var bins = histogram(dataSet);
+  let bins = histogram(dataSet);
 
   // Y axis: scale and draw:
 
-  var y = d3.scaleLinear().range([height, 0]);
+  y = d3.scaleLinear().range([height, 0]);
   y.domain([
     0,
     d3.max(bins, function (d) {
@@ -160,7 +163,7 @@ export function createHistogramInstalls(dataSet) {
   }
 
   // Aggiungi un titolo sopra l'istogramma
-  var titleFontSize = 15;
+  const titleFontSize = 15;
   if(svg.select("text.Installs").empty()) {
     svg
       .append("text")
@@ -177,8 +180,8 @@ export function createHistogramInstalls(dataSet) {
   commonService.firstSet.observe((data) => {
     if (commonService.mode.value == "Visualize") {
       // And apply this function to data to get the bins
-      dataSet = commonService.firstSet != undefined ? commonService.firstSet.value : allDataInstalls;
-      var dataY = dataSet.length != 0 ? dataSet : allDataInstalls;
+      let dataSet = commonService.firstSet != undefined ? commonService.firstSet.value : allDataInstalls;
+      const dataY = dataSet.length != 0 ? dataSet : allDataInstalls;
       bins = histogram(dataY);
       // Y axis: scale and draw:
       y = d3.scaleLinear().range([height, 0]);
@@ -205,24 +208,29 @@ export function createHistogramInstalls(dataSet) {
 }
 
 export function createHistogramType(dataDistinct, data) {
-  var dataSet = data != undefined ? data : [];
-  var domainY = dataSet.length != 0 ? dataSet.length : 7023;
-  var y
-   var tooltip = d3.select("#Histogram1")
+  let dataSet = data != undefined ? data : [];
+  const domainY = dataSet.length != 0 ? dataSet.length : 7023;
+  var y;
+  var x;
+  let tooltip = d3.select("#Histogram1").select("span.tooltip")
+  if(tooltip.empty()){
+    tooltip = d3.select("#Histogram1")
     .append("span")
+    .attr("class","tooltip")
     .style("opacity", 0)
     .style("background-color", "black")
     .style("position", "absolute")
     .style("border-width", "1px")
     .style("border-radius", "5px")
     .style("padding", "10px")
+  }
 
-  var mouseover = function(d) {
+  let mouseover = function(d) {
     tooltip
       .style("opacity", 1)
   }
 
-  var mousemove = function(d) {
+  let mousemove = function(d) {
     tooltip
       .html(d.Total)
       .style("left", (d3.event.clientX+10) + "px") // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
@@ -230,7 +238,7 @@ export function createHistogramType(dataDistinct, data) {
   }
 
   // A function that change this tooltip when the leaves a point: just need to set opacity to 0 again
-  var mouseleave = function(d) {
+  let mouseleave = function(d) {
     tooltip.style("opacity", 0)
     
   }  
@@ -287,16 +295,16 @@ export function createHistogramType(dataDistinct, data) {
   }
 
   // set the dimensions and margins of the graph
-  var divWidth = d3.select(".Histogram1").node().clientWidth;
-  var divHeigth = d3.select(".Histogram1").node().clientHeight;
+  const divWidth = d3.select(".Histogram1").node().clientWidth;
+  const divHeigth = d3.select(".Histogram1").node().clientHeight;
   var margin = { top: 20, right: 5, bottom: 30, left: 40 },
     width = divWidth - margin.left - margin.right,
     height = divHeigth - margin.top - margin.bottom;
 
   // append the svg object to the body of the page
-  var svg = d3.select("#Histogram1").select("svg").select("g.ShortTicks");
+  let svg = d3.select("#Histogram1").select("svg").select("g.ShortTicks");
   if (svg.empty()) {
-    var svg = d3
+    svg = d3
       .select("#Histogram1")
       .append("svg")
       .attr("width", divWidth - 1)
@@ -307,13 +315,13 @@ export function createHistogramType(dataDistinct, data) {
   }
   
   // X axis: scale and draw:
-  var domainX = dataDistinct.length != 0 ? dataDistinct : ["Free", "Paid"];
-  var x = d3
+  const domainX = dataDistinct.length != 0 ? dataDistinct : ["Free", "Paid"];
+  x = d3
     .scalePoint()
     .domain(domainX) // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
     .range([0, width])
     .padding(1);
-  var xAxis = svg.select("g.x.axis");
+  const xAxis = svg.select("g.x.axis");
   if (xAxis.empty()) {
     svg
       .append("g")
@@ -325,9 +333,10 @@ export function createHistogramType(dataDistinct, data) {
   }
   // Y axis: scale and draw:
   y = d3.scaleSymlog().range([height, 0]).domain([0, domainY]);
+  
   function generateCustomTicks(y) {
-    var tickValues = [y.domain()[0]];
-    var currentValue = y.domain()[1];
+    let tickValues = [y.domain()[0]];
+    let currentValue = y.domain()[1];
 
     while (currentValue > 10) {
       currentValue /= 2;
@@ -337,7 +346,7 @@ export function createHistogramType(dataDistinct, data) {
     return tickValues;
   }
 
-  var yAxis = svg.select("g.HistogramSvg1");
+  let yAxis = svg.select("g.HistogramSvg1");
   if (yAxis.empty()) {
     svg
       .append("g")
@@ -348,7 +357,7 @@ export function createHistogramType(dataDistinct, data) {
   }
 
   // Aggiungi un titolo sopra l'istogramma
-  var titleFontSize = 15;
+  const titleFontSize = 15;
   if(svg.select("text.Type").empty()) {
     svg
       .append("text")
@@ -366,30 +375,34 @@ export function createHistogramType(dataDistinct, data) {
 }
 
 export function createHistogramContentRating(dataDistinct, data) {
-  var dataSet = data != undefined ? data : [];
+  let dataSet = data != undefined ? data : [];
   // set the dimensions and margins of the graph
   var y;
-  var divWidth = d3.select(".Histogram2").node().clientWidth;
-  var divHeigth = d3.select(".Histogram2").node().clientHeight;
-  var margin = { top: 20, right: 5, bottom: 30, left: 40 },
+  const divWidth = d3.select(".Histogram2").node().clientWidth;
+  const divHeigth = d3.select(".Histogram2").node().clientHeight;
+  const margin = { top: 20, right: 5, bottom: 30, left: 40 },
     width = 350 - margin.left - margin.right,
     height = 165 - margin.top - margin.bottom;
 
-     var tooltip = d3.select("#Histogram2")
-    .append("span")
-    .style("opacity", 0)
-    .style("background-color", "black")
-    .style("position", "absolute")
-    .style("border-width", "1px")
-    .style("border-radius", "5px")
-    .style("padding", "10px")
-
-  var mouseover = function(d) {
+  let tooltip = d3.select("#Histogram2").select("span.tooltip")
+  if(tooltip.empty()){
+    tooltip = d3.select("#Histogram2")
+      .append("span")
+      .attr("class","tooltip")
+      .style("opacity", 0)
+      .style("background-color", "black")
+      .style("position", "absolute")
+      .style("border-width", "1px")
+      .style("border-radius", "5px")
+      .style("padding", "10px")
+  }
+    
+  let mouseover = function(d) {
     tooltip
       .style("opacity", 1)
   }
 
-  var mousemove = function(d) {
+  let mousemove = function(d) {
     tooltip
       .html(d.Total)
       .style("left", (d3.event.clientX+10) + "px") // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
@@ -397,14 +410,14 @@ export function createHistogramContentRating(dataDistinct, data) {
   }
 
   // A function that change this tooltip when the leaves a point: just need to set opacity to 0 again
-  var mouseleave = function(d) {
+  let mouseleave = function(d) {
     tooltip.style("opacity", 0)
     
   }  
-  var svg = d3.select("#Histogram2").select("svg").select("g.ContentRating");
+  let svg = d3.select("#Histogram2").select("svg").select("g.ContentRating");
   if (svg.empty()) {
     // append the svg object to the body of the page
-    var svg = d3
+    svg = d3
       .select("#Histogram2")
       .append("svg")
       .attr("width", divWidth - 1)
@@ -413,14 +426,14 @@ export function createHistogramContentRating(dataDistinct, data) {
       .classed("ContentRating", true)
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
   }
-  var domainX = dataDistinct.length != 0 ? dataDistinct : ["Everyone", "Teen", "Adults Only"];
+  const domainX = dataDistinct.length != 0 ? dataDistinct : ["Everyone", "Teen", "Adults Only"];
   // X axis: scale and draw:
-  var x = d3
+  let x = d3
     .scalePoint()
     .domain(domainX) // can use this instead of 1000 to have the max of data: d3.max(data, function(d) { return +d.price })
     .range([0, width])
     .padding(1);
-  var xAxis = svg.select("g.x.axis");
+  let xAxis = svg.select("g.x.axis");
   if (xAxis.empty()) {
     svg
       .append("g")
@@ -432,11 +445,12 @@ export function createHistogramContentRating(dataDistinct, data) {
   }
 
   // Y axis: scale and draw:
-  var domainY = dataSet.length != 0 ? dataSet.length : 7023;
+  const domainY = dataSet.length != 0 ? dataSet.length : 7023;
   y = d3.scaleSymlog().range([height, 0]).domain([0, domainY]);
+
   function generateCustomTicks(y) {
-    var tickValues = [y.domain()[0]];
-    var currentValue = y.domain()[1];
+    let tickValues = [y.domain()[0]];
+    let currentValue = y.domain()[1];
 
     while (currentValue > 10) {
       currentValue /= 2;
@@ -447,7 +461,8 @@ export function createHistogramContentRating(dataDistinct, data) {
 
     return tickValues;
   }
-  var yAxis = svg.select("g.HistogramSvg2");
+
+  let yAxis = svg.select("g.HistogramSvg2");
   if (yAxis.empty()) {
     svg
       .append("g")
@@ -477,7 +492,7 @@ export function createHistogramContentRating(dataDistinct, data) {
       .append("rect")
       .attr("x", 1)
       .attr("transform", function (d) {
-        var transX = x(d.Content_Rating) - 5;
+        const transX = x(d.Content_Rating) - 5;
         return "translate(" + transX + "," + y(d.Total) + ")";
       })
       .attr("width", function (d) {
@@ -490,12 +505,13 @@ export function createHistogramContentRating(dataDistinct, data) {
     .on("mousemove", mousemove )
     .on("mouseleave", mouseleave );
   }
+
   function updateData(update) {
     update
       .append("rect")
       .attr("x", 1)
       .attr("transform", function (d) {
-        var transX = parseInt(x(d.Content_Rating)) - 5;
+        const transX = parseInt(x(d.Content_Rating)) - 5;
         return "translate(" + transX + "," + y(d.Total) + ")";
       })
       .attr("width", function (d) {
@@ -510,7 +526,7 @@ export function createHistogramContentRating(dataDistinct, data) {
   }
   
   // Aggiungi un titolo sopra l'istogramma
-  var titleFontSize = 15;
+  const titleFontSize = 15;
   if(svg.select("text.Ratings").empty()) {
     svg
       .append("text")
@@ -534,7 +550,7 @@ export function populateHistograms(jsonData) {
   initializeHistograms(jsonData);
   commonService.firstSet.observe((data) => {
     if (commonService.mode.value == "Visualize") {
-      var newData = commonService.firstSet.value;
+      const newData = commonService.firstSet.value;
       createHistogramType(Array.from(new Set(newData.map((obj) => obj.Type))), newData);
       createHistogramContentRating(Array.from(new Set(newData.map((obj) => obj.Content_Rating))), newData);
     }

@@ -8,30 +8,33 @@ let allDataInstalls;
 export function createHistogramInstalls(dataSet) {
   allDataInstalls = dataSet;
   // set the dimensions and margins of the graph
-  var divWidth = d3.select(".Histogram3").node().clientWidth;
-  var divHeigth = d3.select(".Histogram3").node().clientHeight;
-  var margin = { top: 10, right: 15, bottom: 30, left: 40 },
+  let divWidth = d3.select(".Histogram3").node().clientWidth;
+  let divHeigth = d3.select(".Histogram3").node().clientHeight;
+  let margin = { top: 20, right: 15, bottom: 30, left: 40 },
     width = divWidth - margin.left - margin.right,
     height = divHeigth - margin.top - margin.bottom;
-  var y;
-  var x;
+  let y;
+  let x;
 
-   var tooltip = d3.select("#Histogram3")
-       .append("span")
-       .attr("class","tooltipScemo")
-    .style("opacity", 0)
-    .style("background-color", "black")
-    .style("position", "absolute")
-    .style("border-width", "1px")
-    .style("border-radius", "5px")
-    .style("padding", "10px")
+  let tooltip = d3.select("#Histogram3").select("span.tooltip")
+  if(tooltip.empty()){
+    tooltip = d3.select("#Histogram3")
+      .append("span")
+      .attr("class","tooltip")
+      .style("opacity", 0)
+      .style("background-color", "black")
+      .style("position", "absolute")
+      .style("border-width", "1px")
+      .style("border-radius", "5px")
+      .style("padding", "10px")
+  }
 
-  var mouseover = function(d) {
+  let mouseover = function(d) {
     tooltip
       .style("opacity", 1)
   }
 
-  var mousemove = function (d) {
+  let mousemove = function (d) {
      var containerY = d3.event.clientY - d3.select("#Histogram3").node().getBoundingClientRect().top- margin.top;
     
     // Calcola le coordinate y relative al grafico
@@ -46,15 +49,14 @@ export function createHistogramInstalls(dataSet) {
   }
 
   // A function that change this tooltip when the leaves a point: just need to set opacity to 0 again
-  var mouseleave = function(d) {
+  let mouseleave = function(d) {
     tooltip.style("opacity", 0)
     
   }  
   // append the svg object to the body of the page
-  var svg = d3.select("#Histogram3").select("svg").select("g.ShortInstalls");
+  let svg = d3.select("#Histogram3").select("svg").select("g.ShortInstalls");
   if (svg.empty()) {
-    var svg = d3
-      .select("#Histogram3")
+    svg = d3.select("#Histogram3")
       .append("svg")
       .attr("width", divWidth - 1)
       .attr("height", divHeigth - 1)
@@ -65,7 +67,7 @@ export function createHistogramInstalls(dataSet) {
   // get the data
 
   // X axis: scale and draw:
-  var xTickFormat = function (d) {
+  let xTickFormat = function (d) {
     return "10^" + Math.round(Math.log10(d));
   };
   x = d3
@@ -82,8 +84,7 @@ export function createHistogramInstalls(dataSet) {
   }
 
   // set the parameters for the histogram
-  var histogram = d3
-    .histogram()
+  let histogram = d3.histogram()
     .value(function (d) {
       return d.Installs;
     }) // I need to give the vector of value
@@ -91,7 +92,7 @@ export function createHistogramInstalls(dataSet) {
     .thresholds(x.ticks(10)); // then the numbers of bins
 
   // And apply this function to data to get the bins
-  var bins = histogram(dataSet);
+  let bins = histogram(dataSet);
 
   // Y axis: scale and draw:
   y = d3.scaleLinear().range([height, 0]);
@@ -101,12 +102,12 @@ export function createHistogramInstalls(dataSet) {
       return d.length;
     }),
   ]); // d3.hist has to be called before the Y axis obviously
-  var axisY = svg.select("g.installsY");
-  if (axisY.empty) {
+  let yAxis = svg.select("g.installsY")
+  if(yAxis.empty()) {
     svg.append("g").attr("class", "installsY").call(d3.axisLeft(y));
   } else {
-    axisY.call(d3.axisLeft(y));
-  }
+    yAxis.call(d3.axisLeft(y));
+  } 
 
   // popolaTabella(bins);
 
@@ -191,7 +192,6 @@ export function createHistogramInstalls(dataSet) {
       .on("mouseleave", mouseleave );
   }
 
-
   function updateData(update) {
     update
       .append("rect")
@@ -209,6 +209,7 @@ export function createHistogramInstalls(dataSet) {
     .on("mousemove", mousemove )
     .on("mouseleave", mouseleave );
   }
+
   popolaTabella([], []);
   commonService.firstSet.observe((data) => {
     if (commonService.mode.value == "Compare") {
@@ -229,9 +230,12 @@ export function createHistogramInstalls(dataSet) {
       // Y axis: scale and draw:
       y = d3.scaleLinear().range([height, 0]);
       y.domain([0,maxY]);
-      svg.select("g.installsY").remove();
-      svg.select("g.installsY").remove();
-      svg.append("g").attr("class", "installsY").call(d3.axisLeft(y));
+      let yAxis = svg.select("g.installsY")
+      if(yAxis.empty()) {
+        svg.append("g").attr("class", "installsY").call(d3.axisLeft(y));
+      } else {
+        yAxis.call(d3.axisLeft(y));
+      }
       popolaTabella([], []);
       if (dataSet.length != 0) {
         popolaTabella(
@@ -270,9 +274,12 @@ export function createHistogramInstalls(dataSet) {
       // Y axis: scale and draw:
       y = d3.scaleLinear().range([height, 0]);
       y.domain([0,maxY]); // d3.hist has to be called before the Y axis obviously
-      svg.select("g.installsY").remove();
-      svg.select("g.installsY").remove();
-      svg.append("g").attr("class", "installsY").call(d3.axisLeft(y));
+      let yAxis = svg.select("g.installsY")
+      if(yAxis.empty()) {
+        svg.append("g").attr("class", "installsY").call(d3.axisLeft(y));
+      } else {
+        yAxis.call(d3.axisLeft(y));
+      }
       popolaTabella([], []);
       if (dataSet.length != 0) {
         popolaTabella(
@@ -290,15 +297,19 @@ export function createHistogramInstalls(dataSet) {
 
 export function createHistogramType(dataDistinct, data1, data2) {
   var dataSet = [...data1, ...data2];
-  var y
-   var tooltip = d3.select("#Histogram1")
-    .append("span")
-    .style("opacity", 0)
-    .style("background-color", "black")
-    .style("position", "absolute")
-    .style("border-width", "1px")
-    .style("border-radius", "5px")
-    .style("padding", "10px")
+  var y;
+  var tooltip = d3.select("#Histogram1").select("span.tooltip")
+  if(tooltip.empty()){
+    tooltip = d3.select("#Histogram1")
+      .append("span")
+      .attr("class","tooltip")
+      .style("opacity", 0)
+      .style("background-color", "black")
+      .style("position", "absolute")
+      .style("border-width", "1px")
+      .style("border-radius", "5px")
+      .style("padding", "10px")
+  }
 
   var mouseover = function(d) {
     tooltip
@@ -438,7 +449,7 @@ export function createHistogramType(dataDistinct, data1, data2) {
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
   }
   // X axis: scale and draw:
-  var domainX =
+  let domainX =
     dataDistinct.length != 0
       ? dataDistinct.sort(d3.ascending)
       : ["Free", "Paid"];
@@ -505,14 +516,18 @@ export function createHistogramContentRating(dataDistinct, data1, data2) {
     width = 350 - margin.left - margin.right,
     height = 165 - margin.top - margin.bottom;
   var y;
-  var tooltip = d3.select("#Histogram2")
-    .append("span")
-    .style("opacity", 0)
-    .style("background-color", "black")
-    .style("position", "absolute")
-    .style("border-width", "1px")
-    .style("border-radius", "5px")
-    .style("padding", "10px")
+  var tooltip = d3.select("#Histogram2").select("span.tooltip")
+  if(tooltip.empty()){
+    tooltip = d3.select("#Histogram2")
+      .append("span")
+      .attr("class","tooltip")
+      .style("opacity", 0)
+      .style("background-color", "black")
+      .style("position", "absolute")
+      .style("border-width", "1px")
+      .style("border-radius", "5px")
+      .style("padding", "10px")
+  }
 
   var mouseover = function(d) {
     tooltip

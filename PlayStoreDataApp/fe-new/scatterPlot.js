@@ -536,41 +536,31 @@ export function updateChart(force) {
       }
       // Imposta la classe "selected" per i cerchi all'interno della selezione del brushing
       let selectedSet = [];
-      if (numberOfBrush == 0) {
-        putAllEmpty(svg);
-      }
       svg.selectAll("circle").classed("selectedScatterPlot", function (d) {
         var cx = x(d.Y1);
         var cy = y(d.Y2);
         if (cx >= extent[0][0] && cx <= extent[1][0] && cy >= extent[0][1] && cy <= extent[1][1]) {
-          //d is in the brush
-          if (numberOfBrush == 0) {
-            d3.select(this).classed("group1", true);
-            d3.select(this).classed("group2", false);
-          } else if (numberOfBrush == 1) {
-            d3.select(this).classed("group2", true);
-            d3.select(this).classed("group1", false);
-          } else {
-            d3.select(this).classed("group2", false);
-            d3.select(this).classed("group1", false);
-          }
           selectedSet.push(d);
           return true;
         } else if (isInsideSet(d)) return true;
         else {
-          d3.select(this).classed("group2", false);
-          d3.select(this).classed("group1", false);
+          return false;
         }
-        return false;
       });
       // Primo brush che faccio e non ho categorie selezionate
       if (numberOfBrush == 0 && categoryService.numberOfCheckBoxSelected == 0) {
         commonService.setFirstSet(selectedSet);
+        selectedSet.forEach((circle) => {
+          svg.select("circle[id='" + circle.ID + "']").classed("group1", true)
+        });
         firstSet = selectedSet;
       }
       // Primo brush che faccio e ho categoria selezionata
       else if (numberOfBrush == 0 && categoryService.numberOfCheckBoxSelected == 1) {
         commonService.setSecondSet(selectedSet);
+        selectedSet.forEach((circle) => {
+          svg.select("circle[id='" + circle.ID + "']").classed("group2", true)
+        });
         secondSet = selectedSet;
         commonService.disabledCheckBox();
       }
@@ -578,9 +568,15 @@ export function updateChart(force) {
       else if (numberOfBrush == 1 && categoryService.numberOfCheckBoxSelected == 0) {
         if (firstBrush.length == 0) {
           commonService.setFirstSet(selectedSet);
+          selectedSet.forEach((circle) => {
+            svg.select("circle[id='" + circle.ID + "']").classed("group1", true)
+          });
           firstSet = selectedSet;
         } else if (secondBrush.length == 0) {
           commonService.setSecondSet(selectedSet);
+          selectedSet.forEach((circle) => {
+            svg.select("circle[id='" + circle.ID + "']").classed("group2", true)
+          });
           secondSet = selectedSet;
         }
         commonService.disabledCheckBox();

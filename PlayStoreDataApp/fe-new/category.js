@@ -19,7 +19,7 @@ export function insertCategory(jsonPCAData) {
 export function createCheckBox(distinctPCAData) {
   removeCheckBox();
   distinctPCAData["Category"].forEach((dataCategory) => {
-    var checkbox = document.createElement("input");
+    let checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.id = dataCategory;
     // checkbox.name = dataCategory;
@@ -32,12 +32,12 @@ export function createCheckBox(distinctPCAData) {
       selectCircles(event);
     });
 
-    var label = document.createElement("label");
+    let label = document.createElement("label");
     label.htmlFor = dataCategory;
     label.style.color = scaleColor(dataCategory);
     label.appendChild(document.createTextNode(dataCategory));
 
-    var br = document.createElement("br");
+    let br = document.createElement("br");
 
     let categoryElem = document.getElementById("category");
     categoryElem.appendChild(label);
@@ -47,35 +47,33 @@ export function createCheckBox(distinctPCAData) {
 }
 
 function selectCircles(event) {
-  var mode = commonService.mode.value;
+  const mode = commonService.mode.value;
   if (mode == "Visualize") {
+    const category = event.target.id;
     if (event.target.classList.length > 0) {
       event.target.classList.remove("checked");
-      var category = event.target.id;
       d3.selectAll("circle.selectedScatterPlot[name='" + category + "']").classed("selectedScatterPlot", false);
-      var index = selectedCategories.indexOf(category);
+      const index = selectedCategories.indexOf(category);
       if (index !== -1) {
         selectedCategories.splice(index, 1);
       }
-      var oldSet = commonService.firstSet.value;
-      if (oldSet == undefined || oldSet.length == 0) {
-        var newSet = [];
-      } else {
-        var newSet = oldSet.filter(function (obj) {
+      const oldSet = commonService.firstSet.value;
+      let newSet = [];
+      if (oldSet != undefined && oldSet.length != 0) {
+        newSet = oldSet.filter(function (obj) {
           return obj.Category != event.target.id;
         });
       }
       commonService.setFirstSet(newSet);
     } else {
       event.target.classList.add("checked");
-      var brush = d3.select(".brush");
+      const brush = d3.select(".brush");
       if (selectedCategories.length == 0 && brush.empty()) {
         d3.selectAll("circle").classed("selectedScatterPlot", false);
         var firstCat = true;
       } else {
         var firstCat = false;
       }
-      var category = event.target.id;
       d3.selectAll("circle[name='" + category + "']").classed("selectedScatterPlot", true);
       selectedCategories.push(category);
 

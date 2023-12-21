@@ -53,7 +53,7 @@ def star():
 
 @flask.route('/all-data-pca')
 def allDataPca():
-    query = 'SELECT * FROM googleplaystore'
+    query = 'SELECT * FROM googleplaystore LIMIT 600'
 
     # Esecuzione della query e ottenimento dei dati in un DataFrame
     cur = mysql_connection.get_db().cursor()
