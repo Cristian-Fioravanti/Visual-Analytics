@@ -564,14 +564,8 @@ export function updateChart(force) {
             return true;
           } else if (isInsideSet(d)) return true;
           else {
-            // if (numberOfBrush == 0) {
-            //   svg.selectAll(".group1").classed("group1", false);
-            //   svg.selectAll(".group2").classed("group2", false);
-            //  }
-             
-            // else if (numberOfBrush == 1) {
-            //    d3.select(this).classed("group2",false)
-            // }
+            d3.select(this).classed("group2", false)
+              d3.select(this).classed("group1", false)
            
           } return false;
         });
