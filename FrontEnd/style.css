@@ -124,14 +124,6 @@ text {
   stroke: #00e3fd !important;
   stroke-width: 2px;
 }
-.group1{
-  stroke: #cb2322 !important;
-  stroke-width: 2px;
-}
-.group2 {
-  stroke: #00e3fd !important;
-  stroke-width: 2px;
-}
 .selectedBoxPlotLine {
   stroke: #cb2322 !important;
   border: 1px black solid;

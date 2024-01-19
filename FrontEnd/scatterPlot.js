@@ -21,7 +21,8 @@ var zoom;
 var divWidth;
 var divHeigth;
 var globalRecalculated;
-function createScatterPlot(jsonPCAData, recalculated) {
+
+export function createScatterPlot(jsonPCAData, recalculated) {
   allData = jsonPCAData;
   globalRecalculated = recalculated;
   var xAxis;
@@ -519,7 +520,7 @@ export function updateChart(force) {
       // Se il brushing è vuoto, reimposta la classe e interrompi la funzione
       if (extent[0][0] == extent[1][0] && extent[0][1] == extent[1][1]) {
         svg.selectAll(".selectedScatterPlot").classed("selectedScatterPlot", true).classed("selectedScatterPlotFilteredParallel", false).classed("selectedScatterPlotParallel", false);
-        if (numberOfBrush == 2 || (numberOfBrush == 1 && categoryService.numberOfCheckBoxSelected == 1) || categoryService.numberOfCheckBoxSelected == 2) {
+        if(commonService.firstSet.value.length != 0 && commonService.secondSet.value.length != 0 ) {
           putAllEmpty(svg);
         }
         return;
@@ -577,7 +578,6 @@ export function updateChart(force) {
       }
     }
   }
-  // svg.selectAll("circle").classed("selectedScatterPlotFilteredParallel", false);
   if (force) svg.selectAll("circle").classed("selectedScatterPlot", true);
 }
 
@@ -604,7 +604,3 @@ function getBorderGroupClass(d) {
     return "";
   }
 }
-// let WidthCateg = d3.select("#category").node().offsetWidth;
-// d3.select("#spanButton").attr("style","position: absolute; left: "+ (divWidth)+"px;top: 30px");
-
-export { createScatterPlot };
