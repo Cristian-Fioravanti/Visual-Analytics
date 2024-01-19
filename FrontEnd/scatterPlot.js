@@ -424,7 +424,6 @@ function computePCA() {
   let secondGroup = commonService.secondSet.value != undefined ? commonService.secondSet.value : [];
   let newGroup = [...firstGroup, ...secondGroup];
   let ids = newGroup.map((obj) => obj.ID);
-  console.log(ids);
   ajaxService.computePCA(ids).done(function (jsonData) {
     createScatterPlot(jsonData, true);
   });
@@ -433,6 +432,7 @@ function computePCA() {
 function putAllEmpty(svg) {
   svg.selectAll(".brush").remove(); // Rimuovi eventuali rettangoli di selezione precedenti
   svg.selectAll(".selectedScatterPlot").classed("selectedScatterPlot", false);
+  svg.selectAll(".selectedScatterPlotParallels").classed("selectedScatterPlotParallels", false);
   svg.selectAll(".group1").classed("group1", false);
   svg.selectAll(".group2").classed("group2", false);
   numberOfBrush = 0;
@@ -446,16 +446,6 @@ function putAllEmpty(svg) {
   categoryService.resetCategory();
 }
 
-// function resetToInitialPointVisualize(svg) {
-//   svg.selectAll(".brush").remove(); // Rimuovi eventuali rettangoli di selezione precedenti
-//   svg.selectAll("circle").classed("selectedScatterPlot", true).classed("selectedScatterPlotFilteredParallel", false);
-//   numberOfBrush = 0;
-//   commonService.setFirstSet(allData);
-//   firstSet = allData;
-//   firstBrush = [];
-//   commonService.resetCheckBox();
-//   categoryService.resetCategory();
-// }
 function removeBrush(svg) {
   svg.selectAll(".brush").remove();
   d3.select(".brushRect").remove();
@@ -464,7 +454,7 @@ function removeBrush(svg) {
   categoryService.resetCategory();
 }
 export function setAxisToInitialValue() {
-  // if (initilizedX != undefined && initilizedY != undefined) {
+  // if (initilizedX != undefined && initilizedY != undefined) {x
   x = newX;
   y = newY;
 
@@ -528,7 +518,7 @@ export function updateChart(force) {
       var extent = d3.event.selection;
       // Se il brushing è vuoto, reimposta la classe e interrompi la funzione
       if (extent[0][0] == extent[1][0] && extent[0][1] == extent[1][1]) {
-        svg.selectAll(".selectedScatterPlot").classed("selectedScatterPlot", true).classed("selectedScatterPlotFilteredParallel", false);
+        svg.selectAll(".selectedScatterPlot").classed("selectedScatterPlot", true).classed("selectedScatterPlotFilteredParallel", false).classed("selectedScatterPlotParallel", false);
         if (numberOfBrush == 2 || (numberOfBrush == 1 && categoryService.numberOfCheckBoxSelected == 1) || categoryService.numberOfCheckBoxSelected == 2) {
           putAllEmpty(svg);
         }

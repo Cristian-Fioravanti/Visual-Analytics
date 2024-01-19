@@ -1,5 +1,4 @@
 import "https://d3js.org/d3.v5.min.js";
-import "./interface.js";
 import * as commonService from "./commonService.js";
 import * as categoryService from "./category.js";
 
@@ -9,7 +8,6 @@ function populateBoxplots() {
     if (commonService.mode.value == "Compare") {
       var newData = commonService.firstSet.value;
       var secondGroup = commonService.secondSet.value;
-      // ho cambiato il primo gruppo ed è una categoria
       if (categoryService.firstCategory != null) {
         var group1 = categoryService.firstCategory;
       } else {
@@ -44,7 +42,6 @@ function populateBoxplots() {
     if (commonService.mode.value == "Compare") {
       var newData = commonService.secondSet.value;
       var firstGroup = commonService.firstSet.value;
-      // ho cambiato il primo gruppo ed è una categoria
       if (categoryService.firstCategory != null) {
         var group1 = categoryService.firstCategory;
       } else {
@@ -92,8 +89,6 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
       .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
   }
-  // append the svg object to the body of the page
-  // Compute summary statistics used for the box:
   if (data1.length != 0) {
     var data_sorted1 = data1.sort(d3.ascending);
     var q11 = d3.quantile(data_sorted1, 0.25);
@@ -156,8 +151,6 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
     var yAxis = d3.axisLeft(y).tickFormat(yAxisFormat);
   }
 
-  // a few features for the box
-  // var center = 200;
   var boxWidth = 75;
 
   if (median1 != undefined && q31 != undefined && q11 != undefined) {
@@ -183,14 +176,11 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
     var color =
       group1 == "Group 1" ? "#cb2322" : commonService.scaleColor(group1);
     var newTopX = height + margin.top;
-    // var newTopY = margin.top-20
     svg
       .append("g")
       .attr("class", "xAxis")
       .attr("transform", "translate(" + 0 + "," + newTopX + ")")
       .call(xAxis);
-    // Show the box
-    // Show the first box (sopra la linea median)
     svg
       .append("g")
       .attr("class", "y axis")
@@ -299,7 +289,6 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
         .remove();
 
       var newTopX = height + margin.top;
-      // var newTopY = margin.top-20
       svg
         .append("g")
         .attr("class", "xAxis")
@@ -335,8 +324,6 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
       .attr("stroke", "black")
       .style("fill", color)
       .style("opacity", 1);
-
-    // svg.selectAll("rect").classed("selectedBoxPlotRect", true)
 
     // show median, min and max horizontal lines
     svg
@@ -417,14 +404,11 @@ function createBoxPlot(data1, data2, i, title, group1, group2) {
       .selectAll("text")
       .remove();
     var newTopX = height + margin.top;
-    // var newTopY = margin.top-20
     svg
       .append("g")
       .attr("class", "xAxis")
       .attr("transform", "translate(" + 0 + "," + newTopX + ")")
       .call(xAxis);
-    // Show the box
-    // Show the first box (sopra la linea median)
     svg
       .append("g")
       .attr("class", "y axis")

@@ -1,5 +1,4 @@
 import "https://d3js.org/d3.v5.min.js";
-import "./interface.js";
 import * as commonService from "./commonService.js";
 import * as categoryService from "./category.js";
 
@@ -35,7 +34,7 @@ export function createHistogramInstalls(dataSet) {
   }
 
   let mousemove = function (d) {
-     var containerY = d3.event.clientY - d3.select("#Histogram3").node().getBoundingClientRect().top- margin.top;
+    var containerY = d3.event.clientY - d3.select("#Histogram3").node().getBoundingClientRect().top- margin.top;
     
     // Calcola le coordinate y relative al grafico
     var mouseY = y.invert(containerY);
@@ -43,7 +42,7 @@ export function createHistogramInstalls(dataSet) {
     // Aggiungi il testo desiderato nel tooltip
     tooltip.html(d.length)
       .style("left", x(d.x0)-24 + "px")
-       // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
+      // It is important to put the +90: other wise the tooltip is exactly where the point is an it creates a weird effect
       .style("top", y(mouseY) -30+ "px")
       .style("transform", "translate(" + x(d.x0) + ",0)")
   }
@@ -64,7 +63,6 @@ export function createHistogramInstalls(dataSet) {
       .classed("ShortInstalls", true)
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
   }
-  // get the data
 
   // X axis: scale and draw:
   let xTickFormat = function (d) {
@@ -108,8 +106,6 @@ export function createHistogramInstalls(dataSet) {
   } else {
     yAxis.call(d3.axisLeft(y));
   } 
-
-  // popolaTabella(bins);
 
   function popolaTabella(firstGroup, secondGroup) {
     const svg = d3.select(".ShortInstalls");
