@@ -1,19 +1,16 @@
-import "./interface.js";
 import * as categoryService from "./category.js";
 import * as commonService from "./commonService.js";
-let countClick = 0;
+
 let scaleColor;
 let allData;
 var firstGroup;
 var secondGroup;
+var y;
 export var selected = [];
 
 export function createParallelCoordinates(jsonPCAData) {
   allData = jsonPCAData;
   scaleColor = commonService.getScaleColor();
-  // jsonPCAData = jsonPCAData.slice(0, 5);
-  // console.log(commonService.distinctValuesPerKey(jsonPCAData))
-
   // set the dimensions and margins of the graph
   var divWidth = d3.select("#scatterPlot").node().offsetWidth;
   var divHeigth = d3.select(".div2").node().clientHeight / 2;
@@ -51,7 +48,7 @@ export function createParallelCoordinates(jsonPCAData) {
   let dimensionsString = ["Content_Rating", "Type"];
   const distinctPCAData = commonService.distinctValuesPerKey(jsonPCAData);
   // For each dimension, build a linear scale and store it in the y object
-  var y = {};
+  y  = {};
   dimensions.forEach((dim) => {
     if (dimensionsString.includes(dim)) {
       y[dim] = d3
@@ -138,38 +135,35 @@ export function createParallelCoordinates(jsonPCAData) {
       return d;
     })
     .style("fill", "white");
-
-  let selections = new Map();
-  let selectionsString = new Map();
   let brushSelectionActive = new Map();
   const selectedColor = "yellow"; // Change the color for selected paths
 
   function brushedVertical(event) {
     selected = [];
     if (!d3.event.selection) {
-      selections.delete(event);
-      selectionsString.delete(event);
+      if(commonService.filters.value != undefined ) commonService.deleteFilters(event);
+      if(commonService.parallelsFiltersString.value != undefined ) commonService.deleteFilters(event);
       brushSelectionActive.delete(event);
     } else {
-      if (
-        d3.event.selection != null &&
-        !(d3.event.selection[0] == d3.event.selection[1])
-      ) {
+      if (d3.event.selection != null && !(d3.event.selection[0] == d3.event.selection[1])) {
         const invertedSelection = d3.event.selection.map((value, i) => {
           return y[event].invert ? y[event].invert(value) : y[event](value);
         });
-        if (dimensionsString.includes(event))
+        if (dimensionsString.includes(event)) {
           brushSelectionActive.set(event, d3.event.selection);
-        selections.set(event, invertedSelection);
+          commonService.setFilters(event, [[d3.event.selection[0],d3.event.selection[1]]]);
+        } else {
+          commonService.setFilters(event, [[invertedSelection[1],invertedSelection[0]]]);
+        }
       } else {
-        selections.delete(event);
-        selectionsString.delete(event);
+        if(commonService.filters.value != undefined ) commonService.deleteFilters(event);
+        if(commonService.parallelsFiltersString.value != undefined ) commonService.deleteFilters(event);
         brushSelectionActive.delete(event);
       }
     }
 
     svg.selectAll(".myPath").each(function (d) {
-      let isActive = Array.from(selections).every(([brushKey, [max, min]]) => {
+      let isActive = Array.from(commonService.filters.value).every(([brushKey, listRange]) => {
         if (dimensionsString.includes(brushKey)) {
           //todo prendere lista pointInBrush, calcolare brushMin, brushMax e poi effettuare controllo
           let valueInBrush = isBrushInsidePointScale(brushKey).map((x) =>
@@ -177,19 +171,21 @@ export function createParallelCoordinates(jsonPCAData) {
           );
 
           const yCoordinate = y[brushKey](d[brushKey]);
-
-          return valueInBrush.includes(yCoordinate);
+          return valueInBrush.includes(yCoordinate) && d3.select("#scatterPlot").select("circle[id='" + d.ID + "']").classed("selectedScatterPlot");
         } else {
-          const valueKeySelected = d[brushKey];
-          return valueKeySelected >= min && valueKeySelected <= max;
+          let ris = true;
+          for (let i = 0; i < listRange.length; i++) {
+            const element = listRange[i];
+            let rangeMin = element[0];
+            let rangeMax = element[1];
+            ris = ris && d[brushKey] >= rangeMin && d[brushKey] <= rangeMax && d3.select("#scatterPlot").select("circle[id='" + d.ID + "']").classed("selectedScatterPlot");
+          }
+          return ris
         }
       });
 
-      if (selections.size == 0) isActive = false;
-      d3.select(this).style(
-        "stroke",
-        isActive ? selectedColor : scaleColor(d.Category)
-      );
+      if (commonService.filters.value.size == 0) isActive = false;
+      d3.select(this).style("stroke", isActive ? selectedColor : scaleColor(d.Category));
 
       if (isActive) {
         selected.push(d);
@@ -213,26 +209,6 @@ export function createParallelCoordinates(jsonPCAData) {
 
     return ris; // The brush selection doesn't contain any point
   }
-  // function invertPointScale(value, dimension) {
-  //   const rangeValues = y[dimension].range();
-  //   const domainValues = y[dimension].domain();
-  //   const bisect = d3.bisectLeft(rangeValues, value);
-
-  //   if (bisect === 0 || bisect === rangeValues.length) {
-  //     return domainValues[bisect];
-  //   }
-
-  //   const leftValue = rangeValues[bisect - 1];
-  //   const rightValue = rangeValues[bisect];
-
-  //   // Determine if the value is inside the range
-  //   if (value >= leftValue && value <= rightValue) {
-  //     return domainValues[bisect - 1];
-  //   }
-
-  //   // If the value is outside the range, return the closest domain value
-  //   return value - leftValue > rightValue - value ? domainValues[bisect] : domainValues[bisect - 1];
-  //   }
 }
 
 export function createParallelCoordinatesCompare() {
@@ -272,7 +248,7 @@ export function createParallelCoordinatesCompare() {
   let dimensionsString = ["Content_Rating", "Type"];
   let distinctPCAData = commonService.distinctValuesPerKey(jsonPCAData);
   // For each dimension, build a linear scale and store it in the y object
-  var y = {};
+  y = {};
   dimensions.forEach((dim) => {
     if (dimensionsString.includes(dim)) {
       y[dim] = d3
@@ -540,7 +516,6 @@ export function createParallelCoordinatesCompare() {
     })
     .append("text")
     .style("text-anchor", "middle")
-    // .style("z-index", 99)
     .attr("y", -9)
     .text(function (d) {
       return d;
@@ -583,9 +558,7 @@ export function createParallelCoordinatesCompare() {
           let valueInBrush = isBrushInsidePointScale(brushKey).map((x) =>
             y[brushKey](x)
           );
-
           const yCoordinate = y[brushKey](d[brushKey]);
-
           return valueInBrush.includes(yCoordinate);
         } else {
           const valueKeySelected = d[brushKey];
@@ -594,10 +567,7 @@ export function createParallelCoordinatesCompare() {
       });
 
       if (selections.size == 0) isActive = false;
-      d3.select(this).style(
-        "stroke",
-        isActive ? selectedColor : getColorPath(d)
-      );
+      d3.select(this).style("stroke", isActive ? selectedColor : getColorPath(d));
 
       if (isActive) {
         selected.push(d);
@@ -606,7 +576,7 @@ export function createParallelCoordinatesCompare() {
         if (index != -1) selected.splice(index, 1);
       }
     });
-    addBorderToCircleSelected(selected);
+    addBorderToCircleSelectedCompare(selected);
   }
   function isBrushInsidePointScale(brushKey) {
     const domainValues = y[brushKey].domain();
@@ -641,15 +611,29 @@ export function createParallelCoordinatesCompare() {
 function addBorderToCircleSelected(selectedList) {
   let listId = selectedList.map(obj => obj.ID)
   d3.select("#scatterPlot")
-    .selectAll("circle")
+    .selectAll("circle.selectedScatterPlot, circle.selectedScatterPlotFiltered")
+    
     .each(function (d) {
       if (listId.includes(d.ID))
-        d3.select(this)
-          // .classed("selectedScatterPlot", true)
-          .classed("selectedScatterPlotFilteredParallel", true);
+        d3.select(this).classed("selectedScatterPlotFiltered", true);
       else
-        d3.select(this)
-          // .classed("selectedScatterPlot", true)
-          .classed("selectedScatterPlotFilteredParallel", false);
+        d3.select(this).classed("selectedScatterPlotFiltered", false);
     });
+}
+
+function addBorderToCircleSelectedCompare(selectedList) {
+  let listId = selectedList.map(obj => obj.ID)
+  d3.select("#scatterPlot")
+    .selectAll("circle.selectedScatterPlot, circle.selectedScatterPlotParallels")
+    
+    .each(function (d) {
+      if (listId.includes(d.ID))
+        d3.select(this).classed("selectedScatterPlotParallels", true);
+      else
+        d3.select(this).classed("selectedScatterPlotParallels", false);
+    });
+}
+
+export function getY() {
+  return y;
 }

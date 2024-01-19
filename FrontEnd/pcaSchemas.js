@@ -10,7 +10,6 @@ import * as commonService from "./commonService.js";
 main();
 
 function main() {
-  // resetView()
   visualize();
   commonService.mode.observe((data) => {
     if (commonService.mode.value == "Visualize") {
@@ -18,18 +17,15 @@ function main() {
       commonService.setSecondSet([]);
       visualize();
     } else {
-      console.log(commonService.mode.value);
       commonService.setFirstSet([]);
       commonService.setSecondSet([]);
       compare();
     }
   });
-  // getPCAForSchemas();
 }
 
 function visualize() {
   ajaxService.getAllDataPCA().done(function (jsonData) {
-    // console.log(jsonData.slice(0, 5));
     commonService.initializeScaleColor(jsonData);
     //Creation Schemas
     categoryService.insertCategory(jsonData);
@@ -44,7 +40,6 @@ function visualize() {
 
 function compare() {
   ajaxService.getAllDataPCA().done(function (jsonData) {
-    // console.log(jsonData.slice(0, 5));
     commonService.initializeScaleColor(jsonData);
     //Creation Schemas
     categoryService.insertCategory(jsonData);

@@ -19,6 +19,10 @@
   grid-area: 3 / 1 / 4 / 2;
 }
 
+/* g.brushRect>.resize  {
+  display: none;
+} */
+
 .parent {
   overflow-y: hidden;
   display: grid;
@@ -75,62 +79,55 @@ path {
 text {
   fill: white;
 }
+
+
 .selectedScatterPlot {
   stroke: black ;
   stroke-width: 1px;
 }
-.selectedScatterPlot.selectedScatterPlotFilteredParallel {
-  stroke: yellow !important;
-    stroke-width: 1px;
-}
-.selectedScatterPlotFilteredParallel {
+
+.selectedScatterPlot.selectedScatterPlotFiltered {
   stroke: yellow !important;
   stroke-width: 1px;
 }
-.selectedScatterPlot.group1.selectedScatterPlotFilteredParallel {
-  stroke: yellow !important;
-    stroke-width: 1px;
-}
-.selectedScatterPlot.group2.selectedScatterPlotFilteredParallel {
+.selectedScatterPlot.selectedScatterPlotFilteredParallels {
   stroke: yellow !important;
   stroke-width: 1px;
 }
-.selectedScatterPlot.group2 {
-  stroke: #00e3fd !important;
-  stroke-width: 2px;
-}
-.selectedScatterPlot.group1 {
-  stroke: #cb2322 !important;
-    stroke-width: 2px;
-}
-.selectedScatterPlot.group2 {
-  stroke: #00e3fd !important;
-  stroke-width: 2px;
-}
-.group1{
-  stroke: #cb2322 !important;
-  stroke-width: 2px;
-}
-.group2 {
-  stroke: #00e3fd !important;
-  stroke-width: 2px;
-}
-.selectedScatterPlotFilteredParallel {
+.selectedScatterPlot.selectedScatterPlotFilteredBoxPlot {
   stroke: yellow !important;
-    stroke-width: 1px;
+  stroke-width: 1px;
+}
+.selectedScatterPlotFilteredParallels {
+  stroke: yellow !important;
+  stroke-width: 1px;
 }
 .selectedScatterPlotFilteredBoxPlot {
   stroke: yellow !important;
   stroke-width: 1px;
 }
+
+
+.selectedScatterPlot.group1.selectedScatterPlotParallels {
+  stroke: yellow !important;
+  stroke-width: 1px;
+}
+.selectedScatterPlot.group2.selectedScatterPlotParallels {
+  stroke: yellow !important;
+  stroke-width: 1px;
+}
+.selectedScatterPlot.group1 {
+  stroke: #cb2322 !important;
+  stroke-width: 2px;
+}
+.selectedScatterPlot.group2 {
+  stroke: #00e3fd !important;
+  stroke-width: 2px;
+}
 .selectedBoxPlotLine {
   stroke: #cb2322 !important;
   border: 1px black solid;
   stroke-width: 2px;
-}
-.selectedParallelCoordinates {
-  opacity: 1 !important;
-  stroke: white !important;
 }
 
 .selectedBoxPlotRect {

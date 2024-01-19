@@ -1,7 +1,7 @@
 import "https://d3js.org/d3.v5.min.js";
-import "./interface.js";
 import * as commonService from "./commonService.js";
 import {setAxisToInitialValue} from "./scatterPlot.js";
+
 function main() {
   var button = d3.select("#bottone");
   button.on("click", function (d) {
