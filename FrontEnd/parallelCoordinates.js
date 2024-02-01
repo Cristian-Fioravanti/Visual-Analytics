@@ -14,7 +14,7 @@ export function createParallelCoordinates(jsonPCAData) {
   // set the dimensions and margins of the graph
   var divWidth = d3.select("#scatterPlot").node().offsetWidth;
   var divHeigth = d3.select(".div2").node().clientHeight / 2;
-  var margin = { top: 30, right: 10, bottom: 10, left: 10 },
+  var margin = { top: 30, right: 10, bottom: 10, left: 20 },
     width = divWidth - margin.left - margin.right,
     height = divHeigth - margin.top - margin.bottom;
 
@@ -217,7 +217,7 @@ export function createParallelCoordinatesCompare() {
   scaleColor = commonService.getScaleColor();
   var divWidth = d3.select("#parallelCoordinates").node().clientWidth;
   var divHeigth = d3.select("#parallelCoordinates").node().clientHeight;
-  var margin = { top: 30, right: 10, bottom: 10, left: 30 },
+  var margin = { top: 30, right: 10, bottom: 10, left: 20 },
     width = divWidth - margin.left - margin.right,
     height = divHeigth - margin.top - margin.bottom;
 
