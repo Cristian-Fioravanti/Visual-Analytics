@@ -20,7 +20,7 @@ mysql_connection = MySQL(flask, prefix="my_database", host="localhost", user="ro
 
 @flask.route('/all-data-pca')
 def allDataPca():
-    query = 'SELECT * FROM googleplaystore LIMIT 600'
+    query = 'SELECT * FROM googleplaystore'
 
     # Esecuzione della query e ottenimento dei dati in un DataFrame
     cur = mysql_connection.get_db().cursor()
